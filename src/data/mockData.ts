@@ -1621,6 +1621,13 @@ export const SUBJECTS: Subject[] = [
         "path": "Words_Grade_11_ADV_ 12G_Chapter_5_Term_3_Listening_ _Speaking.pdf",
         "views": 654,
         "dateAdded": "2026-05-21"
+      },
+      {
+        "name": "Grammar Exam Links (ملفات قواعد)",
+        "type": "مراجعة",
+        "path": "exam_links_grammar.pdf",
+        "views": 12,
+        "dateAdded": "2026-05-24"
       }
     ],
     "chapters": [
