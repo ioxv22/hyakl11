@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck, Users, Eye, TrendingUp, Clock, Globe, Activity, FileText, Plus, CheckCircle2, BarChart3, Monitor } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { SUBJECTS } from "@/data/mockData";
+import { OCRUploader } from "@/components/OCRUploader";
 
 interface AnalyticsData {
   totalVisits: number;
@@ -491,6 +492,11 @@ export default function AdminPage() {
           )}
         </div>
       ) : null}
+
+      {/* ─── OCR Extractor ──────────────────────────────────────────────── */}
+      <div className="mb-6">
+        <OCRUploader />
+      </div>
 
       {/* ─── File Upload Form ───────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">

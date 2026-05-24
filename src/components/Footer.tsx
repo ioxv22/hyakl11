@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             <Link href="/about" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400">
               من نحن
             </Link>
-            <Link href="/telegram" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 flex items-center gap-1">
+            <Link href="https://t.me/Advvvv11" target="_blank" className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 flex items-center gap-1">
               <MessageCircle size={10} />
               <span>قناة التلغرام</span>
             </Link>

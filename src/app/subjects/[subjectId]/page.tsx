@@ -23,6 +23,8 @@ import {
 import { useApp } from "@/context/AppContext";
 import { SUBJECTS } from "@/data/mockData";
 import { MCQQuiz } from "@/components/MCQQuiz";
+import { Quiz } from "@/components/Quiz";
+import { Flashcard } from "@/components/Flashcard";
 import { CommentsSection } from "@/components/CommentsSection";
 import { PDFViewer } from "@/components/PDFViewer";
 
@@ -35,7 +37,7 @@ export default function SubjectPage() {
   const { progress, toggleProgress, favorites, toggleFavorite } = useApp();
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"summary" | "files" | "mcq" | "revision" | "comments">("files");
+  const [activeTab, setActiveTab] = useState<"summary" | "files" | "mcq" | "revision" | "flashcards" | "comments">("files");
   const [activePreview, setActivePreview] = useState<{ filename: string; title: string } | null>(null);
 
   const [activeVideoIdx, setActiveVideoIdx] = useState<number>(0);
@@ -522,6 +524,18 @@ export default function SubjectPage() {
               </button>
 
               <button
+                onClick={() => setActiveTab("flashcards")}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                  activeTab === "flashcards"
+                    ? "bg-emerald-600 text-white"
+                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-950"
+                }`}
+              >
+                <Layers size={14} />
+                <span>{isEnglish ? "Flashcards" : "البطاقات التعليمية (Flashcards)"}</span>
+              </button>
+
+              <button
                 onClick={() => setActiveTab("comments")}
                 className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
                   activeTab === "comments"
@@ -700,10 +714,10 @@ export default function SubjectPage() {
 
               {/* Tab 3: Interactive MCQ Quiz */}
               {activeTab === "mcq" && (
-                <MCQQuiz questions={activeLesson.mcq} lessonId={activeLesson.id} isEnglish={subjectId !== "islamic"} />
+                <Quiz questions={activeLesson.mcq || []} lessonId={activeLesson.id} />
               )}
 
-              {/* Tab 4: Important Questions and quick flashcards */}
+              {/* Tab 4: Important Questions */}
               {activeTab === "revision" && (
                 <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-6 flex flex-col gap-6">
                   
@@ -742,6 +756,13 @@ export default function SubjectPage() {
                     </p>
                   )}
 
+                </div>
+              )}
+
+              {/* Tab: Flashcards */}
+              {activeTab === "flashcards" && (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-6 flex flex-col gap-6">
+                  <Flashcard items={[...(activeLesson.vocabulary || []), ...(activeLesson.importantQuestions || [])]} />
                 </div>
               )}
 
