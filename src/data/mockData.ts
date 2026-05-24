@@ -1,5 +1,6 @@
 import { physicsBridgeSubject } from './physicsBridgeData';
 import { biologyBridgeSubject } from './biologyBridgeData';
+import { chemistryBridgeSubject } from './chemistryBridgeData';
 
 export interface MCQ {
   question: string;
@@ -2195,36 +2196,5 @@ export const SUBJECTS: Subject[] = [
   },
   biologyBridgeSubject,
   physicsBridgeSubject,
-  {
-    "id": "chemistry_bridge",
-    "name": "الكيمياء (Bridge)",
-    "emoji": "🧪",
-    "color": "orange",
-    "generalFiles": [
-      {
-        "name": "EOT-CHE",
-        "type": "امتحان",
-        "path": "EOT-CHE-1-T3-26_MOE.pdf",
-        "views": 100,
-        "dateAdded": "2026-05-24"
-      }
-    ],
-    "chapters": [
-      {
-        "id": "chem_units",
-        "title": "وحدات الكيمياء (Bridge)",
-        "lessons": [
-          {
-            "id": "organic",
-            "title": "Organic Chemistry",
-            "videoIds": [],
-            "summary": "أساسيات الكيمياء العضوية",
-            "mcq": [],
-            "importantQuestions": []
-          }
-        ]
-      }
-    ],
-    "track": "bridge"
-  }
+  chemistryBridgeSubject
 ];
