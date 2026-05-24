@@ -1632,7 +1632,7 @@ export const SUBJECTS: Subject[] = [
             "id": "vocab_skill",
             "title": "Vocabulary",
             "videoIds": [
-              "dQw4w9WgXcQ"
+              "S5KIq_nSBqo"
             ],
             "pdfFile": {
               "name": "Grade 11 ADV English Vocabulary Lists",
@@ -1678,7 +1678,7 @@ export const SUBJECTS: Subject[] = [
             "id": "maze_skill",
             "title": "MAZE Practices",
             "videoIds": [
-              "wV7jP1R2p8o"
+              "MfuoJzXflxI"
             ],
             "pdfFile": {
               "name": "English Maze Practice 1",
