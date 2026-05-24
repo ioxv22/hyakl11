@@ -773,6 +773,30 @@ export default function SubjectPage() {
 
             </div>
 
+            {/* Big Complete Button */}
+            <div className="mt-8 pt-6 border-t border-slate-200/50 dark:border-slate-800/80 flex justify-center">
+              <button
+                onClick={() => toggleProgress(activeLesson.id)}
+                className={`px-8 py-4 rounded-2xl font-black text-sm flex items-center gap-3 transition-all shadow-lg cursor-pointer ${
+                  progress[activeLesson.id]
+                    ? "bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500/30 hover:border-emerald-500/50 shadow-emerald-500/10"
+                    : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20 hover:shadow-emerald-500/40"
+                }`}
+              >
+                {progress[activeLesson.id] ? (
+                  <>
+                    <CheckCircle size={22} className="text-emerald-500" />
+                    <span>{isEnglish ? "Lesson Completed" : "تم إنهاء محتوى هذا الدرس بنجاح"}</span>
+                  </>
+                ) : (
+                  <>
+                    <Check size={22} />
+                    <span>{isEnglish ? "Mark Lesson as Complete" : "تحديد محتوى الدرس كـ 'مكتمل'"}</span>
+                  </>
+                )}
+              </button>
+            </div>
+
           </div>
         ) : (
           <div className="lg:col-span-3 text-center py-12 text-slate-400">
