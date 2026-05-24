@@ -43,9 +43,12 @@ export const Footer: React.FC = () => {
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
               حقوق النشر © <span className="text-emerald-500">حمد العبدولي 2026</span>
             </span>
-            <div className="flex items-center gap-1.5 text-[10px] text-slate-400 dark:text-slate-500">
-              <Heart size={10} className="fill-red-500 text-red-500 animate-pulse" />
-              <span>Made for ADV Students UAE 🇦🇪</span>
+            <div className="flex flex-col items-center md:items-end gap-1 text-[10px] text-slate-400 dark:text-slate-500">
+              <div className="flex items-center gap-1.5">
+                <Heart size={10} className="fill-red-500 text-red-500 animate-pulse" />
+                <span>Made for ADV Students UAE 🇦🇪</span>
+              </div>
+              <span className="font-bold text-emerald-500/80 mt-1">الله ينجح احمد وعلي وحمد 🤲</span>
             </div>
           </div>
 
