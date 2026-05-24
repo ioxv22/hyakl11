@@ -1082,7 +1082,7 @@ export const SUBJECTS: Subject[] = [
             "id": "rot_motion_desc",
             "title": "وصف الحركة الدورانية وقياسها",
             "videoIds": [
-              "wV7jP1R2p8o"
+              "cd6LMneiUAE"
             ],
             "pdfFile": {
               "name": "Physics Made Easy Rotational Motion",
@@ -1114,7 +1114,7 @@ export const SUBJECTS: Subject[] = [
                 "dateAdded": "2026-05-05"
               }
             ],
-            "summary": "",
+            "summary": "دراسة ووصف الحركة الدورانية للأجسام حول محاور ثابتة، وقياس الإزاحة والسرعة والتسارع الزاوي بالراديان والدرجات، والعلاقة بين المتغيرات الخطية والدورانية.",
             "mcq": [
               {
                 "question": "One complete revolution corresponds to how many radians?",
@@ -1140,7 +1140,8 @@ export const SUBJECTS: Subject[] = [
             "id": "torque",
             "title": "العزم وقصور الذات الذاتي الدوراني",
             "videoIds": [
-              "dQw4w9WgXcQ"
+              "vQTnZjHbqug",
+              "8fK5cc0JE3g"
             ],
             "pdfFile": {
               "name": "Rotational Dynamics",
@@ -1158,7 +1159,7 @@ export const SUBJECTS: Subject[] = [
                 "dateAdded": "2026-05-12"
               }
             ],
-            "summary": "",
+            "summary": "دراسة مسببات الحركة الدورانية وهي العزم (Torque)، وقانون نيوتن الثاني للدوران، وحساب عزم القصور الذاتي (Moment of Inertia) للأجسام الجاسئة وتوزيع الكتل.",
             "mcq": [
               {
                 "question": "To obtain the maximum torque, the force should be applied at an angle of:",
@@ -1184,7 +1185,7 @@ export const SUBJECTS: Subject[] = [
             "id": "momentum_lesson",
             "title": "الزخم الخطي والتصادمات",
             "videoIds": [
-              "wV7jP1R2p8o"
+              "YKEh-UDJjwY"
             ],
             "pdfFile": {
               "name": "MOMENTUM",
@@ -1193,7 +1194,7 @@ export const SUBJECTS: Subject[] = [
               "views": 1104,
               "dateAdded": "2026-05-14"
             },
-            "summary": "",
+            "summary": "مفهوم الزخم الخطي والدفع وتطبيقاتهما، ونظرية الدفع-الزخم وحساب متوسط القوى والتغير في الزخم أثناء الاصطدامات.",
             "mcq": [
               {
                 "question": "A body of mass 2 kg moves at a speed of 5 m/s. What is its linear momentum?",
@@ -1219,7 +1220,7 @@ export const SUBJECTS: Subject[] = [
             "id": "impulse_lesson",
             "title": "الدفع ونظرية الدفع-الزخم",
             "videoIds": [
-              "f4O_jD0pCks"
+              "_2b8QuE1ZvU"
             ],
             "pdfFile": {
               "name": "1-Impulse and Momentum (part 1 )",
@@ -1237,7 +1238,7 @@ export const SUBJECTS: Subject[] = [
                 "dateAdded": "2026-05-15"
               }
             ],
-            "summary": "",
+            "summary": "دراسة الدفع الزاوي والزخم الزاوي وقوانين حفظهما وعلاقة عزم الدوران بالتغير في الزخم الدوراني للأجسام.",
             "mcq": [
               {
                 "question": "Why are modern cars designed with crumple zones in their front?",
@@ -1272,7 +1273,7 @@ export const SUBJECTS: Subject[] = [
               "views": 887,
               "dateAdded": "2026-05-16"
             },
-            "summary": "",
+            "summary": "شرح تفصيلي لقوانين انعكاس وانكسار الضوء عند انتقاله بين الأوساط المختلفة، وحساب معامل الانكسار وقانون سنيل.",
             "mcq": [
               {
                 "question": "When light travels from a medium with a lower refractive index (air) to a medium with a higher refractive index (glass), it bends:",
@@ -1298,7 +1299,7 @@ export const SUBJECTS: Subject[] = [
             "id": "equilibrium_lesson",
             "title": "شروط الاتزان الميكانيكي",
             "videoIds": [
-              "wV7jP1R2p8o"
+              "c-Bb_KICD6E"
             ],
             "pdfFile": {
               "name": "Equilibrium Sec3 2026 11ADV SOLVED",
@@ -1307,7 +1308,7 @@ export const SUBJECTS: Subject[] = [
               "views": 987,
               "dateAdded": "2026-05-18"
             },
-            "summary": "",
+            "summary": "شروط الاتزان الانتقالي والدوراني للأجسام الصلبة وتطبيقات عملية على رافعة القوى ومركز الجاذبية.",
             "mcq": [
               {
                 "question": "For a body to be in complete mechanical equilibrium, which condition(s) must be satisfied?",
