@@ -7,6 +7,7 @@ export const chemistryBridgeSubject: Subject = {
   color: "orange",
   track: "bridge",
   generalFiles: [
+    { name: "شرح محمد زيادة - قناة يوتيوب", type: "شرح", path: "https://www.youtube.com/results?search_query=محمد+زيادة+كيمياء", views: 9999, dateAdded: "2026-05-24" },
     { name: "الأحماض والقواعد 12 متقدم 2025", type: "شرح", path: "الاحماض_والقواعد_12_متقدم_2025_250104_094958.pdf", views: 2450, dateAdded: "2026-05-24" },
     { name: "الأحماض والقواعد 1", type: "شرح", path: "الأحماض_والقواعد_1 (2).pdf", views: 1200, dateAdded: "2026-05-24" },
     { name: "الأحماض والقواعد - محمد محسن 2018", type: "شرح", path: "الاحماض و القواعد - محمد محسن 2018.pdf", views: 3420, dateAdded: "2026-05-24" },
