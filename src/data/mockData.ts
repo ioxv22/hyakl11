@@ -65,11 +65,12 @@ export const SUBJECTS: Subject[] = [
     emoji: "📐",
     color: "emerald",
     generalFiles: [
-      { name: "هيكل الرياضيات 11 متقدم EOT3", type: "هيكل", path: "EOT3 11 ADV.pdf", views: 2450, dateAdded: "2026-05-18" },
-      { name: "اختبار وزاري رياضيات القسم الاكتروني 21-22", type: "امتحان", path: "اختبار_وزاري_رياضيات_القسم_الاكتروني_11_متقدم_بريدج_21_22.pdf", views: 982, dateAdded: "2026-05-20" },
-      { name: "الاختبار الوزاري رياضيات الاكتروني 23-24", type: "امتحان", path: "الاختبار_الوزاري_رياضيات_الاكتروني_11_متقدم_للمنهجين_لعام_2023_2.pdf", views: 1104, dateAdded: "2026-05-21" },
-      { name: "تجميعة الاختبارات الوزارية السابقة", type: "مراجعة", path: "تجميعة_الاختبارات_الوزارية_السابقة_رياضيات_11_متقدم_للمنهجين_بدو.pdf", views: 765, dateAdded: "2026-05-22" },
-      { name: "حلول تجميعة الاختبارات الوزارية", type: "شرح", path: "حلول_تجميعة_الاختبارات_الوزارية_السابقة_رياضيات_11_متقدم_للمنهجي.pdf", views: 549, dateAdded: "2026-05-23" }
+      { name: "هيكل الرياضيات 11 متقدم EOT3", type: "هيكل", path: "هيكل_الرياضيات_لصف_الحادي_عشر_متقدم_رفيل_فصل_الثال_260519_205502.pdf", views: 2450, dateAdded: "2026-05-18" },
+      { name: "امتحان سابق 11 متقدم", type: "امتحان", path: "امتحان سابق 11 متقدم.pdf", views: 982, dateAdded: "2026-05-20" },
+      { name: "امتحان سابق الفصل 3", type: "امتحان", path: "امتحان سابق الفصل 3.pdf", views: 1104, dateAdded: "2026-05-21" },
+      { name: "تجميعة الاختبارات الوزارية السابقة", type: "مراجعة", path: "ماث امتحان سابق.pdf", views: 765, dateAdded: "2026-05-22" },
+      { name: "EOT G11 ADV", type: "امتحان", path: "EOT G11 ADV.pdf", views: 549, dateAdded: "2026-05-23" },
+      { name: "مراجعة وورد", type: "مراجعة", path: "G11 EOT T3 WORD FILE 2026.docx", views: 320, dateAdded: "2026-05-24" }
     ],
     chapters: [
       {
@@ -80,16 +81,25 @@ export const SUBJECTS: Subject[] = [
             id: "7.1",
             title: "7.1 Vectors in Coordinate Plane",
             videoIds: ["qu7g3R6tLOE", "NTDNrlzz7YM", "Gx5TGANIhHM"],
-            pdfFile: { name: "7.2 Vectors in the coordinate plane", type: "شرح", path: "7_2_Vectors_in_the_coordinate_plane_المتجهات_في_المستوى_الإحداثي (2).pdf", views: 654, dateAdded: "2026-05-10" },
+            pdfFile: { name: "7.1 Introduction to vectors", type: "شرح", path: "7.1 Introduction to vectors مقدمة في المتجهات.pdf", views: 654, dateAdded: "2026-05-10" },
             summary: "في هذا الدرس، نتعرف على المتجه ككمية متجهة.",
             mcq: [{ question: "Vector?", options: ["Yes", "No"], answerIndex: 0, explanation: "Vector has direction" }],
+            importantQuestions: []
+          },
+          {
+            id: "7.2",
+            title: "7.2 Vectors in the coordinate plane",
+            videoIds: ["fUs8WmmWvVI"],
+            pdfFile: { name: "7.2 Vectors in the coordinate plane", type: "شرح", path: "7_2_Vectors_in_the_coordinate_plane_المتجهات_في_المستوى_الإحداثي (2).pdf", views: 654, dateAdded: "2026-05-10" },
+            summary: "المتجهات في المستوى.",
+            mcq: [],
             importantQuestions: []
           },
           {
             id: "7.3",
             title: "7.3 Dot product الضرب النقطي",
             videoIds: ["76qMVEwe4Mo"],
-            pdfFile: { name: "7.3 Dot product", type: "شرح", path: "7.3 Dot product الضرب النقطي (محلول) (2).pdf", views: 654, dateAdded: "2026-05-10" },
+            pdfFile: { name: "7.3 Dot product", type: "شرح", path: "7.3 Dot product الضرب النقطي (محلول).pdf", views: 654, dateAdded: "2026-05-10" },
             summary: "الضرب النقطي للمتجهات.",
             mcq: [],
             importantQuestions: []
@@ -98,7 +108,7 @@ export const SUBJECTS: Subject[] = [
             id: "7.4",
             title: "7.4 Vectors in 3D المتجهات في الفضاء",
             videoIds: ["PiWsLpv6FDY"],
-            pdfFile: { name: "7.4 Vectors in 3D", type: "شرح", path: "7_4_Vectors_in_3D_المتجهات_في_الفضاء_غير_محلول (2).pdf", views: 654, dateAdded: "2026-05-10" },
+            pdfFile: { name: "7.4 Vectors in 3D", type: "شرح", path: "7_4_Vectors_in_3D_المتجهات_في_الفضاء_محلول.pdf", views: 654, dateAdded: "2026-05-10" },
             summary: "المتجهات في 3 أبعاد",
             mcq: [],
             importantQuestions: []
@@ -107,7 +117,7 @@ export const SUBJECTS: Subject[] = [
             id: "7.5",
             title: "7.5 Cross Product الضرب المتجهي",
             videoIds: ["l3obJ3lH7QM"],
-            pdfFile: { name: "7.5 Cross Product", type: "شرح", path: "7.5 Cross Product الضرب المتجهي (2).pdf", views: 654, dateAdded: "2026-05-10" },
+            pdfFile: { name: "7.5 Cross Product", type: "شرح", path: "7.5 Cross Product الضرب المتجهي.pdf", views: 654, dateAdded: "2026-05-10" },
             summary: "الضرب المتجهي",
             mcq: [],
             importantQuestions: []
@@ -218,192 +228,8 @@ export const SUBJECTS: Subject[] = [
             id: "9.7",
             title: "9.7 Binomial theorem",
             videoIds: [],
-            pdfFile: { name: "Binomial", type: "شرح", path: "9.7 Binomial theorem نظرية ذات الحدين.pdf", views: 100, dateAdded: "2026-05-24" },
+            pdfFile: { name: "Binomial", type: "شرح", path: "9.7 Binomial theorem  نظرية ذات الحدين.pdf", views: 100, dateAdded: "2026-05-24" },
             summary: "نظرية ذات الحدين",
-            mcq: [],
-            importantQuestions: []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "chemistry",
-    name: "الكيمياء",
-    emoji: "🧪",
-    color: "orange",
-    generalFiles: [
-      { name: "الهيكل الوزاري CHEMISTRY Bridge", type: "هيكل", path: "Coverage-EoT3-G11-ADV -P2-BRIDGE-25-26.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Exam", type: "امتحان", path: "Exam.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "CHEADV 2021-2022", type: "امتحان", path: "CHEADV 2021-2022.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "CHEADV 2021-2022 (2)", type: "امتحان", path: "CHEADV 2021-2022 (2).pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "اختبار 20-21 محلول", type: "امتحان", path: "اختبار 20-21 محلول.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Scenario 2 Booklet", type: "مراجعة", path: "Scenario 2 Booklet.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "الاختبار الوزاري كيمياء", type: "امتحان", path: "الاختبار_الوزاري_كيمياء_11 12_متقدم_للمنهجين_لعام_2023_2024_بدون.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "حلول الاختبار الوزاري", type: "شرح", path: "حلول_الاختبار_الوزاري_كيمياء_11 12_متقدم_للمنهجين_لعام_2023_2024.pdf", views: 100, dateAdded: "2026-05-24" }
-    ],
-    chapters: [
-      {
-        id: "chem_units",
-        title: "وحدات الكيمياء (Bridge)",
-        lessons: [
-          {
-            id: "organic",
-            title: "Organic Chemistry",
-            videoIds: [],
-            summary: "أساسيات الكيمياء العضوية",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "electro",
-            title: "Electrochemistry",
-            videoIds: [],
-            summary: "الكيمياء الكهربائية",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "acids",
-            title: "Acids & Bases",
-            videoIds: [],
-            summary: "الأحماض والقواعد",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "ph",
-            title: "pH & Titration",
-            videoIds: [],
-            summary: "الرقم الهيدروجيني والمعايرة",
-            mcq: [],
-            importantQuestions: []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "physics",
-    name: "الفيزياء",
-    emoji: "⚡",
-    color: "violet",
-    generalFiles: [
-      { name: "الهيكل الوزاري PHYSICS Bridge", type: "هيكل", path: "document (8).pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "الاختبار الوزاري فيزياء الاكتروني", type: "امتحان", path: "الاختبار_الوزاري_فيزياء_الاكتروني_11_متقدم_23_24_الفصل_الثاني.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "حلول الاختبار الاكتروني", type: "شرح", path: "حلول_الاختبار_الاكتروني_الوزاري_فيزياء_2023_2024_حادي_عشر_متقدم_.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "الاختبار الوزاري فيزياء ورقي", type: "امتحان", path: "الاختبار_الوزاري_فيزياء_ورقي_11_متقدم_23_24_للفصل_الثاني_.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "حلول الاختبار الورقي", type: "شرح", path: "حلول_الاختبار_الورقي_فيزياء_11_متقدم_للمنهجين_عام_2023_2024_للفص.pdf", views: 100, dateAdded: "2026-05-24" }
-    ],
-    chapters: [
-      {
-        id: "phys_units",
-        title: "وحدات الفيزياء (Bridge)",
-        lessons: [
-          {
-            id: "momentum",
-            title: "Momentum & Impulse",
-            videoIds: [],
-            summary: "الزخم والدفع",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "collisions",
-            title: "Elastic Collisions & Linear Momentum",
-            videoIds: [],
-            summary: "التصادمات المرنة",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "circular",
-            title: "Circular & Angular Motion",
-            videoIds: [],
-            summary: "الحركة الدائرية",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "torque",
-            title: "Torque & Center of Mass",
-            videoIds: [],
-            summary: "عزم الدوران ومركز الكتلة",
-            mcq: [],
-            importantQuestions: []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "biology",
-    name: "الأحياء",
-    emoji: "🧬",
-    color: "green",
-    generalFiles: [
-      { name: "الهيكل الوزاري BIOLOGY Bridge", type: "هيكل", path: "document-3 (1).pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "اختبار وزاري احياء 11 متقدم بريدج", type: "امتحان", path: "اختبار_وزاري_احياء_11_متقدم_بريدج_لعام_2023_2024_بدون_الحل.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "حلول الاختبار وزاري احياء", type: "شرح", path: "حلول_الاختبار_وزاري_احياء_11_متقدم_بريدج_لعام_2023_2024.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "تجميعة اختبارات وزارية سابقة", type: "مراجعة", path: "تجميعة_اختبارات_وزارية_سابقة_احياء_11 12_متقدم_للمنهجين_عبدالمؤم.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "حلول تجميعة الاختبارات", type: "شرح", path: "حلول_تجميعة_الاختبارات_الوزارية_السابقة_احياء_11 12_متقدم_للمنهج.pdf", views: 100, dateAdded: "2026-05-24" }
-    ],
-    chapters: [
-      {
-        id: "bio_units",
-        title: "وحدات الأحياء (Bridge)",
-        lessons: [
-          {
-            id: "immunity",
-            title: "المناعة والأمراض",
-            videoIds: ["Jx6o8H-HW1E", "lobHqw26i4E", "Yn0PseLE6g0", "vpCfqtXloOQ", "WepH_gX8XoU", "uXRlcUISK3k"],
-            summary: "الجهاز المناعي والأمراض المعدية",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "photosynthesis",
-            title: "البناء الضوئي والتنفس الخلوي",
-            videoIds: [],
-            summary: "عمليات البناء الضوئي في النباتات",
-            mcq: [],
-            importantQuestions: []
-          },
-          {
-            id: "ecology",
-            title: "Ecology & Population Growth",
-            videoIds: [],
-            summary: "البيئة والنمو السكاني",
-            mcq: [],
-            importantQuestions: []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "english",
-    name: "اللغة الإنجليزية",
-    emoji: "🇬🇧",
-    color: "blue",
-    generalFiles: [
-      { name: "Revision Booklet", type: "مراجعة", path: "Revision Booklet.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Vocabulary Listening & Speaking", type: "مراجعة", path: "Vocabulary Listening & Speaking.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Maze Practices", type: "مراجعة", path: "Maze Practices.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Reading Follow your heart", type: "مراجعة", path: "Reading Follow your heart.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "General MAZE", type: "مراجعة", path: "General MAZE.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Vocabulary lists", type: "مراجعة", path: "Vocabulary lists.pdf", views: 100, dateAdded: "2026-05-24" }
-    ],
-    chapters: [
-      {
-        id: "eng_ch",
-        title: "English Review",
-        lessons: [
-          {
-            id: "eng_rev",
-            title: "General Review",
-            videoIds: [],
-            summary: "المراجعة العامة للغة الإنجليزية",
             mcq: [],
             importantQuestions: []
           }
@@ -422,9 +248,7 @@ export const SUBJECTS: Subject[] = [
       { name: "تجميعة 1", type: "مراجعة", path: "1_2_merged.pdf", views: 100, dateAdded: "2026-05-24" },
       { name: "تجميعة 2", type: "مراجعة", path: "1686833401.pdf", views: 100, dateAdded: "2026-05-24" },
       { name: "تجميعة 3", type: "مراجعة", path: "1748948954.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "اختبار المجلس الحادي عشر ف3", type: "امتحان", path: "اختبار المجلس الحادي عشر ف3.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "اسلامية 11 متقدم الفصل الثالث", type: "امتحان", path: "اسلامية_11_متقدم_الفصل_الثالث.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "امتحان الدين + الاجوبة الصحيحة", type: "امتحان", path: "امتحان الدين + الاجوبة الصحيحة.pdf", views: 100, dateAdded: "2026-05-24" }
+      { name: "اختبار المجلس الحادي عشر ف3", type: "امتحان", path: "اختبار المجلس الحادي عشر ف3.pdf", views: 100, dateAdded: "2026-05-24" }
     ],
     chapters: [
       {
@@ -453,7 +277,7 @@ export const SUBJECTS: Subject[] = [
             id: "lesson37",
             title: "37. الإنصاف في الإسلام",
             videoIds: [],
-            pdfFile: { name: "الإنصاف في الإسلام", type: "شرح", path: "٣٧. الإنصاف في الإسلام.pdf", views: 100, dateAdded: "2026-05-24" },
+            pdfFile: { name: "الإنصاف في الإسلام", type: "شرح", path: "٣٧.  الإنصاف في الإسلام.pdf", views: 100, dateAdded: "2026-05-24" },
             summary: "مفهوم الإنصاف وأهميته في الإسلام",
             mcq: [],
             importantQuestions: []
@@ -482,6 +306,113 @@ export const SUBJECTS: Subject[] = [
             videoIds: [],
             pdfFile: { name: "الإنسان والأمانة", type: "شرح", path: "_٤٢_الإنسان_والأمانة_سورة_الأحزاب.pdf", views: 100, dateAdded: "2026-05-24" },
             summary: "حمل الأمانة ومسؤولية الإنسان",
+            mcq: [],
+            importantQuestions: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "english",
+    name: "اللغة الإنجليزية",
+    emoji: "🇬🇧",
+    color: "blue",
+    generalFiles: [
+      { name: "Revision Booklet", type: "مراجعة", path: "Revision booklet 11 Adv.pdf", views: 100, dateAdded: "2026-05-24" },
+      { name: "Vocabulary Listening & Speaking", type: "مراجعة", path: "Words_Grade_11_ADV_ 12G_Chapter_5_Term_3_Listening_ _Speaking.pdf", views: 100, dateAdded: "2026-05-24" },
+      { name: "English Maze Practice", type: "مراجعة", path: "English Maze Practice 1.pdf", views: 100, dateAdded: "2026-05-24" },
+      { name: "Follow your heart", type: "مراجعة", path: "Follow your heart Text with model answers.pdf", views: 100, dateAdded: "2026-05-24" }
+    ],
+    chapters: [
+      {
+        id: "eng_ch",
+        title: "English Review",
+        lessons: [
+          {
+            id: "eng_rev",
+            title: "General Review",
+            videoIds: [],
+            summary: "المراجعة العامة للغة الإنجليزية",
+            mcq: [],
+            importantQuestions: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "biology",
+    name: "الأحياء",
+    emoji: "🧬",
+    color: "green",
+    generalFiles: [
+      { name: "الهيكل الوزاري BIOLOGY Bridge", type: "هيكل", path: "EoT3_Coverage_G11_ADV_Bio_INS_T3_ 2025-2026.pdf", views: 100, dateAdded: "2026-05-24" },
+      { name: "احياء مراجعة شاملة", type: "امتحان", path: "احياء_مراجعة_شاملة_اسيلة_سنوات_سابقة_ف_3_احياء.pdf", views: 100, dateAdded: "2026-05-24" },
+      { name: "اسيلة وزارية وحدة المناعة", type: "مراجعة", path: "اسيلة وزارية وحدة المناعة.pdf", views: 100, dateAdded: "2026-05-24" }
+    ],
+    chapters: [
+      {
+        id: "bio_units",
+        title: "وحدات الأحياء (Bridge)",
+        lessons: [
+          {
+            id: "immunity",
+            title: "المناعة والأمراض",
+            videoIds: ["Jx6o8H-HW1E", "lobHqw26i4E", "Yn0PseLE6g0", "vpCfqtXloOQ", "WepH_gX8XoU", "uXRlcUISK3k"],
+            pdfFile: { name: "Infectious Diseases", type: "شرح", path: "Infectious Diseases.pdf", views: 100, dateAdded: "2026-05-24" },
+            summary: "الجهاز المناعي والأمراض المعدية",
+            mcq: [],
+            importantQuestions: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "physics",
+    name: "الفيزياء",
+    emoji: "⚡",
+    color: "violet",
+    generalFiles: [
+      { name: "مراجعة 5-5-2026 (محلولة)", type: "مراجعة", path: "Revision 5-5-2026 (محلولة).pdf", views: 100, dateAdded: "2026-05-24" }
+    ],
+    chapters: [
+      {
+        id: "phys_units",
+        title: "وحدات الفيزياء (Bridge)",
+        lessons: [
+          {
+            id: "momentum",
+            title: "Momentum & Impulse",
+            videoIds: [],
+            pdfFile: { name: "Impulse and Momentum", type: "شرح", path: "1-Impulse and Momentum (part 1 ).pdf", views: 100, dateAdded: "2026-05-24" },
+            summary: "الزخم والدفع",
+            mcq: [],
+            importantQuestions: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "chemistry",
+    name: "الكيمياء",
+    emoji: "🧪",
+    color: "orange",
+    generalFiles: [
+      { name: "EOT-CHE", type: "امتحان", path: "EOT-CHE-1-T3-26_MOE.pdf", views: 100, dateAdded: "2026-05-24" }
+    ],
+    chapters: [
+      {
+        id: "chem_units",
+        title: "وحدات الكيمياء (Bridge)",
+        lessons: [
+          {
+            id: "organic",
+            title: "Organic Chemistry",
+            videoIds: [],
+            summary: "أساسيات الكيمياء العضوية",
             mcq: [],
             importantQuestions: []
           }
