@@ -2227,6 +2227,7 @@ export const SUBJECTS: Subject[] = [
             "id": "immunity",
             "title": "المناعة والأمراض",
             "videoIds": [
+              "GJj2ZqBbU60",
               "Jx6o8H-HW1E",
               "lobHqw26i4E",
               "Yn0PseLE6g0",
@@ -2241,7 +2242,7 @@ export const SUBJECTS: Subject[] = [
               "views": 100,
               "dateAdded": "2026-05-24"
             },
-            "summary": "الجهاز المناعي والأمراض المعدية",
+            "summary": "الجهاز المناعي والأمراض المعدية. قناة د. فلك لمزيد من شروحات البريدج: https://www.youtube.com/@BioFalak/featured",
             "mcq": [],
             "importantQuestions": []
           }
