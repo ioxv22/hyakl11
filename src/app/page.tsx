@@ -265,18 +265,18 @@ export default function HomePage() {
 
       </section>
 
-      {/* Grid of 6 Subjects */}
+      {/* Grid of Inspire Subjects */}
       <section className="mb-12">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-6 bg-emerald-500 rounded-full" />
-            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">المواد الدراسية المتوفرة</h2>
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">مواد مسار انسباير (Inspire)</h2>
           </div>
           <span className="text-[10px] text-slate-400 font-bold">اضغط على المادة للبدء بالمراجعة الفورية</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SUBJECTS.map((sub) => {
+          {SUBJECTS.filter(s => s.track !== "bridge").map((sub) => {
             const percent = getSubjectProgress(sub.id);
             return (
               <Link
@@ -308,6 +308,59 @@ export default function HomePage() {
                   <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-emerald-500 transition-all duration-300"
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Grid of Bridge Subjects */}
+      <section className="mb-12">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">مواد مسار بريدج (Bridge)</h2>
+          </div>
+          <span className="text-[10px] text-slate-400 font-bold">منهج العلوم التكميلي</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {SUBJECTS.filter(s => s.track === "bridge").map((sub) => {
+            const percent = getSubjectProgress(sub.id);
+            return (
+              <Link
+                key={sub.id}
+                href={`/subjects/${sub.id}`}
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/20 dark:hover:shadow-black/20 hover:border-blue-500/20 dark:hover:border-blue-500/20 transition-all duration-300 flex flex-col justify-between h-44 cursor-pointer overflow-hidden"
+              >
+                {/* Visual Ambient glow on hover */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 group-hover:scale-150 rounded-full blur-2xl transition-transform duration-500" />
+                
+                <div className="flex items-start justify-between relative z-10">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl p-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800/60 rounded-xl group-hover:scale-105 transition-transform duration-300">
+                      {sub.emoji}
+                    </span>
+                    <div className="flex flex-col text-right">
+                      <span className="text-sm sm:text-base font-extrabold text-slate-800 dark:text-white">{sub.name}</span>
+                      <span className="text-[10px] text-slate-400 font-bold">الصف 11 ADV - الفصل 3</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress bar inside card */}
+                <div className="flex flex-col gap-1.5 relative z-10 w-full">
+                  <div className="flex justify-between items-center text-[10px] font-bold">
+                    <span className="text-slate-400">الإنجاز</span>
+                    <span className="text-blue-500">{percent}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-500 transition-all duration-300"
                       style={{ width: `${percent}%` }}
                     />
                   </div>
