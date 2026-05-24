@@ -384,7 +384,13 @@ export default function SubjectPage() {
                               ? "شرح قناة نحو قمة المعرفة — YouTube 🎥" 
                               : (subjectId === "biology" 
                                   ? "شرح قناة BioScope — YouTube 🎥" 
-                                  : "شرح محمد زياد — YouTube 🎥"))}
+                                  : (subjectId === "physics_bridge"
+                                      ? "شرح أ. محمد شوقي — YouTube 🎥"
+                                      : (subjectId === "biology_bridge"
+                                          ? "شرح أستاذ أحياء وعلم بيئة — YouTube 🎥"
+                                          : (subjectId === "chemistry_bridge" || subjectId === "chemistry"
+                                              ? "شرح أ. محمد زيادة — YouTube 🎥"
+                                              : "شرح أ. محمد زياد — YouTube 🎥")))))}
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-400 font-bold">
