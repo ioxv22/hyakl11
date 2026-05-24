@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const VISITORS_FILE = path.join(process.cwd(), 'visitors.json');
+import { db } from '@/lib/firebase';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 
 interface Visitor {
   id: string;
@@ -13,21 +11,25 @@ interface Visitor {
   ip?: string;
 }
 
-function readVisitors(): Visitor[] {
-  try {
-    if (fs.existsSync(VISITORS_FILE)) {
-      const data = fs.readFileSync(VISITORS_FILE, 'utf-8');
-      return JSON.parse(data);
-    }
-  } catch {
-    // If file is corrupted, return empty
-  }
-  return [];
-}
-
 export async function GET() {
   try {
-    const visitors = readVisitors();
+    const visitsColRef = collection(db, 'visits');
+    // Fetch up to 2500 visits ordered by timestamp desc to compute analytics
+    const q = query(visitsColRef, orderBy('timestamp', 'desc'), limit(2500));
+    const querySnapshot = await getDocs(q);
+
+    const visitors: Visitor[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      visitors.push({
+        id: doc.id,
+        name: data.name,
+        page: data.page,
+        timestamp: data.timestamp,
+        userAgent: data.userAgent,
+        ip: data.ip
+      });
+    });
 
     // Total visits
     const totalVisits = visitors.length;
@@ -52,12 +54,7 @@ export async function GET() {
       .sort((a, b) => b.count - a.count);
 
     // Recent visitors (last 20, most recent first)
-    const recentVisitors = [...visitors]
-      .sort(
-        (a, b) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      )
-      .slice(0, 20);
+    const recentVisitors = visitors.slice(0, 20);
 
     // Visits by day (last 7 days)
     const visitsByDay: { date: string; count: number }[] = [];
@@ -99,9 +96,10 @@ export async function GET() {
       visitsByDay,
       visitorsList,
     });
-  } catch {
+  } catch (err: any) {
+    console.error("Failed to compute Firestore analytics:", err);
     return NextResponse.json(
-      { error: 'Failed to compute analytics' },
+      { error: 'Failed to compute analytics', details: err.message },
       { status: 500 }
     );
   }
