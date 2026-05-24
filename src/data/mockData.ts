@@ -1,4 +1,5 @@
 import { physicsBridgeSubject } from './physicsBridgeData';
+import { biologyBridgeSubject } from './biologyBridgeData';
 
 export interface MCQ {
   question: string;
@@ -2192,67 +2193,7 @@ export const SUBJECTS: Subject[] = [
     ],
     "track": "inspire"
   },
-  {
-    "id": "biology_bridge",
-    "name": "الأحياء (Bridge)",
-    "emoji": "🧬",
-    "color": "green",
-    "generalFiles": [
-      {
-        "name": "الهيكل الوزاري BIOLOGY Bridge",
-        "type": "هيكل",
-        "path": "EoT3_Coverage_G11_ADV_Bio_INS_T3_ 2025-2026.pdf",
-        "views": 100,
-        "dateAdded": "2026-05-24"
-      },
-      {
-        "name": "احياء مراجعة شاملة",
-        "type": "امتحان",
-        "path": "احياء_مراجعة_شاملة_اسيلة_سنوات_سابقة_ف_3_احياء.pdf",
-        "views": 100,
-        "dateAdded": "2026-05-24"
-      },
-      {
-        "name": "اسيلة وزارية وحدة المناعة",
-        "type": "مراجعة",
-        "path": "اسيلة وزارية وحدة المناعة.pdf",
-        "views": 100,
-        "dateAdded": "2026-05-24"
-      }
-    ],
-    "chapters": [
-      {
-        "id": "bio_units",
-        "title": "وحدات الأحياء (Bridge)",
-        "lessons": [
-          {
-            "id": "immunity",
-            "title": "المناعة والأمراض",
-            "videoIds": [
-              "GJj2ZqBbU60",
-              "Jx6o8H-HW1E",
-              "lobHqw26i4E",
-              "Yn0PseLE6g0",
-              "vpCfqtXloOQ",
-              "WepH_gX8XoU",
-              "uXRlcUISK3k"
-            ],
-            "pdfFile": {
-              "name": "Infectious Diseases",
-              "type": "شرح",
-              "path": "Infectious Diseases.pdf",
-              "views": 100,
-              "dateAdded": "2026-05-24"
-            },
-            "summary": "الجهاز المناعي والأمراض المعدية. قناة د. فلك لمزيد من شروحات البريدج: https://www.youtube.com/@BioFalak/featured",
-            "mcq": [],
-            "importantQuestions": []
-          }
-        ]
-      }
-    ],
-    "track": "bridge"
-  },
+  biologyBridgeSubject,
   physicsBridgeSubject,
   {
     "id": "chemistry_bridge",
