@@ -315,26 +315,82 @@ export const SUBJECTS: Subject[] = [
   },
   {
     id: "english",
-    name: "اللغة الإنجليزية",
+    name: "اللغة الإنجليزية (Inspire)",
     emoji: "🇬🇧",
     color: "blue",
     generalFiles: [
-      { name: "Revision Booklet", type: "مراجعة", path: "Revision booklet 11 Adv.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Vocabulary Listening & Speaking", type: "مراجعة", path: "Words_Grade_11_ADV_ 12G_Chapter_5_Term_3_Listening_ _Speaking.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "English Maze Practice", type: "مراجعة", path: "English Maze Practice 1.pdf", views: 100, dateAdded: "2026-05-24" },
-      { name: "Follow your heart", type: "مراجعة", path: "Follow your heart Text with model answers.pdf", views: 100, dateAdded: "2026-05-24" }
+      { name: "Grade 11 ADV English Revision Booklet", type: "مراجعة", path: "Revision booklet 11 Adv.pdf", views: 1549, dateAdded: "2026-05-18" },
+      { name: "Grade 11 ADV English General MAZE EOT", type: "مراجعة", path: "T3-2024-2025-G11 General MAZE.pdf", views: 987, dateAdded: "2026-05-19" },
+      { name: "Grade 11 ADV English Vocabulary Lists", type: "مراجعة", path: "Vocabulary- 11 Adv.pdf", views: 1205, dateAdded: "2026-05-20" },
+      { name: "Listening and Speaking Vocabulary lists", type: "مراجعة", path: "Words_Grade_11_ADV_ 12G_Chapter_5_Term_3_Listening_ _Speaking.pdf", views: 654, dateAdded: "2026-05-21" }
     ],
     chapters: [
       {
-        id: "eng_ch",
-        title: "English Review",
+        id: "skills",
+        title: "English Term 3 Core Skills",
         lessons: [
           {
-            id: "eng_rev",
-            title: "General Review",
-            videoIds: [],
-            summary: "المراجعة العامة للغة الإنجليزية",
-            mcq: [],
+            id: "vocab_skill",
+            title: "Vocabulary",
+            videoIds: ["dQw4w9WgXcQ"],
+            pdfFile: { name: "Grade 11 ADV English Vocabulary Lists", type: "شرح", path: "Vocabulary- 11 Adv.pdf", views: 874, dateAdded: "2026-05-02" },
+            summary: "This unit focuses on mastering the core academic vocabulary required for G11 ADV Term 3.",
+            vocabulary: [
+              { word: "Sustainability", translation: "Eco-friendly", explanation: "Meeting present needs without compromising future generations." },
+              { word: "Innovation", translation: "Creative breakthrough", explanation: "The introduction of new ideas, devices, or methods." },
+              { word: "Precipitation", translation: "Rainfall/Snowfall", explanation: "Rain, snow, sleet, or hail that falls to the ground." }
+            ],
+            mcq: [
+              {
+                question: "Choose the correct word: Solar power is a ______ source of energy.",
+                options: ["depletable", "sustainable", "harmful", "temporary"],
+                answerIndex: 1,
+                explanation: "Solar energy is sustainable because it is renewable and doesn't run out."
+              }
+            ],
+            importantQuestions: []
+          },
+          {
+            id: "maze_skill",
+            title: "MAZE Practices",
+            videoIds: ["wV7jP1R2p8o"],
+            pdfFile: { name: "English Maze Practice 1", type: "مراجعة", path: "English Maze Practice 1.pdf", views: 984, dateAdded: "2026-05-03" },
+            extraFiles: [
+              { name: "English Maze Practice 1 - Answers", type: "مراجعة", path: "English Maze Practice 1 - Answers.pdf", views: 654, dateAdded: "2026-05-03" },
+              { name: "English Maze Practice 2", type: "مراجعة", path: "English Maze Practice 2.pdf", views: 567, dateAdded: "2026-05-04" },
+              { name: "English Maze Practice 2 - Answers", type: "مراجعة", path: "English Maze Practice 2 - Answers (1).pdf", views: 431, dateAdded: "2026-05-04" },
+              { name: "English Maze Practice 3", type: "مراجعة", path: "English Maze Practice 3.pdf", views: 671, dateAdded: "2026-05-05" },
+              { name: "English Maze Practice 3 - Answers", type: "مراجعة", path: "English Maze Practice 3 - Answers.pdf", views: 549, dateAdded: "2026-05-05" }
+            ],
+            summary: "Maze tasks test your understanding of grammar, spelling, and vocabulary in context.",
+            mcq: [
+              {
+                question: "Complete the sentence: While she (was studying / studied / is studying) for her exam yesterday, the lights went out.",
+                options: ["studied", "was studying", "is studying", "studies"],
+                answerIndex: 1,
+                explanation: "'While' is used for an ongoing action interrupted by a shorter action. Hence, Past Continuous 'was studying' is correct."
+              }
+            ],
+            importantQuestions: []
+          },
+          {
+            id: "reading_skill",
+            title: "Reading",
+            videoIds: ["dQw4w9WgXcQ"],
+            pdfFile: { name: "Reading Text: Follow Your Heart", type: "شرح", path: "Follow your heart Text with model answers.pdf", views: 1104, dateAdded: "2026-05-04" },
+            extraFiles: [
+              { name: "Reading Text: Follow Your Heart (2)", type: "شرح", path: "Follow your heart Text with model answers (2).pdf", views: 320, dateAdded: "2026-05-04" },
+              { name: "Reading Maze Exam Paper", type: "امتحان", path: "Reading   Maze Exam.pdf", views: 764, dateAdded: "2026-05-05" }
+            ],
+            summary: "Practices reading comprehension skills including scanning for details, skimming for main ideas, inferring author's attitude, and contextual meaning of advanced words.",
+            mcq: [
+              {
+                question: "What does the idiom 'follow your heart' mean in a career context?",
+                options: ["Do what you love and are passionate about", "Apply only for the highest paying job", "Let someone else choose for you", "Avoid making any tough choices"],
+                answerIndex: 0,
+                explanation: "Following your heart means choosing a career path based on personal passion and interest rather than purely external incentives."
+              }
+            ],
             importantQuestions: []
           }
         ]
