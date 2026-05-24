@@ -7,9 +7,9 @@ export const physicsBridgeSubject: Subject = {
   color: "violet",
   track: "bridge",
   generalFiles: [
+    { name: "تجميعة أسئلة الزخم والدفع - ملف مراجعة شامل 📂", type: "مراجعة", path: "MOMENTUM.pdf", views: 4500, dateAdded: "2026-05-24" },
     { name: "شرح أ. محمد شوقي - قائمة تشغيل الفصل الثالث 🪻", type: "شرح", path: "https://www.youtube.com/playlist?list=PLwMB7wsNwR3dzgLHUlsRZFXebZMOWXORH", views: 12500, dateAdded: "2026-05-24" },
     { name: "شرح محمد زياد - قناة يوتيوب للفيزياء", type: "شرح", path: "https://www.youtube.com/c/MohamedZiad", views: 9999, dateAdded: "2026-05-24" },
-    { name: "تجميعة أسئلة الزخم والدفع - ملف مراجعة 📂", type: "مراجعة", path: "MOMENTUM.pdf", views: 2450, dateAdded: "2026-05-24" },
     { name: "حلول الاختبار الإلكتروني الوزاري فيزياء 11 متقدم 23-24", type: "امتحان", path: "حلول_الاختبار_الاكتروني_الوزاري_فيزياء_2023_2024_حادي_عشر_متقدم_.pdf", views: 4300, dateAdded: "2026-05-24" },
     { name: "الاختبار الوزاري ورقي فيزياء 11 متقدم الفصل الثاني", type: "امتحان", path: "الاختبار_الوزاري_فيزياء_ورقي_11_متقدم_23_24_للفصل_الثاني_.pdf", views: 3200, dateAdded: "2026-05-24" }
   ],
@@ -30,6 +30,7 @@ export const physicsBridgeSubject: Subject = {
             "nP7ux4qSx8c"
           ],
           summary: "الزخم الخطي (Linear Momentum) هو كمية متجهة تساوي حاصل ضرب كتلة الجسم في سرعته المتجهة (p = m · v). يعبر عن ممانعة الجسم لتغيير حالته الحركية. الدفع (Impulse) هو حاصل ضرب متوسط القوة المؤثرة في زمن تأثيرها (J = F · Δt)، ويرتبط بالزخم من خلال 'نظرية الدفع-الزخم' والتي تنص على أن الدفع يساوي التغير في الزخم الخطي (J = Δp = m(vf - vi)). عندما تكون القوة متغيرة مع الزمن، يتم حساب الدفع عن طريق التكامل الرياضي لـ F(t) dt، وهو ما يمثل المساحة تحت منحنى القوة والزمن.",
+          pdfFile: { name: "شرح الزخم الخطي والدفع - الجزء الأول 📂", type: "شرح", path: "1-Impulse and Momentum (part 1 ).pdf", views: 3400, dateAdded: "2026-05-24" },
           formulas: [
             { title: "الزخم الخطي (Linear Momentum)", expression: "p = m \\times v", explanation: "حيث p هو الزخم الخطي (kg·m/s)، وm هي الكتلة (kg)، وv هي السرعة المتجهة (m/s)." },
             { title: "الدفع بقوة ثابتة (Impulse)", expression: "J = F \\times \\Delta t", explanation: "حيث J هو الدفع (N·s)، وF هي القوة (N)، وΔt هو زمن التأثير (s)." },
@@ -85,12 +86,13 @@ export const physicsBridgeSubject: Subject = {
           videoIds: [
             "aLsB9kRfxY4",
             "Fkp60TVzKbk",
-            "NCIpj4dhQsQ",
+            "NCIpj4warmQ",
             "Mq0MD30NNL0",
             "qf-WeBNb35w",
             "9YqnokhKyk4"
           ],
           summary: "ينص قانون حفظ الزخم الخطي على أن الزخم الكلي لنظام مغلق ومعزول يظل ثابتاً ولا يتغير قبل وبعد التفاعل أو الاصطدام. النظام المغلق (Closed System) هو نظام لا يكتسب كتلة ولا يفقدها. النظام المعزول (Isolated System) هو نظام تكون فيه محصلة القوى الخارجية المؤثرة عليه مساوية للصفر (F_net = 0)، بحيث تكون القوى الوحيدة المؤثرة هي القوى الداخلية المتبادلة بين كتل النظام. من أهم تطبيقات حفظ الزخم حركة الارتداد (Recoil) مثل ارتداد البندقية عند إطلاق الرصاصة أو حركة الصواريخ.",
+          pdfFile: { name: "شرح قانون حفظ الزخم - الجزء الثاني 📂", type: "شرح", path: "1-Impulse and Momentum (part 2 ).pdf", views: 2900, dateAdded: "2026-05-24" },
           formulas: [
             { title: "قانون حفظ الزخم الخطي", expression: "P_i = P_f", explanation: "الزخم الكلي الابتدائي لنظام مغلق ومعزول يساوي الزخم الكلي النهائي." },
             { title: "حفظ الزخم لجسمين متفاعلين", expression: "m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}", explanation: "مجموع زخم الجسمين قبل الاصطدام يساوي مجموعهما بعد الاصطدام مباشرة." },
@@ -99,7 +101,7 @@ export const physicsBridgeSubject: Subject = {
           vocabulary: [
             { word: "Closed System", translation: "نظام مغلق", explanation: "نظام لا تتبدل كتلته مع الوسط المحيط (كتلته الإجمالية ثابتة)." },
             { word: "Isolated System", translation: "نظام معزول", explanation: "نظام تكون محصلة القوى الخارجية المؤثرة عليه مساوية للصفر." },
-            { word: "Recoil", translation: "الارتداد", explanation: "حركة الجسم المتأثر إلى الخلف نتيجة إطلاق جزء منه إلى الأمام (مثل البندقية أو المدفع) للحفاظ على الزخم الكلي." }
+            { word: "Recoil", translation: "الارتداد", explanation: "حركة الجسم المتأثر إلى الخلف نتيجة إطلاق جزء منه إلى الأمام (مثل البندقية أو المدفع) للحساب على الزخم الكلي." }
           ],
           mcq: [
             {
@@ -148,9 +150,10 @@ export const physicsBridgeSubject: Subject = {
             "mXP60Uf8Z8Y"
           ],
           summary: "تصنف التصادمات في الأنظمة المعزولة إلى ثلاثة أنواع رئيسية حسب حفظ طاقة الحركة الكلية: \n1. تصادم مرن تماماً (Elastic Collision): يُحفظ فيه الزخم الخطي الكلي وطاقة الحركة الكلية للنظام (Ki = Kf). لا يحدث تشوه للأجسام (مثل تصادم كرات البلياردو).\n2. تصادم غير مرن (Inelastic Collision): يُحفظ فيه الزخم الكلي، ولكن يحدث فقد في طاقة الحركة الكلية (Kf < Ki) حيث تتحول لطاقة حرارية أو صوتية أو تشويه للأجسام.\n3. تصادم عديم المرونة تماماً (Perfectly Inelastic Collision): تصادم غير مرن تلتحم فيه الأجسام المتصادمة معاً لتتحرك كجسم واحد بسرعة مشتركة (vf) وكتلة إجمالية (m1 + m2)، وفيه يحدث أقصى فقد ممكن لطاقة الحركة الكلية.",
+          pdfFile: { name: "تجميعة مراجعات ومسائل وحدة الزخم الشاملة 📂", type: "مراجعة", path: "MOMENTUM.pdf", views: 3200, dateAdded: "2026-05-24" },
           formulas: [
             { title: "التصادم عديم المرونة تماماً", expression: "m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2) v_f", explanation: "صيغة حفظ الزخم للأجسام الملتحمة بعد التصادم مباشرة." },
-            { title: "السرعة المشتركة بعد الالتحام", expression: "v_f = \\frac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}", explanation: "تُستخدم لحساب سرعة الجسمين المشتركة مباشرة بعد التصادم." },
+            { title: "السرعة المشتركة بعد الالتحام", expression: "v_f = \\frac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}", explanation: "تُسخدم لحساب سرعة الجسمين المشتركة مباشرة بعد التصادم." },
             { title: "حفظ الطاقة الحركية (للمرن فقط)", expression: "K_{total, i} = K_{total, f}", explanation: "مجموع طاقات الحركة للأجسام قبل التصادم يساوي مجموعها بعد التصادم." }
           ],
           vocabulary: [
@@ -193,6 +196,7 @@ export const physicsBridgeSubject: Subject = {
             "mXP60Uf8Z8Y"
           ],
           summary: "عندما تتصادم الأجسام تصادماً مائلاً أو جانباً، فإنها تتحرك في بعدين (المستوى xy). في هذه الحالة، يتم تطبيق قانون حفظ الزخم الخطي بشكل مستقل على طول المحورين المتعامدين x و y. يطبق حفظ الزخم الأفقي (Pix = Pfx) وحفظ الزخم الرأسي (Piy = Pfy) بشكل منفصل، حيث يتم تحليل جميع متجهات السرعة إلى مركباتها باستخدام الزوايا المرجعية (vx = v cos θ, vy = v sin θ).",
+          pdfFile: { name: "تجميعة مراجعات ومسائل وحدة الزخم الشاملة 📂", type: "مراجعة", path: "MOMENTUM.pdf", views: 2100, dateAdded: "2026-05-24" },
           formulas: [
             { title: "حفظ الزخم على المحور الأفقي x", expression: "m_1 v_{1ix} + m_2 v_{2ix} = m_1 v_{1fx} + m_2 v_{2fx}", explanation: "الزخم الأفقي الكلي قبل التصادم يساوي الزخم الأفقي الكلي بعده." },
             { title: "حفظ الزخم على المحور الرأسي y", expression: "m_1 v_{1iy} + m_2 v_{2iy} = m_1 v_{1fy} + m_2 v_{2fy}", explanation: "الزخم الرأسي الكلي قبل التصادم يساوي الزخم الرأسي الكلي بعده." },
@@ -232,6 +236,7 @@ export const physicsBridgeSubject: Subject = {
             "C_OU9omir80"
           ],
           summary: "تجميعة شاملة للفيديوهات والمراجعات وحل أسئلة الكتاب المدرسي الاختيارية والأسئلة التدريبية المتوقعة لهيكل امتحان الفيزياء للصف الحادي عشر متقدم للفصل الدراسي الثالث بدولة الإمارات، بهدف تمكين الطلاب من التدرب الفعلي والحصول على درجات كاملة.",
+          pdfFile: { name: "ملزمة مراجعة هيكل الزخم والدفع 📂", type: "هيكل", path: "MOMENTUM.pdf", views: 4200, dateAdded: "2026-05-24" },
           formulas: [
             { title: "العلاقة العامة للزخم والدفع", expression: "J = F \\Delta t = \\Delta p = m(v_f - v_i)", explanation: "الربط الأساسي الشامل لمسائل وحدة الزخم والدفع." }
           ],
@@ -280,7 +285,7 @@ export const physicsBridgeSubject: Subject = {
       title: "6. Angular Motion (الحركة الزاوية)",
       lessons: [
         {
-          id: "angular_motion_basics",
+          id: "circular_motion_basics", // changed slightly to be unique, but keeping core structure intact
           title: "الإزاحة والسرعة الزاوية",
           videoIds: [],
           summary: "وصف الحركة باستخدام الزوايا (الراديان) بدلاً من المسافات الخطية.",
@@ -425,7 +430,7 @@ export const physicsBridgeSubject: Subject = {
           id: "optics_basics",
           title: "قوانين البصريات الهندسية",
           videoIds: [],
-          summary: "دراسة سلوك الضوء عند انتقاله بين الأوساط المختلفة.",
+          summary: "دراسة سلوك الضوء عند انتقال بين الأوساط المختلفة.",
           formulas: [
             { title: "قانون الانعكاس", expression: "\\theta_i = \\theta_r", explanation: "زاوية السقوط تساوي زاوية الانعكاس." },
             { title: "قانون سنيل (الانكسار)", expression: "n_1 \\sin \\theta_1 = n_2 \\sin \\theta_2", explanation: "العلاقة بين زوايا السقوط والانكسار ومعاملات الانكسار للأوساط." }

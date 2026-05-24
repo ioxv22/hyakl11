@@ -7,20 +7,9 @@ export const chemistryBridgeSubject: Subject = {
   color: "orange",
   track: "bridge",
   generalFiles: [
-    { name: "شرح محمد زيادة - قناة يوتيوب", type: "شرح", path: "https://www.youtube.com/results?search_query=محمد+زيادة+كيمياء", views: 9999, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد 12 متقدم 2025", type: "شرح", path: "الاحماض_والقواعد_12_متقدم_2025_250104_094958.pdf", views: 2450, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد 1", type: "شرح", path: "الأحماض_والقواعد_1 (2).pdf", views: 1200, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد - محمد محسن 2018", type: "شرح", path: "الاحماض و القواعد - محمد محسن 2018.pdf", views: 3420, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد - محمد محسن 2025", type: "شرح", path: "الأحماض و القواعد - محمد محسن 2025.pdf", views: 4500, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد 12 متقدم أ. هشام الطوخي", type: "شرح", path: "الاحماض_والقواعد_12_متقدم_ا_هشام_الطوخي.pdf", views: 5600, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد أ. هشام الطوخي (2)", type: "شرح", path: "الاحماض_والقواعد_12_متقدم_ا_هشام_الطوخي (2).pdf", views: 2340, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد الدرسين 1+2", type: "مراجعة", path: "الاحماض_والقواعد_الدرسين_1+2_شرح_+_اسيلة_طلاب_2024.pdf", views: 2110, dateAdded: "2026-05-24" },
-    { name: "الأحماض والقواعد الدرسين 3+4", type: "مراجعة", path: "الاحماض_والقواعد_شرح+اسيلة_الدرسين_3+4_طلاب_2024.pdf", views: 3200, dateAdded: "2026-05-24" },
-    { name: "أسئلة مراجعة الأحماض والقواعد", type: "امتحان", path: "اسيلة_مراجعة_الاحماض_والقواعد_12_م_ف2.pdf", views: 1560, dateAdded: "2026-05-24" },
-    { name: "إجابة مراجعة الأحماض والقواعد", type: "مراجعة", path: "اجابة_مراجعة_الاحماض_والقواعد_12_م_ف2.pdf", views: 1340, dateAdded: "2026-05-24" },
-    { name: "الاتزان الكيميائي", type: "مراجعة", path: "الاتزان_الكيميائي.pdf", views: 1980, dateAdded: "2026-05-24" },
-    { name: "الوحدة الثالثة: الاتزان الكيميائي", type: "شرح", path: "الوحدة_الثالثة_الاتزان_الكيميايي_الفصل_الاول_ا_كمال_البحيري.pdf", views: 1750, dateAdded: "2026-05-24" },
-    { name: "حل الوحدة الثالثة: الاتزان الكيميائي", type: "مراجعة", path: "حل_الوحدة_الثالثة_الاتزان_الكيميايي_الفصل_الاول_ا_كمال_البحيري.pdf", views: 1850, dateAdded: "2026-05-24" }
+    { name: "كتيب مراجعة الكيمياء الشامل للفصل الثالث EOT 📂", type: "هيكل", path: "Revision booklet 11 Adv.pdf", views: 4500, dateAdded: "2026-05-24" },
+    { name: "هيكل الكيمياء الوزاري للعام الدراسي 2026 📂", type: "هيكل", path: "EOT-CHE-1-T3-26_MOE.pdf", views: 2450, dateAdded: "2026-05-24" },
+    { name: "شرح محمد زيادة - قناة يوتيوب كيمياء", type: "شرح", path: "https://www.youtube.com/results?search_query=محمد+زيادة+كيمياء", views: 9999, dateAdded: "2026-05-24" }
   ],
   chapters: [
     {
@@ -32,6 +21,7 @@ export const chemistryBridgeSubject: Subject = {
           title: "نماذج الأحماض والقواعد",
           videoIds: ["VlwHvsUqCW8", "HRO9noChqtI", "7_xLbG_eFXA"],
           summary: "الأحماض تحول ورقة تباع الشمس للأحمر وتنتج أيونات الهيدروجين (أرهينيوس)، أو تمنح بروتونات (برونستد-لوري). القواعد تحولها للأزرق وتنتج الهيدروكسيد أو تستقبل بروتونات.",
+          pdfFile: { name: "ملخص الأحماض والقواعد أ. هشام الطوخي 📂", type: "شرح", path: "Acids and Bases- 12 Adv.- Mr. Hesham Eltoukhy.pdf", views: 3400, dateAdded: "2026-05-24" },
           formulas: [
             { title: "أرهينيوس (Arrhenius)", expression: "\\text{Acid} \\rightarrow H^+ + X^-", explanation: "الحمض ينتج أيون هيدروجين في المحلول المائي." },
             { title: "برونستد-لوري (Brønsted-Lowry)", expression: "\\text{HA} + H_2O \\rightleftharpoons H_3O^+ + A^-", explanation: "الحمض مانح للبروتون، والقاعدة مستقبلة للبروتون. A- هي القاعدة المرافقة للحمض HA." }
@@ -55,6 +45,7 @@ export const chemistryBridgeSubject: Subject = {
           title: "ثوابت التأين Ka و Kb",
           videoIds: ["Cn4WrehtpNc", "WFCGBTEm7uw"],
           summary: "الأحماض القوية (مثل HCl) تتأين كلياً في الماء، بينما الضعيفة (مثل CH3COOH) تتأين جزئياً ولها ثابت تأين (Ka).",
+          pdfFile: { name: "ملخص شرح قوة الأحماض أ. هشام الطوخي 📂", type: "شرح", path: "Acids and Bases- 12 Adv.- Mr. Hesham Eltoukhy.pdf", views: 2900, dateAdded: "2026-05-24" },
           formulas: [
             { title: "ثابت تأين الحمض", expression: "K_a = \\frac{[H^+][A^-]}{[HA]}", explanation: "كلما زادت قيمة Ka، زادت قوة الحمض الضعيف." },
             { title: "ثابت تأين القاعدة", expression: "K_b = \\frac{[BH^+][OH^-]}{[B]}", explanation: "كلما زادت قيمة Kb، زادت قوة القاعدة الضعيفة." }
@@ -78,6 +69,7 @@ export const chemistryBridgeSubject: Subject = {
           title: "حسابات pH و pOH",
           videoIds: ["Rm5jX-8FHuQ", "FpuEieKxl3c", "9i-ND6dp92I", "n72E8utGVIA"],
           summary: "الرقم الهيدروجيني (pH) هو اللوغاريتم السالب لتركيز أيونات الهيدروجين. في الماء النقي عند 298K، يكون pH = 7.",
+          pdfFile: { name: "تدريبات ومسائل على الرقم الهيدروجيني 📂", type: "مراجعة", path: "Revision booklet 11 Adv.pdf", views: 3200, dateAdded: "2026-05-24" },
           formulas: [
             { title: "الرقم الهيدروجيني", expression: "pH = -\\log[H^+]", explanation: "pH أقل من 7 حمضي، وأكبر من 7 قاعدي." },
             { title: "الرقم الهيدروكسيدي", expression: "pOH = -\\log[OH^-]", explanation: "" },
@@ -100,11 +92,15 @@ export const chemistryBridgeSubject: Subject = {
       lessons: [
         {
           id: "neutralization_basics",
-          title: "تفاعلات التعادل وحسابات المعايرة",
+          title: "تفاعلات التعادل وحسابات المعايرة والاتزان",
           videoIds: ["F9IsF_B1Sys", "hkGrYFlunF8", "fC8QivssaUk"],
-          summary: "التعادل هو تفاعل حمض مع قاعدة لإنتاج ملح وماء. المعايرة تُستخدم لمعرفة تركيز مجهول باستخدام محلول قياسي معلوم التركيز.",
+          summary: "التعادل هو تفاعل حمض مع قاعدة لإنتاج ملح وماء. المعايرة تُستخدم لمعرفة تركيز مجهول باستخدام محلول قياسي معلوم التركيز. الاتزان الكيميائي يحدث عندما تتساوى سرعة التفاعل الأمامي والعكسي.",
+          pdfFile: { name: "ملف شرح وحل الاتزان الكيميائي أ. هشام الطوخي 📂", type: "شرح", path: "Chemical Equilibrium 12 Advanced Mr. Hesham Eltoukhy.pdf", views: 3500, dateAdded: "2026-05-24" },
+          extraFiles: [
+            { name: "الاتزان الكيميائي - تمارين محلولة 📂", type: "مراجعة", path: "Equilibrium Sec3 2026 11ADV SOLVED.pdf", views: 1500, dateAdded: "2026-05-24" }
+          ],
           formulas: [
-            { title: "معادلة المعايرة (التخفيف والتعادل)", expression: "M_A V_A = M_B V_B", explanation: "تُطبق عند نقطة التكافؤ لتفاعل حمض أحادي البروتون مع قاعدة أحادية." }
+            { title: "معادلة المعايرة (التعادل)", expression: "M_A V_A = M_B V_B", explanation: "تُطبق عند نقطة التكافؤ لتفاعل حمض أحادي مع قاعدة أحادية." }
           ],
           mcq: [
             { question: "النقطة التي يتغير عندها لون الكاشف في عملية المعايرة تسمى:", options: ["نقطة التكافؤ", "نقطة النهاية", "نقطة التعادل", "النقطة القياسية"], answerIndex: 1, explanation: "نقطة النهاية (End point) هي النقطة التي يتغير فيها لون الكاشف كدليل على انتهاء المعايرة." },

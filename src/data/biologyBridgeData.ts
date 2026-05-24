@@ -7,18 +7,11 @@ export const biologyBridgeSubject: Subject = {
   color: "green",
   track: "bridge",
   generalFiles: [
-    { name: "مراجعة القسم الأول - الأمراض المعدية", type: "مراجعة", path: "مراجعة_القسم_الاول_الامراض_المعدية_ج.pdf", views: 2450, dateAdded: "2026-05-24" },
-    { name: "NewFile222921962", type: "مراجعة", path: "NewFile222921962.pdf", views: 1200, dateAdded: "2026-05-24" },
-    { name: "تلخيص الدرس الثالث - أحياء", type: "شرح", path: "تلخيص الدرس الثالث - احياء.pdf", views: 3420, dateAdded: "2026-05-24" },
-    { name: "ملزمة أحياء 3 - جهاز المناعة", type: "شرح", path: "ملزمة احياء 3 - جهاز المناعة.pdf", views: 4500, dateAdded: "2026-05-24" },
-    { name: "كتاب الأحياء 11 متقدم الفصل 3", type: "شرح", path: "كتاب_الأحياء_11_متقدم_الفصل_3.pdf", views: 5600, dateAdded: "2026-05-24" },
-    { name: "جهاز المناعة - ملف شامل", type: "مراجعة", path: "جهاز المناعة.pdf", views: 2340, dateAdded: "2026-05-24" },
-    { name: "مذكرة مراجعة جهاز المناعة", type: "مراجعة", path: "مذكرة مراجعة جهاز المناعة.pdf", views: 2110, dateAdded: "2026-05-24" },
-    { name: "مراجعة القسم الثاني - جهاز المناعة", type: "مراجعة", path: "مراجعة_القسم_الثاني_جهاز_المناعة_ج.pdf", views: 3200, dateAdded: "2026-05-24" },
-    { name: "تلخيص أحياء - جهاز المناعة", type: "شرح", path: "تلخيص احياء - جهاز المناعة.pdf", views: 1560, dateAdded: "2026-05-24" },
-    { name: "تلخيص أحياء 2 - جهاز المناعة", type: "شرح", path: "تلخيص احياء 2 - جهاز المناعة.pdf", views: 1340, dateAdded: "2026-05-24" },
-    { name: "مراجعة القسم الثالث - الأمراض غير المعدية", type: "مراجعة", path: "مراجعة_القسم_الثالث_الامراض_غير_المعدية_ج.pdf", views: 1980, dateAdded: "2026-05-24" },
-    { name: "تلخيص الدرس الرابع - أحياء", type: "شرح", path: "تلخيص الدرس الرابع - احياء.pdf", views: 1750, dateAdded: "2026-05-24" }
+    { name: "كتيب مراجعة الأحياء الشامل للفصل الثالث EOT 📂", type: "هيكل", path: "Biology EOT 2025-2026 11ADV Term 3.pdf", views: 4200, dateAdded: "2026-05-24" },
+    { name: "شرح فلك الأحياء - قناة يوتيوب (للفائدة)", type: "شرح", path: "https://www.youtube.com/@BioFalak/featured", views: 9999, dateAdded: "2026-05-24" },
+    { name: "تغطية هيكل الأحياء الوزاري 11 متقدم 📂", type: "هيكل", path: "biology_coverage.pdf", views: 2450, dateAdded: "2026-05-24" },
+    { name: "مراجعة شاملة وأسئلة سنوات سابقة أحياء ف3 📂", type: "مراجعة", path: "احياء_مراجعة_شاملة_اسيلة_سنوات_سابقة_ف_3_احياء.pdf", views: 3200, dateAdded: "2026-05-24" },
+    { name: "أسئلة وزارية وتجميعة وحدة المناعة 📂", type: "امتحان", path: "اسيلة وزارية وحدة المناعة.pdf", views: 3400, dateAdded: "2026-05-24" }
   ],
   chapters: [
     {
@@ -30,6 +23,11 @@ export const biologyBridgeSubject: Subject = {
           title: "مسببات الأمراض وانتقالها",
           videoIds: ["MjQNszeSEzI", "5yKny3SWyAo"],
           summary: "المرض المعدي هو المرض الذي ينتقل من كائن حي لآخر بواسطة مسببات الأمراض (البكتيريا، الفيروسات، الفطريات، الأوليات، الطفيليات). المستودع هو مصدر مسبب المرض. تعتمد فرضيات كوخ على عزل المسبب وتنميته وإعادته لعائل سليم.",
+          pdfFile: { name: "ملخص شرح الدرس 6.1 - الأمراض المعدية ومسبباتها 📂", type: "شرح", path: "6.1 Infection disease BIO 12 11ADV(24-25) Term3.pdf", views: 2500, dateAdded: "2026-05-24" },
+          extraFiles: [
+            { name: "Infectious Diseases - Study File 📂", type: "مراجعة", path: "Infectious Diseases.pdf", views: 1200, dateAdded: "2026-05-24" },
+            { name: "Infectious Diseases (Detailed Guide) 📂", type: "مراجعة", path: "Infectious Diseases (2).pdf", views: 980, dateAdded: "2026-05-24" }
+          ],
           formulas: [
             { title: "فرضيات كوخ", expression: "Koch's Postulates", explanation: "1. عزل المسبب من المريض. 2. زراعته في مزرعة نقية. 3. حقنه في عائل سليم (يجب أن يمرض). 4. عزله مرة أخرى للتأكد." }
           ],
@@ -52,6 +50,11 @@ export const biologyBridgeSubject: Subject = {
           title: "المناعة المتخصصة وغير المتخصصة",
           videoIds: ["9Bx95xMSdVk", "jqOl1Cm1-PQ"],
           summary: "ينقسم جهاز المناعة إلى: مناعة غير متخصصة (الجلد، المخاط، الليسوزيم، الالتهاب، البلعمة) ومناعة متخصصة تعتمد على الخلايا الليمفية (T و B). الخلايا البائية (B-cells) تنتج الأجسام المضادة، بينما التائية القاتلة (Cytotoxic T) تدمر الخلايا المصابة.",
+          pdfFile: { name: "ملخص شرح وحدة جهاز المناعة بالتفصيل 📂", type: "شرح", path: "The immune system.pdf", views: 3400, dateAdded: "2026-05-24" },
+          extraFiles: [
+            { name: "The Immune System - Part 2 Notes 📂", type: "مراجعة", path: "The Immune System (2).pdf", views: 1540, dateAdded: "2026-05-24" },
+            { name: "أسئلة وزارية وتجميعة جهاز المناعة 📂", type: "مراجعة", path: "اسيلة وزارية وحدة المناعة.pdf", views: 2400, dateAdded: "2026-05-24" }
+          ],
           formulas: [
             { title: "الاستجابة المناعية الخلوية", expression: "T-Cells Activation", explanation: "تُنشط بواسطة الخلايا التائية المساعدة (Helper T) لقتل الخلايا المصابة." },
             { title: "الاستجابة المناعية الإفرازية", expression: "B-Cells -> Antibodies", explanation: "الخلايا البائية تتحول لخلايا بلازمية لإنتاج أجسام مضادة (Antibodies) ترتبط بمولدات الضد (Antigens)." }
@@ -77,6 +80,11 @@ export const biologyBridgeSubject: Subject = {
           title: "الأمراض المزمنة والمناعة الذاتية",
           videoIds: ["R1MFhpcbI5s", "Vj3-pCc__Pw"],
           summary: "هي أمراض لا تسببها مسببات الأمراض ولا تنتقل بين الأشخاص. تشمل: الأمراض الوراثية (الهيموفيليا، متلازمة داون)، أمراض المناعة الذاتية (حيث يهاجم الجسم نفسه مثل الذئبة والتهاب المفاصل الروماتيزمي)، الحساسية بأنواعها، والسرطان.",
+          pdfFile: { name: "ملخص شرح درس 6.3 - الاختلالات غير المعدية 📂", type: "شرح", path: "6_3_NonInfectious_disorders_BIO_12 11ADV24_25_Term3_2.pdf", views: 2900, dateAdded: "2026-05-24" },
+          extraFiles: [
+            { name: "Noninfectious Disorders Reference 📂", type: "مراجعة", path: "Noninfectious disorders (2).pdf", views: 1300, dateAdded: "2026-05-24" },
+            { name: "Noninfectious Diseases Guide 📂", type: "مراجعة", path: "Noninfectious Diseases.pdf", views: 900, dateAdded: "2026-05-24" }
+          ],
           formulas: [
             { title: "صدمة الحساسية (Anaphylactic Shock)", expression: "Allergy -> Histamine", explanation: "استجابة مفرطة لجهاز المناعة تجاه مادة غير ضارة، تؤدي لإطلاق كميات هائلة من الهستامين تسبب انخفاض ضغط الدم وتضيق المسالك التنفسية." }
           ],
@@ -85,7 +93,7 @@ export const biologyBridgeSubject: Subject = {
             { question: "انقسام الخلايا بشكل غير طبيعي وبدون سيطرة يؤدي إلى مرض:", options: ["السرطان", "الهيموفيليا", "تصلب الشرايين", "الربو"], answerIndex: 0, explanation: "السرطان هو اختلال في تنظيم دورة الخلية يؤدي لانقسام عشوائي." }
           ],
           importantQuestions: [
-            { question: "ما الفرق بين الحساسية العادية وأمراض المناعة الذاتية؟", answer: "في الحساسية: يهاجم الجهاز المناعي مادة خارجية غير ضارة (مثل الغبار). في أمراض المناعة الذاتية: يخطئ الجهاز المناعي ويهاجم أنسجة الجسم السليمة نفسها." }
+            { question: "ما الفرق بين الحساسية العادية وأمراض المناعة الذاتية? ", answer: "في الحساسية: يهاجم الجهاز المناعي مادة خارجية غير ضارة (مثل الغبار). في أمراض المناعة الذاتية: يخطئ الجهاز المناعي ويهاجم أنسجة الجسم السليمة نفسها." }
           ]
         }
       ]
