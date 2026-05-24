@@ -27,6 +27,7 @@ import { Quiz } from "@/components/Quiz";
 import { Flashcard } from "@/components/Flashcard";
 import { CommentsSection } from "@/components/CommentsSection";
 import { PDFViewer } from "@/components/PDFViewer";
+import { PhysicsEquationBox } from "@/components/PhysicsEquationBox";
 
 export default function SubjectPage() {
   const params = useParams();
@@ -37,7 +38,7 @@ export default function SubjectPage() {
   const { progress, toggleProgress, favorites, toggleFavorite } = useApp();
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"summary" | "files" | "mcq" | "revision" | "flashcards" | "comments">("files");
+  const [activeTab, setActiveTab] = useState<"summary" | "formulas" | "files" | "mcq" | "revision" | "flashcards" | "comments">("files");
   const [activePreview, setActivePreview] = useState<{ filename: string; title: string } | null>(null);
 
   const [activeVideoIdx, setActiveVideoIdx] = useState<number>(0);
@@ -499,6 +500,21 @@ export default function SubjectPage() {
                 <span>{isEnglish ? "Original PDFs" : "ملفات الـ PDF الأصلية"}</span>
               </button>
 
+              {/* Formulas Tab (Only if lesson has formulas) */}
+              {activeLesson?.formulas && activeLesson.formulas.length > 0 && (
+                <button
+                  onClick={() => setActiveTab("formulas")}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                    activeTab === "formulas"
+                      ? "bg-violet-500 text-white shadow-lg shadow-violet-500/30"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  }`}
+                >
+                  <Layers size={16} />
+                  <span>القوانين</span>
+                </button>
+              )}
+
               <button
                 onClick={() => setActiveTab("mcq")}
                 className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
@@ -709,6 +725,14 @@ export default function SubjectPage() {
                     )}
                   </div>
 
+                </div>
+              )}
+
+              {/* Formulas Tab */}
+              {activeTab === "formulas" && (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-5 sm:p-8">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">المعادلات والقوانين الهامة</h3>
+                  <PhysicsEquationBox formulas={activeLesson?.formulas || []} />
                 </div>
               )}
 

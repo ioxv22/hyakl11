@@ -1,3 +1,5 @@
+import { physicsBridgeSubject } from './physicsBridgeData';
+
 export interface MCQ {
   question: string;
   options: string[];
@@ -2251,45 +2253,7 @@ export const SUBJECTS: Subject[] = [
     ],
     "track": "bridge"
   },
-  {
-    "id": "physics_bridge",
-    "name": "الفيزياء (Bridge)",
-    "emoji": "⚡",
-    "color": "violet",
-    "generalFiles": [
-      {
-        "name": "مراجعة 5-5-2026 (محلولة)",
-        "type": "مراجعة",
-        "path": "Revision 5-5-2026 (محلولة).pdf",
-        "views": 100,
-        "dateAdded": "2026-05-24"
-      }
-    ],
-    "chapters": [
-      {
-        "id": "phys_units",
-        "title": "وحدات الفيزياء (Bridge)",
-        "lessons": [
-          {
-            "id": "momentum",
-            "title": "Momentum & Impulse",
-            "videoIds": [],
-            "pdfFile": {
-              "name": "Impulse and Momentum",
-              "type": "شرح",
-              "path": "1-Impulse and Momentum (part 1 ).pdf",
-              "views": 100,
-              "dateAdded": "2026-05-24"
-            },
-            "summary": "الزخم والدفع",
-            "mcq": [],
-            "importantQuestions": []
-          }
-        ]
-      }
-    ],
-    "track": "bridge"
-  },
+  physicsBridgeSubject,
   {
     "id": "chemistry_bridge",
     "name": "الكيمياء (Bridge)",
