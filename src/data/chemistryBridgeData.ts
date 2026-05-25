@@ -2,7 +2,7 @@ import { Subject } from "./mockData";
 
 export const chemistryBridgeSubject: Subject = {
   id: "chemistry_bridge",
-  name: "الكيمياء (Bridge — Scenario 1)",
+  name: "الكيمياء (بريدج سناريو 1)",
   emoji: "🧪",
   color: "pink",
   track: "bridge",

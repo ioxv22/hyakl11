@@ -1973,7 +1973,7 @@ export const SUBJECTS: Subject[] = [
   },
   {
     "id": "chemistry",
-    "name": "الكيمياء (Inspire)",
+    "name": "الكيمياء (سيناريو 2)",
     "emoji": "🧪",
     "color": "pink",
     "generalFiles": [
