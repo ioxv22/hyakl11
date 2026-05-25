@@ -4,6 +4,7 @@ import { AppProvider } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { VisitorTracker } from "@/components/VisitorTracker";
+import { BannedIpGuard } from "@/components/BannedIpGuard";
 
 export const metadata: Metadata = {
   title: "ADVVVV11 | منصة مراجعات الحادي عشر متقدم الفصل الثالث",
@@ -28,12 +29,14 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased">
         <AppProvider>
-          <Header />
-          <VisitorTracker />
-          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-            {children}
-          </main>
-          <Footer />
+          <BannedIpGuard>
+            <Header />
+            <VisitorTracker />
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+              {children}
+            </main>
+            <Footer />
+          </BannedIpGuard>
         </AppProvider>
       </body>
     </html>

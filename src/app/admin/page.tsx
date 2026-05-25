@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Users, Eye, TrendingUp, Clock, Globe, Activity, FileText, Plus, CheckCircle2, BarChart3, Monitor } from "lucide-react";
+import { ArrowRight, ShieldCheck, Users, Eye, TrendingUp, Clock, Globe, Activity, FileText, Plus, CheckCircle2, BarChart3, Monitor, ShieldAlert, Trash2, Ban } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { SUBJECTS } from "@/data/mockData";
 import { OCRUploader } from "@/components/OCRUploader";
@@ -103,6 +103,12 @@ export default function AdminPage() {
   const [passwordInput, setPasswordInput] = useState("");
   const [loginError, setLoginError] = useState(false);
 
+  // IP Ban State
+  const [bannedIps, setBannedIps] = useState<{ ip: string; bannedAt: string }[]>([]);
+  const [bannedIpsLoading, setBannedIpsLoading] = useState(false);
+  const [manualIpInput, setManualIpInput] = useState("");
+  const [actionLoadingIp, setActionLoadingIp] = useState<string | null>(null);
+
   // File upload form state
   const [subjectInput, setSubjectInput] = useState("math");
   const [fileName, setFileName] = useState("");
@@ -125,10 +131,67 @@ export default function AdminPage() {
     }
   };
 
+  const fetchBannedIps = async () => {
+    try {
+      setBannedIpsLoading(true);
+      const res = await fetch("/api/banned-ips");
+      if (res.ok) {
+        const data = await res.json();
+        setBannedIps(data);
+      }
+    } catch {
+      // Ignore
+    } finally {
+      setBannedIpsLoading(false);
+    }
+  };
+
+  const handleBanIp = async (ip: string) => {
+    if (!ip.trim()) return;
+    try {
+      setActionLoadingIp(ip);
+      const res = await fetch("/api/banned-ips", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ip: ip.trim() }),
+      });
+      if (res.ok) {
+        await fetchBannedIps();
+        setManualIpInput("");
+      }
+    } catch {
+      // Ignore
+    } finally {
+      setActionLoadingIp(null);
+    }
+  };
+
+  const handleUnbanIp = async (ip: string) => {
+    try {
+      setActionLoadingIp(ip);
+      const res = await fetch(`/api/banned-ips?ip=${encodeURIComponent(ip)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchBannedIps();
+      }
+    } catch {
+      // Ignore
+    } finally {
+      setActionLoadingIp(null);
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchAnalytics();
-      const interval = setInterval(fetchAnalytics, 30000);
+      fetchBannedIps();
+      const interval = setInterval(() => {
+        fetchAnalytics();
+        fetchBannedIps();
+      }, 30000);
       return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
@@ -418,6 +481,7 @@ export default function AdminPage() {
                     <th className="py-2 px-3">عنوان IP</th>
                     <th className="py-2 px-3">عدد الزيارات</th>
                     <th className="py-2 px-3">الاسم</th>
+                    <th className="py-2 px-3 text-center">الإجراء</th>
                     <th className="py-2 px-3 w-8">#</th>
                   </tr>
                 </thead>
@@ -435,6 +499,27 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="py-2.5 px-3 text-xs font-bold text-white">{visitor.name}</td>
+                      <td className="py-2.5 px-3 text-center">
+                        {!visitor.ip || visitor.ip === "unknown" ? (
+                          <span className="text-[10px] text-slate-500 font-semibold select-none">-</span>
+                        ) : bannedIps.some((b) => b.ip === visitor.ip) ? (
+                          <button
+                            onClick={() => handleUnbanIp(visitor.ip!)}
+                            disabled={actionLoadingIp === visitor.ip}
+                            className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/20 hover:border-emerald-500 text-[10px] font-bold rounded-lg transition-all cursor-pointer inline-flex items-center gap-1"
+                          >
+                            {actionLoadingIp === visitor.ip ? "جاري..." : "فك الحظر"}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleBanIp(visitor.ip!)}
+                            disabled={actionLoadingIp === visitor.ip}
+                            className="px-2.5 py-1 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 hover:border-red-500 text-[10px] font-bold rounded-lg transition-all cursor-pointer inline-flex items-center gap-1"
+                          >
+                            {actionLoadingIp === visitor.ip ? "جاري..." : "حظر IP"}
+                          </button>
+                        )}
+                      </td>
                       <td className="py-2.5 px-3 text-[10px] text-slate-600 font-bold">{i + 1}</td>
                     </tr>
                   ))}
@@ -462,44 +547,150 @@ export default function AdminPage() {
             <p className="text-xs text-slate-500 text-center py-8">لا توجد نشاطات مسجلة</p>
           ) : (
             <div className="flex flex-col gap-1.5 max-h-[400px] overflow-y-auto custom-scrollbar">
-              {analytics.recentVisitors.map((visit) => (
-                <div
-                  key={visit.id}
-                  className="flex items-center gap-3 p-3 bg-slate-950/40 border border-slate-800/30 rounded-2xl hover:bg-slate-800/20 transition-colors"
-                >
-                  {/* Dot */}
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full shrink-0" />
+               {analytics.recentVisitors.map((visit) => {
+                 const isVisitBanned = visit.ip && bannedIps.some((b) => b.ip === visit.ip);
+                 return (
+                   <div
+                     key={visit.id}
+                     className="flex items-center gap-3 p-3 bg-slate-950/40 border border-slate-800/30 rounded-2xl hover:bg-slate-800/20 transition-colors"
+                   >
+                     {/* Dot */}
+                     <div className={`w-2 h-2 rounded-full shrink-0 ${isVisitBanned ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]" : "bg-emerald-500"}`} />
 
-                  {/* Info */}
-                  <div className="flex-1 flex flex-col gap-0.5 text-right min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-bold text-white truncate">{visit.name}</span>
-                      <span className="text-[10px] text-slate-600">•</span>
-                      <span className="text-[10px] text-slate-400 truncate">{visit.page}</span>
-                      {visit.ip && (
-                        <>
-                          <span className="text-[10px] text-slate-600">•</span>
-                          <span className="text-[9px] text-emerald-400 font-mono font-bold select-all bg-emerald-500/5 px-1.5 py-0.5 rounded border border-emerald-500/10">{visit.ip}</span>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Monitor size={10} className="text-slate-600 shrink-0" />
-                      <span className="text-[9px] text-slate-600 truncate">{parseBrowser(visit.userAgent)}</span>
-                    </div>
-                  </div>
+                     {/* Info */}
+                     <div className="flex-1 flex flex-col gap-0.5 text-right min-w-0">
+                       <div className="flex items-center gap-2 flex-wrap">
+                         <span className="text-xs font-bold text-white truncate">{visit.name}</span>
+                         <span className="text-[10px] text-slate-600">•</span>
+                         <span className="text-[10px] text-slate-400 truncate">{visit.page}</span>
+                         {visit.ip && (
+                           <>
+                             <span className="text-[10px] text-slate-600">•</span>
+                             <span className="text-[9px] text-emerald-400 font-mono font-bold select-all bg-emerald-500/5 px-1.5 py-0.5 rounded border border-emerald-500/10">{visit.ip}</span>
+                             {isVisitBanned && (
+                               <span className="text-[9px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20 font-bold select-none">
+                                 محظور
+                               </span>
+                             )}
+                           </>
+                         )}
+                       </div>
+                       <div className="flex items-center gap-2">
+                         <Monitor size={10} className="text-slate-600 shrink-0" />
+                         <span className="text-[9px] text-slate-600 truncate">{parseBrowser(visit.userAgent)}</span>
+                       </div>
+                     </div>
 
-                  {/* Time */}
-                  <div className="flex items-center gap-1 shrink-0">
-                    <Clock size={10} className="text-slate-600" />
-                    <span className="text-[10px] text-slate-500 font-semibold whitespace-nowrap">{formatTimeAgo(visit.timestamp)}</span>
-                  </div>
-                </div>
-              ))}
+                     {/* Time */}
+                     <div className="flex items-center gap-1 shrink-0">
+                       <Clock size={10} className="text-slate-600" />
+                       <span className="text-[10px] text-slate-500 font-semibold whitespace-nowrap">{formatTimeAgo(visit.timestamp)}</span>
+                     </div>
+                   </div>
+                 );
+               })}
+             </div>
+           )}
+         </div>
+       ) : null}
+
+      {/* ─── IP Ban Manager Section ─────────────────────────────────────── */}
+      {loading ? (
+        <SkeletonTable />
+      ) : (
+        <div className="bg-slate-900/80 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-red-500/10 text-red-500 rounded-lg">
+                <ShieldAlert size={16} />
+              </div>
+              <h3 className="text-sm font-bold text-white">إدارة عناوين IP المحظورة 🚫</h3>
+              <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">
+                {bannedIps.length} محظورين
+              </span>
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-400 mb-4 text-right">
+            يمكنك حظر عناوين IP المزعجة أو المشبوهة من دخول الموقع نهائياً. لن يتمكنوا من التصفح حتى لو دخلوا باستخدام VPN وسيتم توجيههم لصفحة حمراء تطلب منهم التواصل معك على تليجرام.
+          </p>
+
+          {/* Add IP Manual Ban Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (manualIpInput.trim()) {
+                handleBanIp(manualIpInput.trim());
+              }
+            }}
+            className="flex items-center gap-2 mb-6 max-w-md w-full"
+          >
+            <button
+              type="submit"
+              disabled={actionLoadingIp === manualIpInput || !manualIpInput.trim()}
+              className="px-4 py-2.5 bg-red-600 hover:bg-red-500 disabled:bg-slate-800 text-white disabled:text-slate-500 font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+            >
+              <Ban size={12} />
+              <span>{actionLoadingIp === manualIpInput ? "جاري..." : "حظر عنوان IP"}</span>
+            </button>
+            <input
+              type="text"
+              placeholder="مثال: 192.168.1.1 أو 2a02:2f0a..."
+              value={manualIpInput}
+              onChange={(e) => setManualIpInput(e.target.value)}
+              className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:border-red-500 text-xs text-left font-mono text-white transition-colors"
+            />
+          </form>
+
+          {/* Banned IPs list */}
+          {bannedIpsLoading ? (
+            <div className="text-center py-6 text-xs text-slate-500 animate-pulse">جاري تحميل قائمة المحظورين...</div>
+          ) : bannedIps.length === 0 ? (
+            <p className="text-xs text-slate-500 text-center py-6 bg-slate-950/20 rounded-2xl border border-slate-800/30">
+              لا توجد عناوين IP محظورة حالياً.
+            </p>
+          ) : (
+            <div className="overflow-x-auto max-h-[300px] overflow-y-auto custom-scrollbar">
+              <table className="w-full text-right">
+                <thead>
+                  <tr className="text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800/50">
+                    <th className="py-2 px-3">الإجراء</th>
+                    <th className="py-2 px-3">تاريخ الحظر</th>
+                    <th className="py-2 px-3 text-left">عنوان IP المحظور</th>
+                    <th className="py-2 px-3 w-8">#</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bannedIps.map((item, idx) => (
+                    <tr
+                      key={item.ip}
+                      className="border-b border-slate-800/30 hover:bg-slate-800/20 transition-colors"
+                    >
+                      <td className="py-2 px-3">
+                        <button
+                          onClick={() => handleUnbanIp(item.ip)}
+                          disabled={actionLoadingIp === item.ip}
+                          className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/20 hover:border-emerald-500 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer inline-flex"
+                        >
+                          <Trash2 size={10} />
+                          <span>{actionLoadingIp === item.ip ? "جاري..." : "إلغاء الحظر"}</span>
+                        </button>
+                      </td>
+                      <td className="py-2.5 px-3 text-[11px] text-slate-500">
+                        {formatDate(item.bannedAt)}
+                      </td>
+                      <td className="py-2.5 px-3 text-xs font-mono font-bold text-red-400 select-all text-left">
+                        {item.ip}
+                      </td>
+                      <td className="py-2.5 px-3 text-[10px] text-slate-600 font-bold">{idx + 1}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
-      ) : null}
+      )}
 
       {/* ─── OCR Extractor ──────────────────────────────────────────────── */}
       <div className="mb-6">
