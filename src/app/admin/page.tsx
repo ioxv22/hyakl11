@@ -500,7 +500,7 @@ export default function AdminPage() {
                       </td>
                       <td className="py-2.5 px-3 text-xs font-bold text-white">{visitor.name}</td>
                       <td className="py-2.5 px-3 text-center">
-                        {!visitor.ip || visitor.ip === "unknown" ? (
+                        {!visitor.ip || visitor.ip === "unknown" || visitor.ip.trim().toLowerCase() === "ca" ? (
                           <span className="text-[10px] text-slate-500 font-semibold select-none">-</span>
                         ) : bannedIps.some((b) => b.ip === visitor.ip) ? (
                           <button

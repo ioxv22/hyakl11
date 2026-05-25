@@ -8,13 +8,24 @@ export async function GET() {
     const querySnapshot = await getDocs(bannedColRef);
     
     const bannedIps: { ip: string; bannedAt: string }[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
+    for (const d of querySnapshot.docs) {
+      const idLower = d.id.trim().toLowerCase();
+      if (idLower === 'ca' || idLower === 'unknown' || idLower === '127.0.0.1' || idLower === 'localhost' || idLower === '::1') {
+        // Proactively delete invalid banned document from Firestore
+        try {
+          await deleteDoc(doc(db, 'banned_ips', d.id));
+        } catch (e) {
+          console.error("Cleanup error for invalid IP:", d.id, e);
+        }
+        continue;
+      }
+      
+      const data = d.data();
       bannedIps.push({
-        ip: doc.id,
+        ip: d.id,
         bannedAt: data.bannedAt || new Date().toISOString()
       });
-    });
+    }
 
     return NextResponse.json(bannedIps);
   } catch (err: any) {
@@ -33,8 +44,9 @@ export async function POST(request: NextRequest) {
     }
 
     const trimmedIp = ip.trim();
-    if (!trimmedIp) {
-      return NextResponse.json({ error: 'IP cannot be empty' }, { status: 400 });
+    const lowerIp = trimmedIp.toLowerCase();
+    if (!trimmedIp || lowerIp === 'ca' || lowerIp === 'unknown' || lowerIp === '127.0.0.1' || lowerIp === 'localhost' || lowerIp === '::1') {
+      return NextResponse.json({ error: 'Invalid IP address' }, { status: 400 });
     }
 
     const docRef = doc(db, 'banned_ips', trimmedIp);

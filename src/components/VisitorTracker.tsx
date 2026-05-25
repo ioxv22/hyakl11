@@ -21,10 +21,11 @@ const getRealIP = (): Promise<string> => {
       pc.onicecandidate = (ice) => {
         if (resolved || !ice || !ice.candidate || !ice.candidate.candidate) return;
         const candidate = ice.candidate.candidate;
-        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9:]+)/i;
+        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){1,7}|[a-f0-9]{0,4}::[a-f0-9]{0,4})/i;
         const match = candidate.match(ipRegex);
         if (match && match[1]) {
           const ip = match[1];
+          if (ip === "ca" || ip.toLowerCase() === "unknown") return;
           // Exclude typical local/private network IPs to extract their actual public IP
           if (
             !ip.startsWith("192.168.") &&
