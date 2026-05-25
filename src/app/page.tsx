@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { BookOpen, Search, ArrowLeft, MessageSquare, Award, Play, Download, Star, Compass, CheckCircle } from "lucide-react";
+import { BookOpen, Search, ArrowLeft, MessageSquare, Award, Play, Download, Star, Compass, CheckCircle, Sparkles } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { SUBJECTS } from "@/data/mockData";
 import { PDFViewer } from "@/components/PDFViewer";
@@ -223,6 +223,22 @@ export default function HomePage() {
                   )}
                 </div>
               )}
+            </div>
+            {/* AI and Telegram Quick Actions */}
+            <div className="flex flex-wrap gap-2.5 mt-3 justify-end w-full max-w-lg">
+              <Link
+                href="/ai-quiz"
+                className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-black rounded-xl shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all cursor-pointer animate-pulse"
+              >
+                <Sparkles size={12} />
+                <span>كويز الهيكل بالذكاء الاصطناعي 🧠✨</span>
+              </Link>
+              <Link
+                href="/telegram"
+                className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl shadow-md transition-all cursor-pointer"
+              >
+                <span>قناة التلغرام 📢</span>
+              </Link>
             </div>
 
           </div>
