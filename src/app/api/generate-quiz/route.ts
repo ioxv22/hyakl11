@@ -9,14 +9,16 @@ const QUIZ_API_ENDPOINTS = [
 
 export async function POST(request: NextRequest) {
   try {
-    const { structure, subject, numQuestions = 5, difficulty = "متوسط" } = await request.json();
+    const { structure, subject, numQuestions = 5, difficulty = "متوسط", image, fileContent } = await request.json();
 
-    if (!structure) {
-      return NextResponse.json({ error: "Structure text is required" }, { status: 400 });
+    const finalStructure = fileContent ? `${structure}\n\n[محتوى الملف المرفق]:\n${fileContent}` : structure;
+
+    if (!finalStructure && !image) {
+      return NextResponse.json({ error: "Structure text or screenshot image is required" }, { status: 400 });
     }
 
     const systemPrompt = `You are a professional educational assessment AI designed for the UAE Ministry of Education (MOE) curriculum.
-Your task is to generate a simulated multiple-choice quiz (MCQ) based on the user's exam structure/syllabus text.
+Your task is to generate a simulated multiple-choice quiz (MCQ) based on the user's exam structure/syllabus text or attached screenshot.
 
 You MUST respond with a valid JSON array of questions. Return ONLY a raw JSON array.
 Do not include any markdown formatting, do not include \`\`\`json or \`\`\` blocks, just return a raw JSON array of objects.
@@ -29,7 +31,7 @@ Each question object in the array MUST have this exact schema:
 }
 
 Create exactly ${numQuestions} multiple-choice questions. The difficulty must be "${difficulty}".
-Ensure the questions are highly relevant, challenging, and strictly follow the provided structure: "${structure}".`;
+Ensure the questions are highly relevant, challenging, and strictly follow the provided structure: "${finalStructure}".`;
 
     let responseText = "";
     let success = false;
@@ -37,6 +39,31 @@ Ensure the questions are highly relevant, challenging, and strictly follow the p
     // Try endpoints in order
     for (const endpoint of QUIZ_API_ENDPOINTS) {
       try {
+        const messages: any[] = [
+          { role: "system", content: systemPrompt }
+        ];
+
+        if (image) {
+          messages.push({
+            role: "user",
+            content: [
+              { type: "text", text: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on the text structure and the attached image screenshot.` },
+              { type: "text", text: `Structure / Syllabus Notes: ${finalStructure}` },
+              {
+                type: "image_url",
+                image_url: {
+                  url: image // base64 data URL
+                }
+              }
+            ]
+          });
+        } else {
+          messages.push({
+            role: "user",
+            content: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on this structure:\n${finalStructure}`
+          });
+        }
+
         const response = await fetch(endpoint.url, {
           method: "POST",
           headers: {
@@ -46,12 +73,9 @@ Ensure the questions are highly relevant, challenging, and strictly follow the p
             model: endpoint.model,
             temperature: 0.8,
             max_tokens: 3000,
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on this structure:\n${structure}` }
-            ]
+            messages
           }),
-          signal: AbortSignal.timeout(18000) // 18 seconds timeout per endpoint
+          signal: AbortSignal.timeout(22000) // 22 seconds timeout per endpoint
         });
 
         if (response.ok) {
@@ -89,7 +113,7 @@ Ensure the questions are highly relevant, challenging, and strictly follow the p
 
     // Fallback Mock Quiz Generator if all APIs fail or return invalid JSON
     console.log("Using robust fallback mock quiz generator for subject:", subject);
-    const fallbackQuiz = generateFallbackQuiz(subject, numQuestions, structure);
+    const fallbackQuiz = generateFallbackQuiz(subject, numQuestions, finalStructure || "صورة مرفقة بالهيكل");
     return NextResponse.json(fallbackQuiz);
 
   } catch (err: any) {

@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles, HelpCircle, Brain, RefreshCcw, Award, Check, X, ShieldAlert, Timer, Play, BookOpen, Layers } from "lucide-react";
+import { ArrowRight, Sparkles, HelpCircle, Brain, RefreshCcw, Award, Check, X, ShieldAlert, Timer, FileText, Image, Trash2, Loader2 } from "lucide-react";
 import confetti from "canvas-confetti";
+
 
 interface Question {
   question: string;
@@ -12,11 +13,41 @@ interface Question {
   explanation: string;
 }
 
+// Helper to dynamically load external scripts from CDN
+const loadScript = (src: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve(false);
+      return;
+    }
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+};
+
+
 export default function AIQuizPage() {
   const [structureInput, setStructureInput] = useState("");
   const [subject, setSubject] = useState("english");
-  const [numQuestions, setNumQuestions] = useState(5);
+  const [numQuestions, setNumQuestions] = useState(10); // Default to 10
   const [difficulty, setDifficulty] = useState("متوسط");
+
+  // File & Vision uploading states
+  const [imageFile, setImageFile] = useState<string | null>(null); // base64 representation
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [fileContent, setFileContent] = useState<string | null>(null);
+  const [parsingFile, setParsingFile] = useState(false);
+  const [parseStatus, setParseStatus] = useState("");
+
 
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -35,11 +66,12 @@ export default function AIQuizPage() {
   const [timerActive, setTimerActive] = useState(false);
 
   const loadingQuotes = [
-    "يا هلا والله! عم نحلل بنود هيكل الوزارة يلي طرشته...",
-    "عم نتصل بنماذج الذكاء الاصطناعي وبنولد الأسئلة...",
+    "يا هلا والله! عم نحلل بنود هيكل الوزارة المرفوع بدقة...",
+    "عم نفحص لقطة الشاشة/الصورة المرفقة ونستخرج التكافؤات والرموز...",
+    "عم نتصل بنماذج الذكاء الاصطناعي السحابية وبنولد الأسئلة...",
     "عم نصمم خيارات ممتازة ومحاكية للاختبار النهائي...",
-    "عم نراجع التفاسير الكيميائية واللغوية بالعربي عشانك...",
-    "خلصنا تقريباً! عم نجهز المختبر التفاعلي والأسئلة..."
+    "عم نراجع التفاسير الكيميائية واللغوية والرياضية بالعربي عشانك...",
+    "خلصنا تقريباً! عم نجهز قاعة الامتحانات التفاعلية الفخمة..."
   ];
 
   // Rotate loading steps
@@ -65,9 +97,150 @@ export default function AIQuizPage() {
     return () => clearTimeout(timer);
   }, [timeLeft, timerActive, quizFinished]);
 
+  // File Upload handler (PDF, Word, Txt context reader)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type.startsWith("image/")) {
+      setErrorMsg("رجاءً ارفع الصور في حقل لقطات الشاشة المخصص للرؤية البصرية.");
+      return;
+    }
+
+    setParsingFile(true);
+    setErrorMsg("");
+    setParseStatus("جاري تهيئة الملف...");
+
+    try {
+      const fileName = file.name;
+      const fileExtension = fileName.split(".").pop()?.toLowerCase();
+
+      if (fileExtension === "pdf") {
+        setParseStatus("جاري تحميل قارئ PDF الذكي...");
+        const scriptLoaded = await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+        if (!scriptLoaded || !(window as any).pdfjsLib) {
+          throw new Error("فشل تحميل قارئ الـ PDF. يرجى التحقق من اتصالك بالإنترنت.");
+        }
+
+        // Configure PDF.js worker
+        (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+        setParseStatus("جاري قراءة مستند الـ PDF...");
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = (window as any).pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+        const pdf = await loadingTask.promise;
+        
+        let fullText = "";
+        const maxPages = Math.min(pdf.numPages, 40); // safety cap at 40 pages to prevent token overflow
+        
+        for (let i = 1; i <= maxPages; i++) {
+          setParseStatus(`جاري قراءة الصفحة ${i} من أصل ${pdf.numPages}...`);
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item: any) => item.str).join(" ");
+          fullText += `[صفحة ${i}]:\n${pageText}\n\n`;
+        }
+
+        if (!fullText.trim()) {
+          throw new Error("لم نتمكن من استخراج أي نصوص من ملف الـ PDF. قد يكون الملف ممسوحاً ضوئياً كصور.");
+        }
+
+        setFileContent(fullText);
+        setUploadedFileName(fileName);
+        setStructureInput(prev => `${prev}\n\n[ملف PDF مرفق: ${fileName}]\n${fullText.slice(0, 15000)}`);
+        setParseStatus(`تمت قراءة ${pdf.numPages} صفحات بنجاح!`);
+      } 
+      else if (fileExtension === "docx") {
+        setParseStatus("جاري تحميل قارئ مستندات Word...");
+        const scriptLoaded = await loadScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js");
+        if (!scriptLoaded || !(window as any).mammoth) {
+          throw new Error("فشل تحميل قارئ ملفات Word. يرجى التحقق من اتصالك بالإنترنت.");
+        }
+
+        setParseStatus("جاري قراءة ملف Word...");
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await (window as any).mammoth.extractRawText({ arrayBuffer });
+        const text = result.value;
+
+        if (!text.trim()) {
+          throw new Error("ملف الـ Word فارغ أو لا يحتوي على نصوص مقروءة.");
+        }
+
+        setFileContent(text);
+        setUploadedFileName(fileName);
+        setStructureInput(prev => `${prev}\n\n[مستند Word مرفق: ${fileName}]\n${text.slice(0, 15000)}`);
+        setParseStatus("تمت قراءة ملف Word بنجاح!");
+      } 
+      else {
+        // Handle normal txt/csv/json text files
+        setParseStatus("جاري قراءة الملف النصي...");
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const text = event.target?.result as string;
+          if (text) {
+            setFileContent(text);
+            setUploadedFileName(fileName);
+            setStructureInput(prev => `${prev}\n\n[مستند نصي مرفق: ${fileName}]\n${text.slice(0, 15000)}`);
+            setParseStatus("تمت قراءة الملف النصي بنجاح!");
+          } else {
+            setErrorMsg("فشل قراءة الملف النصي.");
+            setParsingFile(false);
+          }
+        };
+        reader.readAsText(file);
+        return; // return early as FileReader handles callback
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.message || "حدث خطأ أثناء معالجة الملف.");
+      setParseStatus("");
+    } finally {
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      if (fileExtension === "pdf" || fileExtension === "docx") {
+        setParsingFile(false);
+      } else {
+        setTimeout(() => setParsingFile(false), 500);
+      }
+    }
+  };
+
+
+  // Image Upload handler (Base64 conversion)
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMsg("الرجاء اختيار صورة لقطة شاشة صالحة (PNG, JPG, JPEG).");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      if (base64) {
+        setImageFile(base64);
+        setErrorMsg("");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+  };
+
+  const removeFile = () => {
+    setFileContent(null);
+    setUploadedFileName(null);
+  };
+
   const handleGenerateQuiz = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!structureInput.trim()) return;
+    if (!structureInput.trim() && !imageFile) {
+      setErrorMsg("يرجى كتابة الهيكل، أو إرفاق ملف نصي، أو طرش لقطة شاشة للهيكل الدراسي للبدء.");
+      return;
+    }
 
     setLoading(true);
     setLoadingStep(0);
@@ -82,7 +255,9 @@ export default function AIQuizPage() {
           structure: structureInput.trim(),
           subject,
           numQuestions,
-          difficulty
+          difficulty,
+          image: imageFile,
+          fileContent: fileContent
         })
       });
 
@@ -99,7 +274,7 @@ export default function AIQuizPage() {
           setTimeLeft(numQuestions * 120); // 2 minutes per question
           setTimerActive(true);
         } else {
-          setErrorMsg("فشل توليد الاختبار. رجاءً تأكد من كتابة هيكل واضح وحاول مرة أخرى.");
+          setErrorMsg("فشل توليد الاختبار. رجاءً تأكد من كتابة هيكل واضح أو إرفاق صورة واضحة وحاول مرة أخرى.");
         }
       } else {
         setErrorMsg("حدث خطأ أثناء التواصل مع خوادم الذكاء الاصطناعي. يرجى المحاولة لاحقاً.");
@@ -153,6 +328,9 @@ export default function AIQuizPage() {
     setScore(0);
     setCurrentIdx(0);
     setStructureInput("");
+    setImageFile(null);
+    setFileContent(null);
+    setUploadedFileName(null);
   };
 
   const formatTime = (seconds: number) => {
@@ -181,7 +359,7 @@ export default function AIQuizPage() {
           </div>
           <div className="flex flex-col">
             <h1 className="text-xl sm:text-2xl font-black text-white">صانع الاختبارات بالذكاء الاصطناعي 🧠✨</h1>
-            <p className="text-xs text-slate-400 mt-1">طرش هيكل مادتك وحوله فوراً لكويز محاكي 100% للاختبارات الوزارية!</p>
+            <p className="text-xs text-slate-400 mt-1">طرش الهيكل، الصور، أو الملازم ووّلد فوراً كويز بالعدد والصعوبة المطلوبة!</p>
           </div>
         </div>
       </div>
@@ -203,23 +381,84 @@ export default function AIQuizPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-extrabold text-slate-350 flex items-center gap-1 justify-start">
               <Sparkles size={12} className="text-emerald-500" />
-              <span>طرش / الصق هيكل المادة أو المنهج الدراسي هنا:</span>
+              <span>اكتب أو الصق هيكل المادة أو المنهج الدراسي هنا:</span>
             </label>
             <textarea
-              required
-              rows={6}
+              rows={5}
               value={structureInput}
               onChange={(e) => setStructureInput(e.target.value)}
-              placeholder="مثال لهيكل الإنجليزي:
-Part 1: Reading comprehension - 2 passages with MCQ.
-Part 2: Grammar - modal verbs, conditional sentences, passive voice.
-Part 3: Vocabulary - unit 7 & 8 words."
+              placeholder="اكتب هنا بنود الهيكل، أو دع الحقول المرفقة أدناه تقرأ الملفات والصور المرفقة نيابة عنك..."
               className="w-full p-4 bg-slate-950 border border-slate-800 focus:border-emerald-500 text-xs sm:text-sm text-white rounded-2xl focus:outline-none transition-all leading-relaxed placeholder:text-slate-650"
             />
           </div>
 
-          {/* Subject & Options selection */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Multimodal Uploaders: Files and Images */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* File Uploader (Advanced PDF/Word/Text Reader) */}
+            <div className="bg-slate-950/60 border border-slate-850 p-4 rounded-2xl flex flex-col gap-2 relative">
+              <span className="text-[10px] text-slate-500 font-extrabold block">قراءة ملفات المنهج والهيكل الذكية (PDF/Word/Txt):</span>
+              {parsingFile ? (
+                <div className="flex flex-col items-center justify-center gap-2 py-4 border border-dashed border-emerald-500/40 bg-emerald-950/10 rounded-xl animate-pulse">
+                  <Loader2 size={18} className="text-emerald-500 animate-spin" />
+                  <span className="text-[10px] text-emerald-400 font-extrabold">{parseStatus}</span>
+                </div>
+              ) : uploadedFileName ? (
+                <div className="flex flex-col gap-1.5 p-2 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <button type="button" onClick={removeFile} className="p-1 hover:text-red-500 transition-colors cursor-pointer" title="حذف الملف">
+                      <Trash2 size={14} />
+                    </button>
+                    <span className="text-xs text-slate-300 font-bold truncate max-w-[180px]">{uploadedFileName}</span>
+                  </div>
+                  {parseStatus && (
+                    <span className="text-[9px] text-emerald-400/90 font-bold text-right pr-1 leading-none">{parseStatus}</span>
+                  )}
+                </div>
+              ) : (
+                <label className="flex items-center justify-center gap-2 py-3 border border-dashed border-slate-800 hover:border-emerald-500/50 rounded-xl cursor-pointer text-slate-400 hover:text-emerald-400 transition-all text-xs font-bold">
+                  <FileText size={16} />
+                  <span>ارفق مستند PDF أو Word أو TXT 📄</span>
+                  <input
+                    type="file"
+                    accept=".txt,.csv,.json,.pdf,.docx"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+
+
+            {/* Vision Image Uploader (Base64 multi-modal screenshot reader) */}
+            <div className="bg-slate-950/60 border border-slate-850 p-4 rounded-2xl flex flex-col gap-2 relative">
+              <span className="text-[10px] text-slate-500 font-extrabold block">قراءة لقطة شاشة الهيكل بالـ AI Vision:</span>
+              {imageFile ? (
+                <div className="flex items-center justify-between p-2 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+                  <button type="button" onClick={removeImage} className="p-1 hover:text-red-500 transition-colors">
+                    <Trash2 size={14} />
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-500 font-bold">(لقطة شاشة جاهزة)</span>
+                    <img src={imageFile} alt="Syllabus screenshot" className="w-8 h-8 rounded-lg object-cover border border-slate-800" />
+                  </div>
+                </div>
+              ) : (
+                <label className="flex items-center justify-center gap-2 py-3 border border-dashed border-slate-800 hover:border-emerald-500/50 rounded-xl cursor-pointer text-slate-400 hover:text-emerald-400 transition-all text-xs font-bold">
+                  <Image size={16} />
+                  <span>ارفق لقطة شاشة للهيكل 📸</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Subject, Difficulty & Highly Flexible Question counts */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div className="flex flex-col gap-1">
               <label className="text-xs font-extrabold text-slate-400">المادة الدراسية الأساسية:</label>
               <select
@@ -235,17 +474,30 @@ Part 3: Vocabulary - unit 7 & 8 words."
               </select>
             </div>
 
+            {/* Slider + direct number input for arbitrary counts (up to 100 questions!) */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-extrabold text-slate-400">عدد الأسئلة المطلوبة:</label>
-              <select
-                value={numQuestions}
-                onChange={(e) => setNumQuestions(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-xs text-white"
-              >
-                <option value={5}>5 أسئلة سريعة</option>
-                <option value={10}>10 أسئلة متوسطة</option>
-                <option value={15}>15 سؤالاً شاملاً</option>
-              </select>
+              <div className="flex justify-between items-center text-xs font-extrabold text-slate-400 px-0.5">
+                <span className="text-emerald-500 font-black font-mono">({numQuestions}) سؤال</span>
+                <label>عدد الأسئلة المطلوبة:</label>
+              </div>
+              <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl">
+                <input
+                  type="number"
+                  min={3}
+                  max={100}
+                  value={numQuestions}
+                  onChange={(e) => setNumQuestions(Math.min(100, Math.max(3, Number(e.target.value))))}
+                  className="w-12 bg-transparent text-center text-xs font-black text-white focus:outline-none font-mono"
+                />
+                <input
+                  type="range"
+                  min={3}
+                  max={100}
+                  value={numQuestions}
+                  onChange={(e) => setNumQuestions(Number(e.target.value))}
+                  className="flex-1 accent-emerald-500 h-1 cursor-pointer rounded-lg bg-slate-800"
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">

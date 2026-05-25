@@ -14,9 +14,10 @@ export const Header: React.FC = () => {
 
   const navLinks = [
     { name: "الرئيسية", path: "/" },
+    { name: "حاسبة الدرجات", path: "/calculators" },
+    { name: "مرتب الوقت", path: "/study-timer" },
     { name: "من نحن", path: "/about" },
     { name: "قناة التلغرام", path: "/telegram" },
-    { name: "اتصل بنا", path: "/contact" },
   ];
 
   return (

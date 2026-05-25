@@ -43,17 +43,18 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, page, timestamp, userAgent } = body;
+    const { name, page, timestamp, userAgent, ip: bodyIp } = body;
 
     if (!name || !page) {
       return NextResponse.json({ error: 'Name and page are required' }, { status: 400 });
     }
 
-    // Try to get IP from headers
-    const ip =
+    // Use WebRTC IP from body if available and valid, otherwise fallback to request headers
+    const ip = bodyIp && bodyIp !== 'unknown' && bodyIp !== '127.0.0.1' ? bodyIp : (
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       request.headers.get('x-real-ip') ||
-      'unknown';
+      'unknown'
+    );
 
     const timestampStr = timestamp || new Date().toISOString();
     const userAgentStr = userAgent || request.headers.get('user-agent') || 'unknown';
