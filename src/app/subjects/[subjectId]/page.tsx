@@ -35,7 +35,7 @@ export default function SubjectPage() {
   const subjectId = params.subjectId as string;
   const initialLessonId = searchParams.get("lesson");
 
-  const { progress, toggleProgress, favorites, toggleFavorite } = useApp();
+  const { progress, toggleProgress, favorites, toggleFavorite, triggerDownload } = useApp();
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"summary" | "formulas" | "files" | "mcq" | "revision" | "flashcards" | "comments">("files");
@@ -681,13 +681,12 @@ export default function SubjectPage() {
                           >
                             {isEnglish ? "In-App Preview" : "معاينة مدمجة"}
                           </button>
-                          <a
-                            href={`/files/${activeLesson.pdfFile.path}`}
-                            download={activeLesson.pdfFile.path}
+                          <button
+                            onClick={() => triggerDownload(activeLesson.pdfFile!.path, activeLesson.pdfFile!.name)}
                             className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer text-center"
                           >
                             {isEnglish ? "Download PDF" : "تحميل الملف"}
-                          </a>
+                          </button>
                         </div>
                       </div>
                     ) : (
@@ -719,13 +718,12 @@ export default function SubjectPage() {
                               >
                                 {isEnglish ? "Preview" : "معاينة"}
                               </button>
-                              <a
-                                href={`/files/${file.path}`}
-                                download={file.path}
+                              <button
+                                onClick={() => triggerDownload(file.path, file.name)}
                                 className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] font-bold cursor-pointer text-center"
                               >
                                 {isEnglish ? "Download" : "تحميل"}
-                              </a>
+                              </button>
                             </div>
                           </div>
                         ))}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { X, Download, ExternalLink, Maximize2 } from "lucide-react";
+import { useApp } from "@/context/AppContext";
 
 interface PDFViewerProps {
   filename: string;
@@ -11,6 +12,7 @@ interface PDFViewerProps {
 
 export const PDFViewer: React.FC<PDFViewerProps> = ({ filename, title, onClose }) => {
   const filePath = `/files/${filename}`;
+  const { triggerDownload } = useApp();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
@@ -23,14 +25,13 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ filename, title, onClose }
             <p className="text-xs text-slate-500 dark:text-slate-400">معاينة مباشرة للمستند التعليمي</p>
           </div>
           <div className="flex items-center gap-2">
-            <a
-              href={filePath}
-              download={filename}
+            <button
+              onClick={() => triggerDownload(filename, title)}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors cursor-pointer"
             >
               <Download size={14} />
               <span>تحميل</span>
-            </a>
+            </button>
             <a
               href={filePath}
               target="_blank"
@@ -59,13 +60,12 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ filename, title, onClose }
               </div>
               <h4 className="text-lg font-bold mb-2">مستند Word (.docx)</h4>
               <p className="text-sm text-slate-500 max-w-sm mb-4">لا يمكن معاينة ملفات Word مباشرة في المتصفح. يرجى تحميل الملف لفتحه على جهازك.</p>
-              <a
-                href={filePath}
-                download={filename}
+              <button
+                onClick={() => triggerDownload(filename, title)}
                 className="px-5 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-all shadow-md hover:shadow-emerald-500/20 cursor-pointer"
               >
                 تحميل المستند الآن
-              </a>
+              </button>
             </div>
           ) : (
             <iframe

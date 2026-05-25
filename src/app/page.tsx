@@ -8,7 +8,7 @@ import { SUBJECTS } from "@/data/mockData";
 import { PDFViewer } from "@/components/PDFViewer";
 
 export default function HomePage() {
-  const { studentName, setStudentName, progress, favorites } = useApp();
+  const { studentName, setStudentName, progress, favorites, triggerDownload } = useApp();
   const [nameInput, setNameInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [activePreview, setActivePreview] = useState<{ filename: string; title: string } | null>(null);
@@ -406,13 +406,12 @@ export default function HomePage() {
                   >
                     <span>معاينة</span>
                   </button>
-                  <a
-                    href={`/files/${file.path}`}
-                    download={file.path}
+                  <button
+                    onClick={() => triggerDownload(file.path, file.name)}
                     className="p-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold flex items-center gap-1 cursor-pointer"
                   >
                     <Download size={12} />
-                  </a>
+                  </button>
                 </div>
               </div>
             ))}
