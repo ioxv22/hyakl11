@@ -518,13 +518,17 @@ export default function AIQuizPage() {
               <select
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-xs text-white"
+                className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-xs text-white font-bold animate-fade-in"
               >
                 <option value="english">إنجليزي (English) 🇬🇧</option>
                 <option value="math">الرياضيات (Math) 📐</option>
                 <option value="physics">الفيزياء (Physics) ⚡</option>
                 <option value="chemistry">الكيمياء (Chemistry) 🧪</option>
                 <option value="biology">الأحياء (Biology) 🧬</option>
+                <option value="arabic">اللغة العربية (Arabic) 📝</option>
+                <option value="islamic">التربية الإسلامية (Islamic) 🕌</option>
+                <option value="social">الدراسات الاجتماعية (Social) 📊</option>
+                <option value="other">مادة أخرى / عام (Other) 🎯</option>
               </select>
             </div>
 
