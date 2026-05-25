@@ -68,15 +68,18 @@ export async function GET() {
       visitsByDay.push({ date: dateStr, count });
     }
 
-    // Visitors list (unique visitors with visit count and last visit)
-    const visitorsMap: Record<string, { visitCount: number; lastVisit: string }> = {};
+    // Visitors list (unique visitors with visit count and last visit and IP)
+    const visitorsMap: Record<string, { visitCount: number; lastVisit: string; ip?: string }> = {};
     for (const v of visitors) {
       if (!visitorsMap[v.name]) {
-        visitorsMap[v.name] = { visitCount: 0, lastVisit: v.timestamp };
+        visitorsMap[v.name] = { visitCount: 0, lastVisit: v.timestamp, ip: v.ip };
       }
       visitorsMap[v.name].visitCount++;
       if (new Date(v.timestamp) > new Date(visitorsMap[v.name].lastVisit)) {
         visitorsMap[v.name].lastVisit = v.timestamp;
+        if (v.ip) {
+          visitorsMap[v.name].ip = v.ip;
+        }
       }
     }
     const visitorsList = Object.entries(visitorsMap)
@@ -84,6 +87,7 @@ export async function GET() {
         name,
         visitCount: data.visitCount,
         lastVisit: data.lastVisit,
+        ip: data.ip
       }))
       .sort((a, b) => b.visitCount - a.visitCount);
 

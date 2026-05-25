@@ -12,9 +12,9 @@ interface AnalyticsData {
   uniqueVisitors: number;
   todayVisits: number;
   topPages: { page: string; count: number }[];
-  recentVisitors: { id: string; name: string; page: string; timestamp: string; userAgent: string }[];
+  recentVisitors: { id: string; name: string; page: string; timestamp: string; userAgent: string; ip?: string }[];
   visitsByDay: { date: string; count: number }[];
-  visitorsList: { name: string; visitCount: number; lastVisit: string }[];
+  visitorsList: { name: string; visitCount: number; lastVisit: string; ip?: string }[];
 }
 
 // ─── Skeleton Loader ───────────────────────────────────────────────────────────
@@ -415,6 +415,7 @@ export default function AdminPage() {
                 <thead>
                   <tr className="text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800/50">
                     <th className="py-2 px-3">آخر زيارة</th>
+                    <th className="py-2 px-3">عنوان IP</th>
                     <th className="py-2 px-3">عدد الزيارات</th>
                     <th className="py-2 px-3">الاسم</th>
                     <th className="py-2 px-3 w-8">#</th>
@@ -427,6 +428,7 @@ export default function AdminPage() {
                       className="border-b border-slate-800/30 hover:bg-slate-800/30 transition-colors"
                     >
                       <td className="py-2.5 px-3 text-[11px] text-slate-500">{formatTimeAgo(visitor.lastVisit)}</td>
+                      <td className="py-2.5 px-3 text-[10px] text-emerald-500/80 font-mono select-all font-bold">{visitor.ip || "unknown"}</td>
                       <td className="py-2.5 px-3">
                         <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-lg">
                           {visitor.visitCount}
@@ -474,6 +476,12 @@ export default function AdminPage() {
                       <span className="text-xs font-bold text-white truncate">{visit.name}</span>
                       <span className="text-[10px] text-slate-600">•</span>
                       <span className="text-[10px] text-slate-400 truncate">{visit.page}</span>
+                      {visit.ip && (
+                        <>
+                          <span className="text-[10px] text-slate-600">•</span>
+                          <span className="text-[9px] text-emerald-400 font-mono font-bold select-all bg-emerald-500/5 px-1.5 py-0.5 rounded border border-emerald-500/10">{visit.ip}</span>
+                        </>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <Monitor size={10} className="text-slate-600 shrink-0" />

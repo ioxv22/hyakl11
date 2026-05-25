@@ -18,9 +18,11 @@ import {
   BookMarked,
   Layers,
   Star,
-  Check
+  Check,
+  FlaskConical
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { OrganicLab } from "@/components/OrganicLab";
 import { SUBJECTS } from "@/data/mockData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { Quiz } from "@/components/Quiz";
@@ -38,7 +40,7 @@ export default function SubjectPage() {
   const { progress, toggleProgress, favorites, toggleFavorite, triggerDownload } = useApp();
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"summary" | "formulas" | "files" | "mcq" | "revision" | "flashcards" | "comments">("files");
+  const [activeTab, setActiveTab] = useState<"summary" | "formulas" | "files" | "mcq" | "revision" | "flashcards" | "comments" | "organic_lab">("files");
   const [activePreview, setActivePreview] = useState<{ filename: string; title: string } | null>(null);
 
   const [activeVideoIdx, setActiveVideoIdx] = useState<number>(0);
@@ -571,6 +573,20 @@ export default function SubjectPage() {
                 <span>{isEnglish ? "Comments" : "التعليقات والتقييمات"}</span>
               </button>
 
+              {(subjectId === "chemistry" || subjectId === "chemistry_bridge") && (
+                <button
+                  onClick={() => setActiveTab("organic_lab")}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                    activeTab === "organic_lab"
+                      ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
+                      : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
+                  }`}
+                >
+                  <FlaskConical size={14} />
+                  <span>المختبر العضوي التفاعلي 🧪</span>
+                </button>
+              )}
+
             </div>
 
             {/* Active Tab Panel Body */}
@@ -799,6 +815,11 @@ export default function SubjectPage() {
               {/* Tab 5: Comments & Ratings */}
               {activeTab === "comments" && (
                 <CommentsSection itemKey={activeLesson.id} />
+              )}
+
+              {/* Tab: Organic Lab */}
+              {activeTab === "organic_lab" && (
+                <OrganicLab />
               )}
 
             </div>
