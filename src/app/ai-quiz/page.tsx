@@ -145,10 +145,28 @@ export default function AIQuizPage() {
           throw new Error("لم نتمكن من استخراج أي نصوص من ملف الـ PDF. قد يكون الملف ممسوحاً ضوئياً كصور.");
         }
 
-        setFileContent(fullText);
+        // Auto-detect subject from file name or content
+        const detectAndSetSubject = (name: string, content: string) => {
+          const textToSearch = (name + " " + content).toLowerCase();
+          if (textToSearch.includes("كيمياء") || textToSearch.includes("chemistry") || textToSearch.includes("كربونات") || textToSearch.includes("عضوية") || textToSearch.includes("روابط") || textToSearch.includes("تفاعل") || textToSearch.includes("غاز") || textToSearch.includes("جدول دوري") || textToSearch.includes("عنصر") || textToSearch.includes("هيدروكربونات")) {
+            setSubject("chemistry");
+          } else if (textToSearch.includes("فيزياء") || textToSearch.includes("physics") || textToSearch.includes("قوة") || textToSearch.includes("حركة") || textToSearch.includes("تسارع") || textToSearch.includes("متجه") || textToSearch.includes("شغل") || textToSearch.includes("طاقة") || textToSearch.includes("سرعة") || textToSearch.includes("جسر")) {
+            setSubject("physics");
+          } else if (textToSearch.includes("أحياء") || textToSearch.includes("biology") || textToSearch.includes("خلية") || textToSearch.includes("مناعة") || textToSearch.includes("جسم") || textToSearch.includes("دم") || textToSearch.includes("مرض") || textToSearch.includes("تنفس") || textToSearch.includes("جراثيم")) {
+            setSubject("biology");
+          } else if (textToSearch.includes("رياضيات") || textToSearch.includes("math") || textToSearch.includes("تفاضل") || textToSearch.includes("تكامل") || textToSearch.includes("حساب") || textToSearch.includes("هندسة") || textToSearch.includes("مصفوفة") || textToSearch.includes("دالة") || textToSearch.includes("زاوية") || textToSearch.includes("ضرب")) {
+            setSubject("math");
+          } else if (textToSearch.includes("english") || textToSearch.includes("grammar") || textToSearch.includes("reading") || textToSearch.includes("writing")) {
+            setSubject("english");
+          }
+        };
+
+        const truncatedText = fullText.slice(0, 5000);
+        setFileContent(truncatedText);
         setUploadedFileName(fileName);
-        setStructureInput(prev => `${prev}\n\n[ملف PDF مرفق: ${fileName}]\n${fullText.slice(0, 15000)}`);
-        setParseStatus(`تمت قراءة ${pdf.numPages} صفحات بنجاح!`);
+        setStructureInput(prev => `${prev}\n\n[ملف PDF مرفق: ${fileName}]`);
+        detectAndSetSubject(fileName, truncatedText);
+        setParseStatus(`تمت قراءة ${pdf.numPages} صفحات وتحديد المادة بنجاح!`);
       } 
       else if (fileExtension === "docx") {
         setParseStatus("جاري تحميل قارئ مستندات Word...");
@@ -166,10 +184,28 @@ export default function AIQuizPage() {
           throw new Error("ملف الـ Word فارغ أو لا يحتوي على نصوص مقروءة.");
         }
 
-        setFileContent(text);
+        // Auto-detect subject from file name or content
+        const detectAndSetSubject = (name: string, content: string) => {
+          const textToSearch = (name + " " + content).toLowerCase();
+          if (textToSearch.includes("كيمياء") || textToSearch.includes("chemistry") || textToSearch.includes("كربونات") || textToSearch.includes("عضوية") || textToSearch.includes("روابط") || textToSearch.includes("تفاعل") || textToSearch.includes("غاز") || textToSearch.includes("جدول دوري") || textToSearch.includes("عنصر") || textToSearch.includes("هيدروكربونات")) {
+            setSubject("chemistry");
+          } else if (textToSearch.includes("فيزياء") || textToSearch.includes("physics") || textToSearch.includes("قوة") || textToSearch.includes("حركة") || textToSearch.includes("تسارع") || textToSearch.includes("متجه") || textToSearch.includes("شغل") || textToSearch.includes("طاقة") || textToSearch.includes("سرعة") || textToSearch.includes("جسر")) {
+            setSubject("physics");
+          } else if (textToSearch.includes("أحياء") || textToSearch.includes("biology") || textToSearch.includes("خلية") || textToSearch.includes("مناعة") || textToSearch.includes("جسم") || textToSearch.includes("دم") || textToSearch.includes("مرض") || textToSearch.includes("تنفس") || textToSearch.includes("جراثيم")) {
+            setSubject("biology");
+          } else if (textToSearch.includes("رياضيات") || textToSearch.includes("math") || textToSearch.includes("تفاضل") || textToSearch.includes("تكامل") || textToSearch.includes("حساب") || textToSearch.includes("هندسة") || textToSearch.includes("مصفوفة") || textToSearch.includes("دالة") || textToSearch.includes("زاوية") || textToSearch.includes("ضرب")) {
+            setSubject("math");
+          } else if (textToSearch.includes("english") || textToSearch.includes("grammar") || textToSearch.includes("reading") || textToSearch.includes("writing")) {
+            setSubject("english");
+          }
+        };
+
+        const truncatedText = text.slice(0, 5000);
+        setFileContent(truncatedText);
         setUploadedFileName(fileName);
-        setStructureInput(prev => `${prev}\n\n[مستند Word مرفق: ${fileName}]\n${text.slice(0, 15000)}`);
-        setParseStatus("تمت قراءة ملف Word بنجاح!");
+        setStructureInput(prev => `${prev}\n\n[مستند Word مرفق: ${fileName}]`);
+        detectAndSetSubject(fileName, truncatedText);
+        setParseStatus("تمت قراءة ملف Word وتحديد المادة بنجاح!");
       } 
       else {
         // Handle normal txt/csv/json text files
@@ -178,10 +214,28 @@ export default function AIQuizPage() {
         reader.onload = (event) => {
           const text = event.target?.result as string;
           if (text) {
-            setFileContent(text);
+            // Auto-detect subject from file name or content
+            const detectAndSetSubject = (name: string, content: string) => {
+              const textToSearch = (name + " " + content).toLowerCase();
+              if (textToSearch.includes("كيمياء") || textToSearch.includes("chemistry") || textToSearch.includes("كربونات") || textToSearch.includes("عضوية") || textToSearch.includes("روابط") || textToSearch.includes("تفاعل") || textToSearch.includes("غاز") || textToSearch.includes("جدول دوري") || textToSearch.includes("عنصر") || textToSearch.includes("هيدروكربونات")) {
+                setSubject("chemistry");
+              } else if (textToSearch.includes("فيزياء") || textToSearch.includes("physics") || textToSearch.includes("قوة") || textToSearch.includes("حركة") || textToSearch.includes("تسارع") || textToSearch.includes("متجه") || textToSearch.includes("شغل") || textToSearch.includes("طاقة") || textToSearch.includes("سرعة") || textToSearch.includes("جسر")) {
+                setSubject("physics");
+              } else if (textToSearch.includes("أحياء") || textToSearch.includes("biology") || textToSearch.includes("خلية") || textToSearch.includes("مناعة") || textToSearch.includes("جسم") || textToSearch.includes("دم") || textToSearch.includes("مرض") || textToSearch.includes("تنفس") || textToSearch.includes("جراثيم")) {
+                setSubject("biology");
+              } else if (textToSearch.includes("رياضيات") || textToSearch.includes("math") || textToSearch.includes("تفاضل") || textToSearch.includes("تكامل") || textToSearch.includes("حساب") || textToSearch.includes("هندسة") || textToSearch.includes("مصفوفة") || textToSearch.includes("دالة") || textToSearch.includes("زاوية") || textToSearch.includes("ضرب")) {
+                setSubject("math");
+              } else if (textToSearch.includes("english") || textToSearch.includes("grammar") || textToSearch.includes("reading") || textToSearch.includes("writing")) {
+                setSubject("english");
+              }
+            };
+
+            const truncatedText = text.slice(0, 5000);
+            setFileContent(truncatedText);
             setUploadedFileName(fileName);
-            setStructureInput(prev => `${prev}\n\n[مستند نصي مرفق: ${fileName}]\n${text.slice(0, 15000)}`);
-            setParseStatus("تمت قراءة الملف النصي بنجاح!");
+            setStructureInput(prev => `${prev}\n\n[مستند نصي مرفق: ${fileName}]`);
+            detectAndSetSubject(fileName, truncatedText);
+            setParseStatus("تمت قراءة الملف النصي وتحديد المادة بنجاح!");
           } else {
             setErrorMsg("فشل قراءة الملف النصي.");
             setParsingFile(false);
