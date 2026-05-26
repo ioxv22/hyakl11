@@ -36,7 +36,7 @@ export const Header: React.FC = () => {
                   ADVVVV11
                 </span>
                 <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 leading-none">
-                  أكاديمية الحادي عشر متقدم
+                  بوابة المراجعة الذكية للثانوي المتقدم
                 </span>
               </div>
             </Link>

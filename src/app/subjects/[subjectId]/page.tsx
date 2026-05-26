@@ -25,7 +25,7 @@ import { useApp } from "@/context/AppContext";
 import { OrganicLab } from "@/components/OrganicLab";
 import { SUBJECTS } from "@/data/mockData";
 import { MCQQuiz } from "@/components/MCQQuiz";
-import { Quiz } from "@/components/Quiz";
+import { MCQStudyHub } from "@/components/MCQStudyHub";
 import { Flashcard } from "@/components/Flashcard";
 import { CommentsSection } from "@/components/CommentsSection";
 import { PDFViewer } from "@/components/PDFViewer";
@@ -133,7 +133,8 @@ export default function SubjectPage() {
   // Star Ratings Display helper
   const isFavorited = activeLesson?.pdfFile ? favorites.includes(activeLesson.pdfFile.path) : false;
 
-  const isEnglish = subjectId === "english";
+  const isEnglish = subjectId === "english" || subjectId === "g10-english";
+  const isGrade10 = subject?.grade === 10;
 
   return (
     <div className={`flex flex-col gap-6 ${isEnglish ? "font-sans text-left" : "font-cairo text-right"}`} dir={isEnglish ? "ltr" : "rtl"}>
@@ -154,7 +155,9 @@ export default function SubjectPage() {
               <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">{subject.name}</h1>
             </div>
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-              {isEnglish ? "Grade 11 Advanced — Term 3 Review Hub" : "الصف الحادي عشر متقدم — مراجعة الفصل الثالث"}
+              {isGrade10 
+                ? (isEnglish ? "Grade 10 Advanced — Term 3 Review Hub" : "الصف العاشر المتقدم — مراجعة الفصل الثالث")
+                : (isEnglish ? "Grade 11 Advanced — Term 3 Review Hub" : "الصف الحادي عشر متقدم — مراجعة الفصل الثالث")}
             </p>
           </div>
         </div>
@@ -341,7 +344,9 @@ export default function SubjectPage() {
                     {activeLesson.title}
                   </h2>
                   <p className="text-[10px] text-slate-400 font-bold mt-1">
-                    {isEnglish ? "Grade 11 ADV Complete Curriculum" : "منهج الصف الحادي عشر ADV متكامل"}
+                    {isGrade10
+                      ? (isEnglish ? "Grade 10 ADV Complete Curriculum" : "منهج الصف العاشر ADV متكامل")
+                      : (isEnglish ? "Grade 11 ADV Complete Curriculum" : "منهج الصف الحادي عشر ADV متكامل")}
                   </p>
                 </div>
 
@@ -381,20 +386,8 @@ export default function SubjectPage() {
                       <YoutubeIcon />
                       <span className="text-sm font-black">
                         {isEnglish 
-                          ? "Lesson Explanation — YouTube 🎥" 
-                          : (subjectId === "islamic" 
-                              ? "شرح قناة نحو قمة المعرفة — YouTube 🎥" 
-                              : (subjectId === "biology" 
-                                  ? "شرح قناة BioScope — YouTube 🎥" 
-                                  : (subjectId === "physics_bridge"
-                                      ? "شرح أ. محمد شوقي — YouTube 🎥"
-                                      : (subjectId === "physics"
-                                          ? "شرح قناة قطوف فيزيائية — YouTube 🎥"
-                                          : (subjectId === "biology_bridge"
-                                              ? "شرح أستاذ أحياء وعلم بيئة — YouTube 🎥"
-                                              : (subjectId === "chemistry_bridge" || subjectId === "chemistry"
-                                                  ? "شرح أ. محمد زيادة — YouTube 🎥"
-                                                  : "شرح أ. محمد زياد — YouTube 🎥"))))))}
+                          ? "Video Lessons & Embedded Videos 🎥" 
+                          : "دروس الفيديو والفيديوهات المدمجة (Video Lessons & Embedded Videos) 🎥"}
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-400 font-bold">
@@ -794,7 +787,7 @@ export default function SubjectPage() {
 
               {/* Tab 3: Interactive MCQ Quiz */}
               {activeTab === "mcq" && (
-                <Quiz questions={activeLesson.mcq || []} lessonId={activeLesson.id} />
+                <MCQStudyHub questions={activeLesson.mcq || []} lessonId={activeLesson.id} isEnglish={isEnglish} />
               )}
 
               {/* Tab 4: Important Questions */}
