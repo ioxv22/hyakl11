@@ -49,7 +49,7 @@ export default function SubjectPage() {
   const [videoToast, setVideoToast] = useState<string | null>(null);
 
   useEffect(() => {
-    setActiveTab(subjectId === "math" ? "summary" : "files");
+    setActiveTab((subjectId === "math" || subjectId === "g10-arabic") ? "summary" : "files");
   }, [subjectId]);
 
   useEffect(() => {
@@ -226,7 +226,7 @@ export default function SubjectPage() {
                         <button
                           onClick={() => {
                             setActiveLessonId(les.id);
-                            setActiveTab(subjectId === "math" ? "summary" : "files");
+                            setActiveTab((subjectId === "math" || subjectId === "g10-arabic") ? "summary" : "files");
                           }}
                           className={`flex-1 flex items-center gap-2 text-xs font-bold cursor-pointer ${isEnglish ? "text-left flex-row" : "text-right flex-row-reverse"}`}
                         >
@@ -484,7 +484,7 @@ export default function SubjectPage() {
             {/* Interactive Study Tabs Header */}
             <div className={`flex border-b border-slate-200 dark:border-slate-800 gap-1 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-1.5 rounded-2xl overflow-x-auto ${isEnglish ? "justify-start" : "justify-start"}`}>
               
-              {subjectId === "math" && (
+              {(subjectId === "math" || subjectId === "g10-arabic") && (
                 <button
                   onClick={() => setActiveTab("summary")}
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
@@ -494,7 +494,7 @@ export default function SubjectPage() {
                   }`}
                 >
                   <BookOpen size={14} />
-                  <span>{isEnglish ? "Summary" : "الشرح والتلخيص"}</span>
+                  <span>{isEnglish ? "Summary" : (subjectId === "g10-arabic" ? "نصوص الرواية والشرح 📖" : "الشرح والتلخيص")}</span>
                 </button>
               )}
 
@@ -507,7 +507,7 @@ export default function SubjectPage() {
                 }`}
               >
                 <FileText size={14} />
-                <span>{isEnglish ? "Original PDFs" : "ملفات الـ PDF الأصلية"}</span>
+                <span>{isEnglish ? "Original PDFs" : (subjectId === "g10-arabic" ? "الهيكل والمراجعات 📂" : "ملفات الـ PDF الأصلية")}</span>
               </button>
 
               {/* Formulas Tab (Only if lesson has formulas) */}
@@ -521,7 +521,7 @@ export default function SubjectPage() {
                   }`}
                 >
                   <Layers size={16} />
-                  <span>القوانين</span>
+                  <span>{subjectId === "g10-arabic" ? "النحو والضمائر ✍️" : "القوانين"}</span>
                 </button>
               )}
 
@@ -534,7 +534,7 @@ export default function SubjectPage() {
                 }`}
               >
                 <HelpCircle size={14} />
-                <span>{isEnglish ? "MCQ Quizzes" : "الاختبارات MCQ"}</span>
+                <span>{isEnglish ? "MCQ Quizzes" : (subjectId === "g10-arabic" ? "أسئلة الفهم MCQ 🧠" : "الاختبارات MCQ")}</span>
               </button>
 
               <button
@@ -546,7 +546,7 @@ export default function SubjectPage() {
                 }`}
               >
                 <Award size={14} />
-                <span>{isEnglish ? "Key Questions" : "الأسئلة الهامة السريعة"}</span>
+                <span>{isEnglish ? "Key Questions" : (subjectId === "g10-arabic" ? "تحليل الرواية والأسئلة 📝" : "الأسئلة الهامة السريعة")}</span>
               </button>
 
               <button
@@ -753,8 +753,42 @@ export default function SubjectPage() {
               {/* Formulas Tab */}
               {activeTab === "formulas" && (
                 <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 rounded-3xl p-5 sm:p-8">
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">المعادلات والقوانين الهامة</h3>
-                  <PhysicsEquationBox formulas={activeLesson?.formulas || []} />
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+                    {subjectId === "g10-arabic" ? "قواعد النحو والضمائر والأساليب البلاغية ✍️" : "المعادلات والقوانين الهامة"}
+                  </h3>
+                  {subjectId === "g10-arabic" ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      {(activeLesson?.formulas || []).map((formula: any, idx: number) => (
+                        <div 
+                          key={idx} 
+                          className="relative bg-slate-900 border border-violet-500/30 rounded-2xl p-5 overflow-hidden group hover:border-violet-500/70 transition-all duration-300 text-right"
+                        >
+                          {/* Glowing Ambient Background */}
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/10 blur-3xl rounded-full group-hover:bg-violet-500/20 transition-all" />
+                          
+                          <div className="flex items-center gap-2 mb-3 relative z-10 flex-row-reverse">
+                            <span className="text-violet-400 text-lg">✍️</span>
+                            <h3 className="text-violet-300 font-bold text-sm">{formula.title}</h3>
+                          </div>
+                          
+                          <div className="bg-slate-950 rounded-xl p-4 mb-3 border border-slate-800 flex items-center justify-center relative z-10 shadow-inner">
+                            <span className="text-base font-bold text-emerald-400 text-center" dir="rtl">
+                              {formula.expression}
+                            </span>
+                          </div>
+                          
+                          {formula.explanation && (
+                            <p className="text-slate-400 text-xs leading-relaxed relative z-10 font-medium flex items-start gap-1.5 flex-row-reverse">
+                              <span className="text-emerald-500">✨</span>
+                              <span className="flex-1">{formula.explanation}</span>
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <PhysicsEquationBox formulas={activeLesson?.formulas || []} />
+                  )}
                 </div>
               )}
 

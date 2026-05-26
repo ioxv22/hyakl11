@@ -1,6 +1,7 @@
 import { physicsBridgeSubject } from './physicsBridgeData';
 import { biologyBridgeSubject } from './biologyBridgeData';
 import { chemistryBridgeSubject } from './chemistryBridgeData';
+import { GRADE10_SUBJECTS } from './grade10Data';
 
 export interface MCQ {
   question: string;
@@ -43,8 +44,8 @@ export interface Lesson {
   extraFiles?: FileItem[];
   formulas?: Formula[];
   vocabulary?: Vocabulary[];
-  mcq: MCQ[];
-  importantQuestions: ImportantQuestion[];
+  mcq?: MCQ[];
+  importantQuestions?: ImportantQuestion[];
 }
 
 export interface Chapter {
@@ -61,6 +62,7 @@ export interface Subject {
   chapters: Chapter[];
   track?: "inspire" | "bridge";
   generalFiles?: FileItem[];
+  grade?: number;
 }
 
 export const SUBJECTS: Subject[] = [
@@ -2197,5 +2199,6 @@ export const SUBJECTS: Subject[] = [
   },
   biologyBridgeSubject,
   physicsBridgeSubject,
-  chemistryBridgeSubject
+  chemistryBridgeSubject,
+  ...GRADE10_SUBJECTS
 ];
