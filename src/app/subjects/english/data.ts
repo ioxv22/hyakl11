@@ -2310,14 +2310,26 @@ export const VOCABULARY_DATABASE: VocabItem[] = [
 ];
 
 export const GRAMMAR_CENTER_DATABASE: Record<string, GrammarRule> = {
-  // Parsing grammar is extremely complex, providing a placeholder for now
-  placeholder: {
-    title: "Grammar Rules",
-    explanation: "Refer to the English Data file for full grammar rules.",
-    arabicExplanation: "راجع ملف البيانات للقواعد كاملة.",
-    examples: [],
-    commonMistakes: [],
-    examQuestions: []
+  thirdConditional: {
+    title: "Third Conditional",
+    formula: "If + Subject + had + Past Participle (V3) , Subject + would have + Past Participle (V3)",
+    timeline: "Imaginary past event ➔ Imaginary past outcome",
+    explanation: "Used to describe imaginary situations in the past and their hypothetical results.",
+    arabicExplanation: "يستخدم للتعبير عن مواقف خيالية في الماضي ونتائجها الافتراضية.",
+    examples: [
+      { original: "If I had studied, I would have passed.", ar: "لو أنني درست، لكنت قد نجحت." }
+    ],
+    commonMistakes: [
+      { wrong: "If I would have studied, I would have passed.", right: "If I had studied, I would have passed.", reason: "Never use 'would have' inside the 'if' clause." }
+    ],
+    examQuestions: [
+      {
+        q: "If the climate change team _______ the target earlier, the depletion would have been minimized.",
+        opts: ["has met", "had met", "meets", "would meet"],
+        ans: 1,
+        exp: "Requires Past Perfect 'had met' in the conditional clause."
+      }
+    ]
   }
 };
 
@@ -2336,7 +2348,28 @@ export interface WritingTopic {
   vocab: string[];
 }
 
-export const READING_CENTER_DATABASE: ReadingPassage[] = [];
+export const READING_CENTER_DATABASE: ReadingPassage[] = [
+  {
+    id: "follow-your-heart",
+    title: "Follow Your Heart",
+    story: "In today's fast-paced world, choosing a career path can be overwhelming.",
+    paragraphs: [
+      { en: "In today's fast-paced world, choosing a career path can be overwhelming.", ar: "في عالم اليوم المتسارع، يمكن أن يكون اختيار المسار المهني أمراً مربكاً." }
+    ],
+    summary: "The passage advises students to prioritize career interest.",
+    characters: "Graduating students.",
+    mainIdea: "Long-term career success stems from passion.",
+    expressions: ["follow your heart (اتبع شغفك)"],
+    questions: [
+      {
+        q: "What is the central theme of 'Follow Your Heart'?",
+        opts: ["Money", "Passion", "Coding", "Nothing"],
+        ans: 1,
+        exp: "The text advises graduates to follow their heart."
+      }
+    ]
+  }
+];
 export const MAZE_PRACTICE_DATABASE: MazeQuestion[] = [
   {
     id: "maze_1_1",
