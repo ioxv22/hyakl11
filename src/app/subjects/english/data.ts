@@ -2337,7 +2337,89 @@ export interface WritingTopic {
 }
 
 export const READING_CENTER_DATABASE: ReadingPassage[] = [];
-export const MAZE_PRACTICE_DATABASE: MazeQuestion[] = [];
+export const MAZE_PRACTICE_DATABASE: MazeQuestion[] = [
+  {
+    id: "maze_1_1",
+    level: "Medium",
+    textBefore: "In ",
+    choices: ["antiquity", "ambition", "evidence"],
+    textAfter: ", traders travelled across a vast network of routes known as the Silk Road.",
+    correctIndex: 0,
+    explanation: "Antiquity refers to ancient times."
+  },
+  {
+    id: "maze_1_2",
+    level: "Medium",
+    textBefore: "traders travelled across a ",
+    choices: ["vast", "urban", "ethnic"],
+    textAfter: " network of routes known as the Silk Road.",
+    correctIndex: 0,
+    explanation: "Vast means huge or enormous."
+  },
+  {
+    id: "maze_1_3",
+    level: "Medium",
+    textBefore: "where architects design ",
+    choices: ["sustainable", "landlocked", "dominant"],
+    textAfter: " skyscrapers that protect the environment and reflect the cultural identity of each region.",
+    correctIndex: 0,
+    explanation: "Sustainable buildings use less energy and reduce pollution."
+  },
+  {
+    id: "maze_1_4",
+    level: "Medium",
+    textBefore: "Researchers have shown that recent ",
+    choices: ["advances", "gestures", "consequences"],
+    textAfter: " in technology have changed the way young people learn languages.",
+    correctIndex: 0,
+    explanation: "Advances means progress or improvements."
+  },
+  {
+    id: "maze_1_5",
+    level: "Medium",
+    textBefore: "However, life on the internet is not always safe; ",
+    choices: ["cyberbullying", "friendliness", "awareness"],
+    textAfter: " has become a serious problem that can affect a student's mental health.",
+    correctIndex: 0,
+    explanation: "Cyberbullying is bullying using digital technology."
+  },
+  {
+    id: "maze_2_1",
+    level: "Medium",
+    textBefore: "Long ago, ",
+    choices: ["merchants", "archaeologists", "victims"],
+    textAfter: " travelled in long camel caravans across the desert.",
+    correctIndex: 0,
+    explanation: "Merchants are traders who sell goods."
+  },
+  {
+    id: "maze_2_2",
+    level: "Medium",
+    textBefore: "stopping at every ",
+    choices: ["oasis", "statue", "decade"],
+    textAfter: " to rest and find water.",
+    correctIndex: 0,
+    explanation: "An oasis is a green spot in the desert with water."
+  },
+  {
+    id: "maze_2_3",
+    level: "Medium",
+    textBefore: "scientists study this period from a different ",
+    choices: ["perspective", "greeting", "chatter"],
+    textAfter: ", using new tools to understand how trade shaped early civilisations.",
+    correctIndex: 0,
+    explanation: "Perspective means point of view."
+  },
+  {
+    id: "maze_2_4",
+    level: "Medium",
+    textBefore: "In modern cities, the Burj Khalifa is considered an ",
+    choices: ["iconic", "ethnic", "landlocked"],
+    textAfter: " landmark whose elegant design attracts tourists.",
+    correctIndex: 0,
+    explanation: "Iconic means famous or symbolic."
+  }
+];
 export const EMSAT_GRAMMAR_PRACTICE: EmsatQuestion[] = [
   {
     q: "The lady _______ son won the national spelling bee contest was extremely proud.",
