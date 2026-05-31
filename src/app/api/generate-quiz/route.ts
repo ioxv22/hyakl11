@@ -36,60 +36,77 @@ Ensure the questions are highly relevant, challenging, and strictly follow the p
     let responseText = "";
     let success = false;
 
-    // Try endpoints in order
-    for (const endpoint of QUIZ_API_ENDPOINTS) {
+    // 1. Try official Gemini API if key is available
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey) {
+      console.log("Using official Gemini API with key...");
       try {
-        const messages: any[] = [
-          { role: "system", content: systemPrompt }
-        ];
-
-        if (image) {
-          messages.push({
-            role: "user",
-            content: [
-              { type: "text", text: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on the text structure and the attached image screenshot.` },
-              { type: "text", text: `Structure / Syllabus Notes: ${finalStructure}` },
-              {
-                type: "image_url",
-                image_url: {
-                  url: image // base64 data URL
-                }
-              }
-            ]
-          });
-        } else {
-          messages.push({
-            role: "user",
-            content: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on this structure:\n${finalStructure}`
-          });
+        responseText = await callOfficialGeminiAPI(geminiKey, systemPrompt, finalStructure || "صورة مرفقة بالهيكل", image, numQuestions, subject, difficulty);
+        if (responseText && responseText.trim().length > 20) {
+          success = true;
         }
+      } catch (err) {
+        console.error("Failed using official Gemini API:", err);
+      }
+    }
 
-        const response = await fetch(endpoint.url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: endpoint.model,
-            temperature: 0.8,
-            max_tokens: 3000,
-            messages
-          }),
-          signal: AbortSignal.timeout(22000) // 22 seconds timeout per endpoint
-        });
+    // 2. Try free proxy endpoints as a backup if official API failed or isn't configured
+    if (!success) {
+      console.log("Attempting free proxy endpoints...");
+      for (const endpoint of QUIZ_API_ENDPOINTS) {
+        try {
+          const messages: any[] = [
+            { role: "system", content: systemPrompt }
+          ];
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.choices && data.choices[0] && data.choices[0].message) {
-            responseText = data.choices[0].message.content.trim();
-            if (responseText && responseText.length > 20) {
-              success = true;
-              break;
+          if (image) {
+            messages.push({
+              role: "user",
+              content: [
+                { type: "text", text: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on the text structure and the attached image screenshot.` },
+                { type: "text", text: `Structure / Syllabus Notes: ${finalStructure}` },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: image // base64 data URL
+                  }
+                }
+              ]
+            });
+          } else {
+            messages.push({
+              role: "user",
+              content: `Generate a simulated exam with exactly ${numQuestions} questions for the subject "${subject}" based on this structure:\n${finalStructure}`
+            });
+          }
+
+          const response = await fetch(endpoint.url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: endpoint.model,
+              temperature: 0.8,
+              max_tokens: 3000,
+              messages
+            }),
+            signal: AbortSignal.timeout(22000) // 22 seconds timeout per endpoint
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+              responseText = data.choices[0].message.content.trim();
+              if (responseText && responseText.length > 20) {
+                success = true;
+                break;
+              }
             }
           }
+        } catch (e) {
+          console.error(`Failed calling quiz generator endpoint ${endpoint.url}:`, e);
         }
-      } catch (e) {
-        console.error(`Failed calling quiz generator endpoint ${endpoint.url}:`, e);
       }
     }
 
@@ -116,8 +133,8 @@ Ensure the questions are highly relevant, challenging, and strictly follow the p
       }
     }
 
-    // Fallback Mock Quiz Generator if all APIs fail or return invalid JSON
-    console.log("Using robust fallback mock quiz generator for subject:", subject);
+    // 3. Fallback Smart Custom Quiz Generator if all APIs fail
+    console.log("Using smart dynamic fallback quiz generator for subject:", subject);
     const fallbackQuiz = generateFallbackQuiz(subject, numQuestions, finalStructure || "صورة مرفقة بالهيكل");
     return NextResponse.json(fallbackQuiz);
 
@@ -127,8 +144,230 @@ Ensure the questions are highly relevant, challenging, and strictly follow the p
   }
 }
 
-// Helper to generate a realistic mock quiz depending on selected subject
+// Official Gemini API content generator
+async function callOfficialGeminiAPI(geminiKey: string, systemPrompt: string, structureText: string, imageBase64: string | null, numQuestions: number, subject: string, difficulty: string) {
+  // Try gemini-2.5-flash first (most modern default), then fallback to gemini-1.5-flash
+  const models = ["gemini-2.5-flash", "gemini-1.5-flash"];
+  let lastError = null;
+
+  const parts: any[] = [
+    { text: `${systemPrompt}\n\nSubject: ${subject}\nDifficulty: ${difficulty}\nNumber of Questions: ${numQuestions}\n\nTask: Generate the quiz based on the provided documents/images.` },
+    { text: `Structure / Syllabus Context:\n${structureText}` }
+  ];
+
+  if (imageBase64) {
+    const match = imageBase64.match(/^data:(image\/\w+);base64,(.+)$/);
+    if (match) {
+      parts.push({
+        inlineData: {
+          mimeType: match[1],
+          data: match[2]
+        }
+      });
+    }
+  }
+
+  for (const model of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts
+            }
+          ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  question: { type: "STRING" },
+                  options: {
+                    type: "ARRAY",
+                    items: { type: "STRING" }
+                  },
+                  answerIndex: { type: "INTEGER" },
+                  explanation: { type: "STRING" }
+                },
+                required: ["question", "options", "answerIndex", "explanation"]
+              }
+            }
+          }
+        }),
+        signal: AbortSignal.timeout(25000)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text && text.trim().length > 20) {
+          return text;
+        }
+      } else {
+        const errText = await response.text();
+        console.warn(`Failed calling official Gemini model ${model}:`, errText);
+      }
+    } catch (e) {
+      console.warn(`Error calling official Gemini model ${model}:`, e);
+      lastError = e;
+    }
+  }
+
+  throw lastError || new Error("Failed to generate content with all Gemini models");
+}
+
+// Shuffles an array and returns correct item's index
+function shuffleArray(array: string[], correctItem: string) {
+  const arr = [...new Set(array.map(s => s.trim()))].filter(Boolean);
+  // Ensure we have exactly 4 options
+  while (arr.length < 4) {
+    arr.push(`خيارات مكملة للاختبار النهائي لمادة الدراسية`);
+  }
+  // If correct item was filtered out or missing, insert it
+  if (!arr.includes(correctItem.trim())) {
+    arr[0] = correctItem.trim();
+  }
+
+  // Shuffle using Fisher-Yates
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+
+  const correctIndex = arr.indexOf(correctItem.trim());
+  return { array: arr, correctIndex: correctIndex === -1 ? 0 : correctIndex };
+}
+
+// Helper to generate a realistic mock quiz depending on selected subject or uploaded file contents
 function generateFallbackQuiz(subject: string, count: number, structure: string) {
+  const result: Array<{ question: string; options: string[]; answerIndex: number; explanation: string }> = [];
+
+  // Parse lines to build custom content-aware questions if structure is available
+  const cleanStructure = structure.replace(/\[ملف.*?\]/g, "").replace(/\[محتوى.*?\]/g, "").trim();
+  
+  if (cleanStructure.length > 30) {
+    const lines = cleanStructure
+      .split(/\n+/)
+      .map(l => l.trim())
+      .filter(l => l.length > 12 && !l.startsWith("http"));
+
+    const extractedPairs: Array<{ concept: string; definition: string }> = [];
+    const keyStatements: string[] = [];
+
+    // Common indicators for definitions in Arabic and English
+    const indicators = [
+      { sep: " هو ", ar: true },
+      { sep: " هي ", ar: true },
+      { sep: " عبارة عن ", ar: true },
+      { sep: " يعني ", ar: true },
+      { sep: " يعرف بأنه ", ar: true },
+      { sep: " : ", ar: null },
+      { sep: " - ", ar: null },
+      { sep: " is defined as ", ar: false },
+      { sep: " refers to ", ar: false },
+      { sep: " is ", ar: false }
+    ];
+
+    for (const line of lines) {
+      let matched = false;
+      for (const ind of indicators) {
+        if (line.includes(ind.sep)) {
+          const parts = line.split(ind.sep);
+          if (parts.length >= 2) {
+            const concept = parts[0].replace(/^[\d.-]+\s*/, "").replace(/^[*•#-]\s*/, "").trim();
+            const definition = parts.slice(1).join(ind.sep).trim();
+            if (concept.length >= 2 && concept.length <= 40 && definition.length >= 10) {
+              extractedPairs.push({ concept, definition });
+              matched = true;
+              break;
+            }
+          }
+        }
+      }
+      if (!matched && line.length > 25 && line.length < 160) {
+        keyStatements.push(line);
+      }
+    }
+
+    // 1. Generate definition lookup questions
+    const usedConcepts = new Set<string>();
+    for (const pair of extractedPairs) {
+      if (result.length >= count) break;
+      if (usedConcepts.has(pair.concept.toLowerCase())) continue;
+      usedConcepts.add(pair.concept.toLowerCase());
+
+      const questionText = `بناءً على الهيكل الدراسي والمستند المرفق، ما هو التعريف الدقيق لـ (${pair.concept})؟`;
+      const correctOption = pair.definition;
+
+      // Extract up to 3 other definitions as distractors
+      const otherDefs = extractedPairs
+        .filter(p => p.concept.toLowerCase() !== pair.concept.toLowerCase())
+        .map(p => p.definition);
+
+      // Add default placeholders if we lack dynamic options
+      while (otherDefs.length < 3) {
+        otherDefs.push(
+          `أحد المفاهيم المرتبطة بدرس ${pair.concept} للوحدات الدراسية المقررة.`,
+          `العلاقة الرياضية أو المفهوم النظري الذي يربط متغيرات الدرس المذكور.`,
+          `المصطلح الأكاديمي المناسب لبنود الهيكل النهائي المعتمد.`
+        );
+      }
+
+      const options = [correctOption, otherDefs[0], otherDefs[1], otherDefs[2]];
+      const shuffled = shuffleArray(options, correctOption);
+
+      result.push({
+        question: questionText,
+        options: shuffled.array,
+        answerIndex: shuffled.correctIndex,
+        explanation: `التعريف الصحيح والواضح لـ (${pair.concept}) هو: ${pair.definition}`
+      });
+    }
+
+    // 2. Generate fill-in-the-blank questions
+    for (const statement of keyStatements) {
+      if (result.length >= count) break;
+
+      const words = statement.split(/\s+/).map(w => w.replace(/[.,;:!?()]/g, "")).filter(w => w.length > 4);
+      if (words.length < 5) continue;
+
+      // Pick a keyword from the middle of the statement
+      const keywordIdx = Math.floor(words.length / 2);
+      const keyword = words[keywordIdx];
+      if (!keyword || keyword.length < 3) continue;
+
+      const blankText = statement.replace(new RegExp(`\\b${keyword}\\b`, "g"), "_______");
+      if (!blankText.includes("_______")) continue;
+
+      const questionText = `أكمل الفراغ في العبارة التالية وفقاً لما ورد في الملف الدراسي المرفق:\n\n"${blankText}"`;
+      const correctOption = keyword;
+
+      const otherWords = words.filter(w => w !== keyword);
+      while (otherWords.length < 3) {
+        otherWords.push("المركب", "العملية", "القانون", "النسبة", "المتغير", "القيمة");
+      }
+
+      const options = [correctOption, otherWords[0], otherWords[1], otherWords[2]];
+      const shuffled = shuffleArray(options, correctOption);
+
+      result.push({
+        question: questionText,
+        options: shuffled.array,
+        answerIndex: shuffled.correctIndex,
+        explanation: `العبارة الصحيحة والكاملة هي: "${statement}"`
+      });
+    }
+  }
+
+  // 3. Keep standard premium questions fallback database to guarantee complete count
   const quizzes: Record<string, Array<{ question: string; options: string[]; answerIndex: number; explanation: string }>> = {
     english: [
       {
@@ -297,7 +536,7 @@ function generateFallbackQuiz(subject: string, count: number, structure: string)
     ],
     arabic: [
       {
-        question: "حدد الفاعل في الجملة التالية: 'يحرصُ الطالبُ المجتهدُ على المراجعةِ اليوميةِ.'",
+        question: "حدد الفاعل في الجملة التالية: 'يحرصُ الطالبُ المجتهدُ على المراجعةِ اليومية.'",
         options: ["الطالبُ", "المجتهدُ", "يحرصُ", "المراجعةِ"],
         answerIndex: 0,
         explanation: "الفاعل هو من قام بالفعل، وفي الجملة الطالبُ هو الذي يقوم بالحرص، وعلامة رفعه الضمة الظاهرة."
@@ -391,16 +630,40 @@ function generateFallbackQuiz(subject: string, count: number, structure: string)
     ]
   };
 
-  const defaultList = quizzes[subject.toLowerCase()] || quizzes.english;
+  const subKey = subject ? subject.toLowerCase() : "english";
+  const defaultList = quizzes[subKey] || quizzes.english;
   
-  // Create an array matching count
-  const result = [];
-  for (let i = 0; i < count; i++) {
-    const item = defaultList[i % defaultList.length];
-    result.push({
-      ...item,
-      question: `[محاكاة للهيكل: ${structure.slice(0, 30)}...] \n ${item.question}`
-    });
+  // Fill remaining questions using customized default templates
+  let index = 0;
+  while (result.length < count) {
+    const item = defaultList[index % defaultList.length];
+    
+    // Customize the question slightly to mention context from user structure if available
+    let customQuestion = item.question;
+    if (cleanStructure.length > 10) {
+      const snippet = cleanStructure.slice(0, 45).replace(/\n/g, " ").trim();
+      customQuestion = `[محاكاة للهيكل: ${snippet}...] \n ${customQuestion}`;
+    }
+    
+    // Prevent exact duplicate questions
+    const isDuplicate = result.some(r => r.question === customQuestion);
+    if (!isDuplicate) {
+      result.push({
+        ...item,
+        question: customQuestion
+      });
+    }
+    index++;
+    
+    // Failsafe break to avoid infinite loop if count is huge
+    if (index > 100) {
+      result.push({
+        ...item,
+        question: `${item.question} (#${result.length + 1})`
+      });
+    }
   }
-  return result;
+
+  return result.slice(0, count);
 }
+
