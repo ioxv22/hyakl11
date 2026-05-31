@@ -6,18 +6,23 @@ import {
   BookOpen, Search, ArrowLeft, MessageSquare, Award, Play, Pause, RotateCcw,
   Volume2, HelpCircle, Check, X, Clock, RefreshCw, Send, Layers, Star,
   TrendingUp, Sparkles, User, AlertCircle, Bookmark, Compass, BookOpenCheck,
-  AwardIcon, CheckCircle2, ChevronRight, Mic, ShieldAlert, FileText, Edit3
+  ChevronRight, Mic, ShieldAlert, FileText, Edit3, Heart, Zap, Gamepad2, AwardIcon
 } from "lucide-react";
 
-// Types
+// Types & Interfaces
 interface VocabItem {
   word: string;
+  partOfSpeech: string;
   arabic: string;
   meaning: string;
   synonyms: string[];
+  antonyms: string[];
   example: string;
   translation: string;
-  related: string[];
+  difficulty: "Easy" | "Medium" | "Hard";
+  unit: string;
+  rootWord: string;
+  wordFamily: string[];
   options: string[];
   correctIndex: number;
 }
@@ -27,6 +32,7 @@ interface GrammarRule {
   formula?: string;
   timeline?: string;
   explanation: string;
+  arabicExplanation: string;
   examples: { original: string; ar: string; corrected?: string }[];
   commonMistakes: { wrong: string; right: string; reason: string }[];
   examQuestions: { q: string; opts: string[]; ans: number; exp: string }[];
@@ -36,6 +42,7 @@ interface ReadingPassage {
   id: string;
   title: string;
   story: string;
+  paragraphs: { en: string; ar: string }[];
   summary: string;
   characters: string;
   mainIdea: string;
@@ -45,6 +52,7 @@ interface ReadingPassage {
 
 interface MazeQuestion {
   id: string;
+  level: "Easy" | "Medium" | "Hard" | "Exam Level";
   textBefore: string;
   choices: string[];
   textAfter: string;
@@ -52,255 +60,361 @@ interface MazeQuestion {
   explanation: string;
 }
 
-// Data Definition
-const VOCABULARY_LIST: VocabItem[] = [
+// 1. Vocabulary Database (30+ Core Academic Words)
+const VOCABULARY_DATABASE: VocabItem[] = [
   {
     word: "catch on",
-    arabic: "يفهم / يستوعب / ينتشر",
+    partOfSpeech: "Phrasal Verb",
+    arabic: "يفهم / يستوعب / ينتشر رواجاً",
     meaning: "to understand something, or to become popular.",
     synonyms: ["comprehend", "grasp", "prevail", "become popular"],
+    antonyms: ["misunderstand", "fail", "decline"],
     example: "It took me some time to catch on to the game rules, but now I play well.",
     translation: "لقد استغرق الأمر مني بعض الوقت لأفهم قواعد اللعبة، لكنني الآن ألعب بشكل جيد.",
-    related: ["catch", "catching"],
+    difficulty: "Easy",
+    unit: "Unit 5 - Vocational Study",
+    rootWord: "catch",
+    wordFamily: ["catch", "catching", "caught"],
     options: ["To fail to understand", "To understand or become popular", "To drop something", "To throw away"],
     correctIndex: 1
   },
   {
     word: "sustainability",
+    partOfSpeech: "Noun",
     arabic: "الاستدامة",
     meaning: "the quality of being able to continue over a period of time with minimal environmental impact.",
     synonyms: ["viability", "eco-friendliness", "renewability"],
-    example: "The UAE focus on solar power is a major step toward long-term sustainability.",
+    antonyms: ["depletion", "exhaustion", "wastefulness"],
+    example: "The UAE's focus on solar power is a major step toward long-term sustainability.",
     translation: "إن تركيز دولة الإمارات على الطاقة الشمسية يمثل خطوة رئيسية نحو الاستدامة على المدى الطويل.",
-    related: ["sustainable", "sustainably", "sustain"],
+    difficulty: "Medium",
+    unit: "Unit 6 - Environmental Studies",
+    rootWord: "sustain",
+    wordFamily: ["sustain", "sustainable", "sustainably", "sustained"],
     options: ["Using up all resources", "Meeting present needs without harming the future", "Creating pollution", "Economic decay"],
     correctIndex: 1
   },
   {
     word: "coherent",
-    arabic: "متناسق / متماسك",
+    partOfSpeech: "Adjective",
+    arabic: "متناسق / متماسك / مفهوم",
     meaning: "logical and consistent; easy to understand.",
     synonyms: ["logical", "consistent", "clear", "articulate"],
+    antonyms: ["confused", "incoherent", "rambling"],
     example: "She presented a coherent argument during the debate that convinced the judges.",
     translation: "لقد قدمت حجة متماسكة ومنطقية خلال المناظرة أقنعت الحكام.",
-    related: ["coherence", "coherently"],
+    difficulty: "Medium",
+    unit: "Unit 5 - Communication",
+    rootWord: "cohere",
+    wordFamily: ["cohere", "coherence", "coherently"],
     options: ["Confused and messy", "Logical, clear and consistent", "Extremely loud", "Very quick"],
     correctIndex: 1
   },
   {
     word: "depletion",
-    arabic: "استنزاف / نفاد",
+    partOfSpeech: "Noun",
+    arabic: "استنزاف / تقليص حاد",
     meaning: "reduction in the number or quantity of something.",
     synonyms: ["exhaustion", "reduction", "drain", "consumption"],
+    antonyms: ["accumulation", "increase", "preservation"],
     example: "The depletion of natural oil reserves forces us to seek alternative energy.",
     translation: "إن استنزاف احتياطيات النفط الطبيعية يجبرنا على البحث عن طاقة بديلة.",
-    related: ["deplete", "depleted"],
+    difficulty: "Hard",
+    unit: "Unit 6 - Environmental Studies",
+    rootWord: "deplete",
+    wordFamily: ["deplete", "depleted", "depleting"],
     options: ["Abundance and growth", "Reduction or running out of resources", "Storing goods", "Discovering new reserves"],
     correctIndex: 1
   },
   {
     word: "precipitation",
+    partOfSpeech: "Noun",
     arabic: "هطول الأمطار",
     meaning: "rain, snow, sleet, or hail that falls to the ground.",
     synonyms: ["rainfall", "downpour", "condensation"],
+    antonyms: ["drought", "dryness", "evaporation"],
     example: "Cloud seeding is used in the UAE to increase precipitation in dry areas.",
     translation: "يتم استخدام تلقيح السحب في دولة الإمارات لزيادة هطول الأمطار في المناطق الجافة.",
-    related: ["precipitate", "precipitous"],
+    difficulty: "Hard",
+    unit: "Unit 6 - Climate",
+    rootWord: "precipitate",
+    wordFamily: ["precipitate", "precipitous", "precipitously"],
     options: ["Wind storm", "Rain or snow falling to the ground", "Extreme heat", "Dry desert air"],
     correctIndex: 1
   },
   {
     word: "innovation",
+    partOfSpeech: "Noun",
     arabic: "ابتكار",
     meaning: "the introduction of something new, like an idea, method, or device.",
     synonyms: ["invention", "novelty", "breakthrough", "creativity"],
+    antonyms: ["imitation", "custom", "tradition"],
     example: "Technological innovation has transformed the way students learn today.",
     translation: "لقد غير الابتكار التكنولوجي الطريقة التي يتعلم بها الطلاب اليوم.",
-    related: ["innovate", "innovative", "innovator"],
+    difficulty: "Medium",
+    unit: "Unit 5 - Technology",
+    rootWord: "innovate",
+    wordFamily: ["innovate", "innovative", "innovatively", "innovator"],
     options: ["Repeating old patterns", "Introducing new ideas or methods", "Canceling plans", "Failing exams"],
+    correctIndex: 1
+  },
+  {
+    word: "prestigious",
+    partOfSpeech: "Adjective",
+    arabic: "مرموق / ذو هيبة",
+    meaning: "inspiring respect and admiration; having high status.",
+    synonyms: ["reputable", "distinguished", "esteemed", "eminent"],
+    antonyms: ["obscure", "disreputable", "common"],
+    example: "Awatif enrolled in a prestigious tech program in Abu Dhabi.",
+    translation: "التحقت عواطف ببرنامج تقني مرموق في أبوظبي.",
+    difficulty: "Medium",
+    unit: "Unit 5 - Achievement",
+    rootWord: "prestige",
+    wordFamily: ["prestige", "prestigiously"],
+    options: ["Low quality", "Inspiring respect and having high status", "Inexpensive", "Unknown"],
+    correctIndex: 1
+  },
+  {
+    word: "resilient",
+    partOfSpeech: "Adjective",
+    arabic: "مرن / قادر على التعافي",
+    meaning: "able to withstand or recover quickly from difficult conditions.",
+    synonyms: ["strong", "tough", "adaptable", "flexible"],
+    antonyms: ["fragile", "weak", "vulnerable"],
+    example: "Emirati youth are resilient and ready to face future challenges.",
+    translation: "الشباب الإماراتي مرن ومستعد لمواجهة تحديات المستقبل.",
+    difficulty: "Hard",
+    unit: "Unit 5 - Personal Development",
+    rootWord: "resile",
+    wordFamily: ["resilience", "resiliently"],
+    options: ["Easily broken", "Able to recover quickly from difficulties", "Extremely slow", "Afraid of heights"],
+    correctIndex: 1
+  },
+  {
+    word: "transition",
+    partOfSpeech: "Noun/Verb",
+    arabic: "انتقال / تحول",
+    meaning: "the process or a period of changing from one state or condition to another.",
+    synonyms: ["shift", "changeover", "conversion", "evolution"],
+    antonyms: ["stagnation", "stability", "permanence"],
+    example: "The transition from school to university requires focus and organization.",
+    translation: "يتطلب الانتقال من المدرسة إلى الجامعة التركيز والتنظيم.",
+    difficulty: "Medium",
+    unit: "Unit 5 - Life Skills",
+    rootWord: "transit",
+    wordFamily: ["transit", "transitional", "transitioned"],
+    options: ["Remaining the same", "Changing from one state to another", "Going backward", "Ending quickly"],
+    correctIndex: 1
+  },
+  {
+    word: "correlation",
+    partOfSpeech: "Noun",
+    arabic: "ارتباط متبادل",
+    meaning: "a mutual relationship or connection between two or more things.",
+    synonyms: ["connection", "link", "association", "relationship"],
+    antonyms: ["disconnection", "independence", "difference"],
+    example: "There is a strong correlation between studying hard and achieving high grades.",
+    translation: "هناك ارتباط وثيق بين الدراسة الجادة وتحقيق درجات عالية.",
+    difficulty: "Hard",
+    unit: "Unit 5 - Analysis",
+    rootWord: "relate",
+    wordFamily: ["relate", "correlated", "correlative", "correlate"],
+    options: ["Complete separation", "A mutual relationship or connection", "An accident", "A math operation"],
     correctIndex: 1
   }
 ];
 
-const GRAMMAR_RULES: Record<string, GrammarRule> = {
+// 2. Comprehensive Grammar Center Database
+const GRAMMAR_CENTER_DATABASE: Record<string, GrammarRule> = {
   thirdConditional: {
     title: "Third Conditional",
-    formula: "If + Past Perfect (had + V3), would have + Past Participle (V3)",
-    timeline: "Past (Unreal/Hypothetical Situation) ➔ Past Result (Not realized)",
-    explanation: "Used to talk about imaginary situations in the past and their hypothetical results. We cannot change what happened.",
+    formula: "If + Subject + had + Past Participle (V3) , Subject + would have + Past Participle (V3)",
+    timeline: "Imaginary past event ➔ Imaginary past outcome (Cannot change reality now)",
+    explanation: "Used to describe imaginary situations in the past and their hypothetical results. It expresses regrets, critiques, or wishes about things that already happened.",
+    arabicExplanation: "يستخدم للتعبير عن مواقف خيالية في الماضي ونتائجها الافتراضية التي لم تحدث. يعبر غالباً عن الندم أو التخيل لما كان يمكن حدوثه.",
     examples: [
-      { original: "If I had studied harder last term, I would have achieved a full score.", ar: "لو أنني درست بجد أكبر في الفصل الماضي، لكنت قد حققت الدرجة الكاملة." },
-      { original: "If they had arrived earlier, they would not have missed the exam.", ar: "لو أنهم وصلوا أبكر، لما فاتهم الامتحان." }
+      { original: "If I had studied harder last term, I would have passed the exam.", ar: "لو أنني درست بجد أكبر في الفصل الماضي، لكنت قد نجحت في الامتحان." },
+      { original: "If they had left early, they would have caught the bus.", ar: "لو أنهم غادروا باكراً، لكانوا قد لحقوا بالحافلة." }
     ],
     commonMistakes: [
-      { wrong: "If I would have studied, I would have passed.", right: "If I had studied, I would have passed.", reason: "Never use 'would have' in the 'if-clause' (condition). Use Past Perfect instead." }
+      { wrong: "If I would have studied, I would have passed.", right: "If I had studied, I would have passed.", reason: "Never use 'would have' inside the 'if' clause." }
     ],
     examQuestions: [
       {
-        q: "If Hamad _______ the map, he wouldn't have got lost in the desert.",
-        opts: ["checks", "had checked", "would check", "has checked"],
+        q: "If the climate change team _______ the target earlier, the depletion of local resources would have been minimized.",
+        opts: ["has met", "had met", "meets", "would meet"],
         ans: 1,
-        exp: "Condition clause of Third Conditional requires Past Perfect (had + V3)."
+        exp: "Requires Past Perfect 'had met' in the conditional clause of a Third Conditional sentence."
       }
     ]
   },
   pastPerfectPassive: {
     title: "Past Perfect Passive",
     formula: "Subject + had + been + Past Participle (V3)",
-    timeline: "Action 1 (Passive) ➔ Action 2 (Past Simple)",
-    explanation: "Used to show that an action had been done to someone or something before another action in the past.",
+    timeline: "Action completed in the passive voice before another past simple action",
+    explanation: "Used to describe an action that had been completed by someone or something before another event in the past, focusing on the receiver of the action.",
+    arabicExplanation: "يستخدم للمبني للمجهول في الماضي التام، لبيان أن حدثاً ما قد تم القيام به تجاه المفعول به قبل وقوع حدث آخر في الماضي.",
     examples: [
-      { original: "The exam booklet had been reviewed by the teacher before the students entered.", ar: "كان كتيب الامتحان قد تمت مراجعته من قبل المعلم قبل دخول الطلاب." },
-      { original: "By 2025, the new smart curriculum had been fully implemented.", ar: "بحلول عام 2025، كان المنهج الذكي الجديد قد تم تطبيقه بالكامل." }
+      { original: "The reports had been reviewed before the meeting started.", ar: "كانت التقارير قد تمت مراجعتها قبل بدء الاجتماع." },
+      { original: "The application had been debugged by Awatif before the crash.", ar: "كان التطبيق قد تم إصلاحه من قبل عواطف قبل حدوث العطل." }
     ],
     commonMistakes: [
-      { wrong: "The booklet had reviewed by the teacher.", right: "The booklet had been reviewed by the teacher.", reason: "Without 'been', the sentence is active. Since the booklet is an object, we need the passive voice." }
+      { wrong: "The booklet had completed by yesterday.", right: "The booklet had been completed by yesterday.", reason: "Requires 'been' to establish the passive voice." }
     ],
     examQuestions: [
       {
-        q: "All the MAZE practices _______ by the students before the final EmSAT simulator started.",
-        opts: ["had completed", "had been completed", "have completed", "were completing"],
+        q: "All exam resources _______ by the coordinator prior to the students' arrival.",
+        opts: ["had prepared", "had been prepared", "were preparing", "have prepared"],
         ans: 1,
-        exp: "The object 'practices' requires a passive structure (had + been + V3)."
+        exp: "The passive voice for past perfect requires 'had + been + V3'."
       }
     ]
   },
   pastPerfectContinuous: {
     title: "Past Perfect Continuous",
     formula: "Subject + had + been + Verb-ing",
-    timeline: "Ongoing Action in Past ➔ Interruption / Past Simple Reference point",
-    explanation: "Used to show that an action started in the past and continued up until another point in the past, emphasizing duration.",
+    timeline: "Action started in the past, continued for a duration, and finished before another past action",
+    explanation: "Emphasizes the duration or ongoing nature of an action in the past before another point or action in the past.",
+    arabicExplanation: "يعبر عن حدث بدأ واستمر لفترة معينة في الماضي قبل وقوع حدث آخر، ويركز على مدة الاستمرار.",
     examples: [
-      { original: "She had been studying English for three hours before she finally took a break.", ar: "كانت تدرس اللغة الإنجليزية لمدة ثلاث ساعات متواصلة قبل أن تأخذ استراحة أخيراً." },
-      { original: "They had been working on the environment project since morning.", ar: "كانوا يعملون على مشروع البيئة منذ الصباح الباكر." }
+      { original: "She had been studying for three hours before she fell asleep.", ar: "كانت تدرس لمدة ثلاث ساعات قبل أن تنام." },
+      { original: "They had been working on the environment draft since morning.", ar: "كانوا يعملون على مسودة البيئة منذ الصباح الباكر." }
     ],
     commonMistakes: [
-      { wrong: "She was studying for hours before the exam started.", right: "She had been studying for hours before the exam started.", reason: "Use Past Perfect Continuous instead of Past Continuous to emphasize the duration prior to another past event." }
+      { wrong: "I had studied for two hours before you arrived.", right: "I had been studying for two hours before you arrived.", reason: "Use continuous to emphasize the duration of the activity." }
     ],
     examQuestions: [
       {
-        q: "Hamad _______ for his speaking exam for weeks before the AI feedback tool was launched.",
-        opts: ["has been practicing", "had been practicing", "was practicing", "practices"],
-        ans: 1,
-        exp: "The action started, continued for weeks, and finished before another past action, requiring Past Perfect Continuous."
+        q: "The engineers _______ the wind turbine for months before it became operational.",
+        opts: ["had been testing", "have tested", "were testing", "tested"],
+        ans: 0,
+        exp: "The continuous duration 'for months' before another past event requires Past Perfect Continuous."
       }
     ]
   },
   usedTo: {
     title: "Used To / Would",
-    formula: "Subject + used to + Base Verb (Infinitive) / Subject + would + Base Verb",
-    explanation: "'Used to' describes past habits or past states that are no longer true. 'Would' only describes past habits (not states).",
+    formula: "Subject + used to + Base Verb (State or Habit) / Subject + would + Base Verb (Habit only)",
+    explanation: "'Used to' refers to past habits or past states that are no longer true. 'Would' only refers to past habits, never past states.",
+    arabicExplanation: "نستخدم 'used to' للعادات أو الحالات الماضية التي لم تعد صحيحة الآن. أما 'would' فتستخدم فقط للعادات الحركية المتكررة في الماضي وليس للحالات.",
     examples: [
-      { original: "I used to live in Abu Dhabi when I was a child. (State)", ar: "اعتدت أن أعيش في أبوظبي عندما كنت طفلاً. (حالة)" },
-      { original: "Every Friday, my father would take us to the park. (Habit)", ar: "كل جمعة، كان والدي يأخذنا إلى الحديقة. (عادة متكررة)" }
+      { original: "I used to be shy when I was a student. (State)", ar: "اعتدت أن أكون خجولاً عندما كنت طالباً. (حالة)" },
+      { original: "We would play football every afternoon after school. (Habit)", ar: "كنا نلعب كرة القدم كل عصر بعد المدرسة. (عادة)" }
     ],
     commonMistakes: [
-      { wrong: "I would be a lazy student, but now I study hard.", right: "I used to be a lazy student, but now I study hard.", reason: "'be' is a state verb. You cannot use 'would' with state verbs for past states; use 'used to' instead." }
+      { wrong: "I would live in Dubai, but now I live in Abu Dhabi.", right: "I used to live in Dubai, but now I live in Abu Dhabi.", reason: "'live' is a state verb; 'would' cannot be used with state verbs." }
     ],
     examQuestions: [
       {
-        q: "We _______ have a lot of books in the library, but now we use digital PDF booklets.",
-        opts: ["would", "used to", "are used to", "use to"],
+        q: "Hamad _______ spend hours reading books in the library, but now he uses PDFs.",
+        opts: ["would", "is used to", "used to", "both 'would' and 'used to'"],
+        ans: 3,
+        exp: "Since 'spend' is an action verb depicting a past habit, both 'would' and 'used to' are grammatically correct."
+      }
+    ]
+  },
+  relativePronouns: {
+    title: "Relative Pronouns (EmSAT Core)",
+    formula: "who (subject person) | whom (object person) | whose (possession) | which (things/places)",
+    explanation: "Relative pronouns connect relative clauses to main clauses. EmSAT exams test the difference between who/whom/whose/which/that.",
+    arabicExplanation: "ضمائر الوصل تربط الجمل ببعضها. تستخدم who للفاعل العاقل، whom للمفعول به العاقل، whose للملكية، و which لغير العاقل.",
+    examples: [
+      { original: "The student who won the award is in Grade 11.", ar: "الطالب الذي فاز بالجائزة هو في الصف الحادي عشر." },
+      { original: "The lady whose car was damaged is my teacher.", ar: "السيدة التي تضررت سيارتها هي معلمتي." }
+    ],
+    commonMistakes: [
+      { wrong: "The teacher which helped me is Mr. Khaled.", right: "The teacher who helped me is Mr. Khaled.", reason: "Use 'who' for people, not 'which'." }
+    ],
+    examQuestions: [
+      {
+        q: "He is the supervisor for _______ the developers wrote the traffic app.",
+        opts: ["who", "whom", "whose", "which"],
         ans: 1,
-        exp: "'have' is a state verb, so 'used to' is required instead of 'would'."
+        exp: "Following a preposition (for), 'whom' must be used for people in objective position."
       }
     ]
   }
 };
 
-const READING_PASSAGES: ReadingPassage[] = [
+// 3. Reading Center Passages Database
+const READING_CENTER_DATABASE: ReadingPassage[] = [
   {
     id: "follow-your-heart",
     title: "Follow Your Heart",
     story: "In today's fast-paced world, choosing a career path can be overwhelming. Many educators recommend that high school graduates follow their heart rather than focusing purely on salary. Passion leads to resilience. When you enjoy your job, you are more likely to overcome vocational challenges and build a sustainable career. Vocational training centers across the UAE offer students hands-on experience, helping them explore different industries like technology, design, and green energy. Ultimately, aligning your skills with your personal values is the key to true success and happiness in your career.",
-    summary: "The text emphasizes the importance of selecting a career path based on personal passion and values rather than salary alone, arguing that passion builds long-term resilience and job satisfaction.",
-    characters: "High school graduates, academic advisors, and vocational trainers.",
-    mainIdea: "Aligning career choices with personal interest and values is essential for building a happy and sustainable professional life.",
+    paragraphs: [
+      { en: "In today's fast-paced world, choosing a career path can be overwhelming.", ar: "في عالم اليوم المتسارع، يمكن أن يكون اختيار المسار المهني أمراً مربكاً للغاية." },
+      { en: "Many educators recommend that high school graduates follow their heart rather than focusing purely on salary. Passion leads to resilience.", ar: "يوصي العديد من المعلمين خريجي المدارس الثانوية باتباع شغفهم بدلاً من التركيز البحت على الراتب. الشغف يؤدي إلى المرونة وقدرة التحمل." },
+      { en: "When you enjoy your job, you are more likely to overcome vocational challenges and build a sustainable career.", ar: "عندما تستمتع بعملك، تكون أكثر قدرة على التغلب على التحديات المهنية وبناء مسيرة مهنية مستدامة." }
+    ],
+    summary: "The passage advises students to prioritize career interest and personal passion over salary, which builds critical professional resilience and happiness.",
+    characters: "Graduating high school students, career mentors, and vocational tutors.",
+    mainIdea: "Long-term career success and resilience stem from passion and value alignment.",
     expressions: [
-      "follow your heart (اتبع شغفك/قلبك)",
-      "vocational training (التدريب المهني)",
-      "career path (مسار مهني)"
+      "follow your heart (اتبع شغفك/ما يميل له قلبك)",
+      "vocational training (التدريب المهني والتقني)",
+      "sustainable career (مسار مهني مستدام)"
     ],
     questions: [
       {
-        q: "What is the main recommendation of the text for high school graduates?",
-        opts: [
-          "Focus only on highest paying jobs",
-          "Follow their passion and interest",
-          "Avoid choosing a career",
-          "Study only medicine"
-        ],
+        q: "What is the central theme of 'Follow Your Heart'?",
+        opts: ["Making as much money as possible", "Prioritizing passion over salary for long-term career resilience", "Studying coding only", "Avoiding job placement"],
         ans: 1,
-        exp: "The text explicitly states: 'follow their heart rather than focusing purely on salary.'"
+        exp: "The text advises graduates to follow their heart (passion) rather than focusing purely on salary."
       },
       {
-        q: "According to the text, what does passion lead to?",
-        opts: ["Resilience", "Boredom", "Lazy habits", "High stress only"],
-        ans: 0,
-        exp: "The text says: 'Passion leads to resilience.'"
+        q: "What does the text say passion leads to?",
+        opts: ["High stress", "Resilience", "Immediate wealth", "Laziness"],
+        ans: 1,
+        exp: "It explicitly states: 'Passion leads to resilience.'"
       },
       {
-        q: "What do vocational training centers in the UAE offer?",
-        opts: [
-          "Only theoretical lectures",
-          "Hands-on experience in various fields",
-          "Free holidays",
-          "Financial loans"
-        ],
+        q: "How do vocational training centers in the UAE assist students?",
+        opts: ["Offering monetary loans", "Providing hands-on experiences across industries", "Giving free holidays", "Writing exam papers for them"],
         ans: 1,
-        exp: "The text mentions: 'offer students hands-on experience, helping them explore different industries...'"
+        exp: "The text says they 'offer students hands-on experience, helping them explore...'"
       },
       {
         q: "What is the key to true success and happiness in a career?",
-        opts: [
-          "Working in foreign countries",
-          "Working 80 hours a week",
-          "Aligning skills with personal values",
-          "Following classmates' decisions"
-        ],
-        ans: 2,
-        exp: "The text ends with: 'aligning your skills with your personal values is the key to true success...'"
-      },
-      {
-        q: "Which word in the text means 'the ability to recover quickly from difficulties'?",
-        opts: ["Overwhelming", "Resilience", "Sustainable", "Vocational"],
+        opts: ["Working alone", "Aligning skills with personal values", "Studying in other countries", "Having no challenges"],
         ans: 1,
-        exp: "Resilience is the capacity to recover quickly from difficulties; toughness."
+        exp: "Aligning skills with values is defined as the key to success and happiness."
       },
       {
-        q: "Why does following salary alone sometimes fail?",
-        opts: [
-          "It doesn't build long-term passion and resilience",
-          "It is forbidden",
-          "Salaries are not real",
-          "It takes too much time"
-        ],
-        ans: 0,
-        exp: "Passion builds resilience to overcome professional challenges."
-      },
-      {
-        q: "The antonym of 'sustainable' is:",
-        opts: ["renewable", "unviable / depletable", "long-term", "natural"],
+        q: "Which word means 'able to withstand or recover quickly'?",
+        opts: ["Sustainable", "Resilient", "Overwhelming", "Vocational"],
         ans: 1,
-        exp: "Depletable or unviable is the opposite of sustainable."
+        exp: "Resilient is the definition for recovery from difficulties."
       },
       {
-        q: "Cloud seeding is an example of UAE innovation in:",
-        opts: ["space exploration", "precipitation management", "cyber security", "artistic design"],
+        q: "Why is an immediate high salary not the only factor to consider?",
+        opts: ["Because salaries are fake", "Because it doesn't guarantee resilience or long-term satisfaction", "Because we don't need money", "It is forbidden"],
         ans: 1,
-        exp: "Cloud seeding increases rainfall (precipitation)."
+        exp: "Passion builds resilience to overcome future vocational obstacles."
       },
       {
-        q: "What does 'aligning' mean in this context?",
-        opts: ["opposing", "matching / adjusting", "drawing a circle", "forgetting"],
+        q: "What does 'aligning' mean?",
+        opts: ["Separating", "Matching and bringing into relation", "Drawing lines", "Declining"],
         ans: 1,
-        exp: "Aligning means bringing things into agreement or correct relation."
+        exp: "Aligning means arranging or matching correctly."
       },
       {
-        q: "True or False: Enjoying your job makes you more likely to overcome challenges.",
+        q: "Cloud seeding in the UAE aims to increase:",
+        opts: ["Wind", "Precipitation (rainfall)", "Snow", "Solar heat"],
+        ans: 1,
+        exp: "Cloud seeding is used to increase rainfall."
+      },
+      {
+        q: "True or False: The text claims choosing a career is easy.",
         opts: ["True", "False", "Not mentioned", "None"],
-        ans: 0,
-        exp: "Yes, 'When you enjoy your job, you are more likely to overcome vocational challenges...'"
+        ans: 1,
+        exp: "False. It says choosing a career can be 'overwhelming'."
+      },
+      {
+        q: "What does 'vocational' refer to?",
+        opts: ["Relating to holidays", "Relating to employment or career path", "Relating to medical terms", "Relating to sports"],
+        ans: 1,
+        exp: "Vocational refers to work, career, or occupation."
       }
     ]
   },
@@ -308,261 +422,145 @@ const READING_PASSAGES: ReadingPassage[] = [
     id: "awatifs-career",
     title: "Awatif's Career",
     story: "Awatif always had a dream of becoming a computer engineer. Despite facing discouragement from people who thought coding was too difficult, she persevered. She enrolled in a prestigious tech program in Abu Dhabi. She spent nights debugging programs, studying algorithms, and mastering software architectures. Her dedication caught on, and soon she was leading her team in developing a smart application that predicts traffic flows. Today, Awatif stands as a role model for young girls in the UAE, proving that gender is not a barrier to innovation in science and engineering.",
-    summary: "Awatif overcame doubts to become a successful computer engineer in Abu Dhabi, eventually leading traffic application projects and inspiring other Emirati girls.",
-    characters: "Awatif (the protagonist), tech team members, and young Emirati girls.",
-    mainIdea: "Dedication, perseverance, and passion can overcome stereotypes and obstacles in STEM fields.",
+    paragraphs: [
+      { en: "Awatif always had a dream of becoming a computer engineer.", ar: "لطالما كان لعواطف حلم بأن تصبح مهندسة كمبيوتر." },
+      { en: "Despite facing discouragement from people who thought coding was too difficult, she persevered.", ar: "وعلى الرغم من مواجهتها للإحباط من أشخاص اعتقدوا أن البرمجة صعبة للغاية، إلا أنها ثابرت." },
+      { en: "Today, Awatif stands as a role model for young girls in the UAE, proving that gender is not a barrier to innovation.", ar: "اليوم، تقف عواطف كقدوة حسنة للفتيات الصغيرات في دولة الإمارات، لتثبت أن الجنس ليس عائقاً أمام الابتكار." }
+    ],
+    summary: "Awatif persevered against doubt, mastered coding in Abu Dhabi, led a smart application project, and became an inspirational STEM role model.",
+    characters: "Awatif, computer engineering peers, UAE students.",
+    mainIdea: "Dedication and perseverance dismantle stereotype barriers in engineering.",
     expressions: [
-      "computer engineer (مهندسة كمبيوتر)",
-      "role model (قدوة حسنة)",
-      "gender barrier (حاجز الجنس)"
+      "computer engineer (مهندسة حاسوب)",
+      "role model (قدوة يحتذى بها)",
+      "gender barrier (حاجز جنساني)"
     ],
     questions: [
       {
-        q: "What was Awatif's dream career?",
-        opts: ["Medical doctor", "Computer engineer", "Banker", "Teacher"],
+        q: "What STEM job did Awatif aim for?",
+        opts: ["Biologist", "Computer engineer", "Chemist", "Architect"],
         ans: 1,
-        exp: "The text says: 'dream of becoming a computer engineer.'"
+        exp: "Awatif wanted to become a computer engineer."
       },
       {
-        q: "What difficulty did she face at the beginning?",
-        opts: [
-          "Lack of internet connection",
-          "Discouragement from others about coding difficulty",
-          "Failing her school",
-          "Health problems"
-        ],
+        q: "What obstacle did she face?",
+        opts: ["Financial crisis", "Discouragement from people about coding", "Lack of universities", "Visual problems"],
         ans: 1,
-        exp: "The text mentions: 'facing discouragement from people who thought coding was too difficult...'"
+        exp: "She faced discouragement from people who thought coding was too difficult."
       },
       {
-        q: "Where did she study tech?",
-        opts: ["Dubai", "Abu Dhabi", "Sharjah", "Al Ain"],
+        q: "Where was her tech program located?",
+        opts: ["Dubai", "Abu Dhabi", "Sharjah", "Fujairah"],
         ans: 1,
-        exp: "She 'enrolled in a prestigious tech program in Abu Dhabi.'"
+        exp: "She enrolled in Abu Dhabi."
       },
       {
-        q: "What did the smart application she developed predict?",
-        opts: ["Weather conditions", "Traffic flows", "Stock market", "Exam dates"],
+        q: "What did her developed application predict?",
+        opts: ["Weather forecasts", "Traffic flows", "Flight delays", "Exam scores"],
         ans: 1,
-        exp: "The app 'predicts traffic flows.'"
+        exp: "The smart app predicts traffic flows."
       },
       {
-        q: "Which expression is used to describe Awatif at the end?",
-        opts: ["A role model", "A coding beginner", "A lazy employee", "An opponent"],
-        ans: 0,
-        exp: "She 'stands as a role model for young girls in the UAE...'"
+        q: "What does her journey prove?",
+        opts: ["Coding is impossible for girls", "Gender is not a barrier to innovation", "Engineering is easy", "University is not necessary"],
+        ans: 1,
+        exp: "She proved gender is not a barrier to innovation in science."
       },
       {
-        q: "What does 'caught on' mean in Awatif's story?",
-        opts: ["Her hard work became recognized and respected", "She fell down", "She lost her key", "She left the country"],
-        ans: 0,
-        exp: "Here, 'Her dedication caught on' means it became noticed and appreciated."
+        q: "What does 'persevered' mean?",
+        opts: ["Gave up immediately", "Continued in spite of difficulty", "Slept early", "Forgot the goal"],
+        ans: 1,
+        exp: "Persevering means continuing despite obstacles."
       },
       {
-        q: "True or False: Awatif is a role model for boys only.",
+        q: "Which word means 'finding and correcting bugs'?",
+        opts: ["Programming", "Debugging", "Analyzing", "Synthesizing"],
+        ans: 1,
+        exp: "Debugging is the removal of bugs/errors from code."
+      },
+      {
+        q: "Awatif is a role model for:",
+        opts: ["doctors", "young girls in the UAE", "boys in sports", "university professors only"],
+        ans: 1,
+        exp: "She is a role model for young girls in the UAE."
+      },
+      {
+        q: "What does 'prestigious' signify?",
+        opts: ["Cheap", "Respected and reputable", "Noisy", "New"],
+        ans: 1,
+        exp: "Prestigious means high status and respected."
+      },
+      {
+        q: "True or False: Awatif gave up coding because it was too hard.",
         opts: ["True", "False", "Not mentioned", "None"],
         ans: 1,
-        exp: "False, she is a role model for young girls in the UAE."
-      },
-      {
-        q: "What did she spend nights doing?",
-        opts: ["Playing games", "Debugging programs and studying", "Sleeping", "Traveling"],
-        ans: 1,
-        exp: "She 'spent nights debugging programs, studying algorithms...'"
-      },
-      {
-        q: "The word 'prestigious' means:",
-        opts: ["unimportant", "highly respected and famous", "very cheap", "broken"],
-        ans: 1,
-        exp: "Prestigious means having high status or reputation."
-      },
-      {
-        q: "What fields does her success inspire girls in?",
-        opts: ["Science and engineering", "Cooking", "Driving", "Sports only"],
-        ans: 0,
-        exp: "She proves gender is not a barrier in 'science and engineering'."
-      }
-    ]
-  },
-  {
-    id: "global-warming",
-    title: "Global Warming & Environment",
-    story: "Global warming remains one of the most critical threats facing our planet today. The burning of fossil fuels has led to an increase in greenhouse gas concentrations in the atmosphere, trapping solar heat and raising temperatures. This has resulted in the melting of polar ice caps, rising sea levels, and unpredictable weather patterns worldwide. To combat this crisis, nations are pledging to transition to renewable energy sources like wind, solar, and hydrogen power. The UAE's Net Zero 2050 strategic initiative is a leading regional model for sustainability and climate action, demonstrating a firm commitment to clean energy.",
-    summary: "Global warming is a critical threat caused by burning fossil fuels, resulting in rising temperatures. Transitioning to renewable energy, like the UAE Net Zero 2050, is essential to fight it.",
-    characters: "Global leaders, environmental scientists, and UAE climate policy makers.",
-    mainIdea: "Transitioning to clean energy and committing to sustainability policies is necessary to reverse the damages of global warming.",
-    expressions: [
-      "greenhouse gas (غازات الدفيئة)",
-      "fossil fuels (الوقود الأحفوري)",
-      "Net Zero (صافي الانبعاثات الصفري)"
-    ],
-    questions: [
-      {
-        q: "What causes the increase in greenhouse gases?",
-        opts: ["Planting trees", "Burning fossil fuels", "Solar energy panels", "Water filtration"],
-        ans: 1,
-        exp: "The text says: 'The burning of fossil fuels has led to an increase in greenhouse gas...'"
-      },
-      {
-        q: "What happens when greenhouse gases trap heat?",
-        opts: ["Global temperatures rise", "The earth freezes", "Precipitation stops completely", "Plants die instantly"],
-        ans: 0,
-        exp: "...'trapping solar heat and raising temperatures.'"
-      },
-      {
-        q: "Which of the following is NOT a consequence of global warming mentioned?",
-        opts: ["Melting polar ice caps", "Rising sea levels", "Volcanic eruptions", "Unpredictable weather"],
-        ans: 2,
-        exp: "Volcanoes are not mentioned as a consequence in this text."
-      },
-      {
-        q: "What clean energy sources does the text recommend?",
-        opts: ["Coal and gas", "Wind, solar, and hydrogen power", "Nuclear waste", "Wood burning"],
-        ans: 1,
-        exp: "It lists: 'renewable energy sources like wind, solar, and hydrogen power.'"
-      },
-      {
-        q: "What is the name of the UAE strategic initiative for climate action?",
-        opts: ["Net Zero 2050", "Green Dubai 2030", "Emirates Solar Hub", "UAE Cloud Seeding Project"],
-        ans: 0,
-        exp: "The text names the 'UAE's Net Zero 2050 strategic initiative.'"
-      },
-      {
-        q: "What does 'trapping' mean?",
-        opts: ["Releasing", "Catching and holding", "Cooling", "Reflecting"],
-        ans: 1,
-        exp: "Trapping means catching and preventing from escaping."
-      },
-      {
-        q: "Fossil fuels include:",
-        opts: ["solar and wind", "coal, oil, and natural gas", "wood and leaves", "water and air"],
-        ans: 1,
-        exp: "Fossil fuels are hydrocarbons like coal, fuel oil, or natural gas."
-      },
-      {
-        q: "Global warming is a critical threat to:",
-        opts: ["only cold countries", "the entire planet", "space", "technology only"],
-        ans: 1,
-        exp: "The text states it is 'facing our planet today.'"
-      },
-      {
-        q: "The word 'combat' means:",
-        opts: ["support", "fight / oppose", "surrender", "describe"],
-        ans: 1,
-        exp: "To combat means to take action to reduce or prevent something bad."
-      },
-      {
-        q: "What does Net Zero mean?",
-        opts: ["Zero cost", "Zero greenhouse gas emissions balance", "No internet", "No progress"],
-        ans: 1,
-        exp: "Net Zero refers to reaching a state in which greenhouse gases going into the atmosphere are balanced by removal."
+        exp: "False. She persevered and became team lead."
       }
     ]
   }
 ];
 
-const MAZE_QUESTIONS: MazeQuestion[] = [
+// 4. MAZE Practice Center Database
+const MAZE_PRACTICE_DATABASE: MazeQuestion[] = [
   {
-    id: "m1",
-    textBefore: "If the government had invested earlier in clean energy, they ",
-    choices: ["will avoid", "would have avoided", "avoided", "would avoid"],
-    textAfter: " the current resource depletion crisis.",
+    id: "maze_1",
+    level: "Easy",
+    textBefore: "If Hamad had studied the grammar booklets, he ",
+    choices: ["will pass", "would have passed", "passed", "has passed"],
+    textAfter: " the EmSAT exam easily yesterday.",
     correctIndex: 1,
-    explanation: "This is a Third Conditional sentence. The if-clause has 'had invested' (Past Perfect), so the main clause requires 'would have + V3'."
+    explanation: "هذه جملة شرطية من الحالة الثالثة (Third Conditional)، الجزء الأول ماضي تام، لذا يحتاج الجزء الثاني (would have + V3)."
   },
   {
-    id: "m2",
-    textBefore: "By the time the new policy was announced, the solar project ",
-    choices: ["has been completed", "had been completed", "is completed", "completed"],
-    textAfter: " by the engineers in Abu Dhabi.",
-    correctIndex: 1,
-    explanation: "Requires Past Perfect Passive because the action was completed by someone else before another action in the past."
+    id: "maze_2",
+    level: "Medium",
+    textBefore: "The renewable power plant ",
+    choices: ["had been built", "has built", "was building", "built"],
+    textAfter: " by the engineers before the new policy went into effect.",
+    correctIndex: 0,
+    explanation: "صيغة الماضي التام المبني للمجهول (Past Perfect Passive) لأن البناء تم بواسطة المهندسين قبل وقوع حدث ماضٍ آخر."
   },
   {
-    id: "m3",
-    textBefore: "My English teacher, ",
+    id: "maze_3",
+    level: "Hard",
+    textBefore: "The developer, for ",
     choices: ["who", "whom", "whose", "which"],
-    textAfter: " lessons are always interactive, was rewarded by the Ministry.",
-    correctIndex: 2,
-    explanation: "'whose' is the possessive relative pronoun linking 'teacher' and her 'lessons'."
-  },
-  {
-    id: "m4",
-    textBefore: "He is the candidate for ",
-    choices: ["who", "whom", "whose", "which"],
-    textAfter: " the students voted during the school elections.",
+    textAfter: " the team had deep respect, created the traffic prediction system.",
     correctIndex: 1,
-    explanation: "After a preposition (for), use 'whom' when referring to a person as the object."
-  }
-];
-
-const EMSAT_GRAMMAR_PRACTICE = [
-  {
-    q: "The lady _______ son won the national spelling bee contest was extremely proud.",
-    opts: ["who", "whom", "whose", "which"],
-    ans: 2,
-    exp: "Use 'whose' to show possession of the son by the lady."
+    explanation: "بعد حرف الجر (for)، نستخدم ضمير الوصل للمفعول به العاقل وهو (whom)."
   },
   {
-    q: "The new eco-friendly city, _______ is powered entirely by solar panels, was visited by global leaders.",
-    opts: ["who", "whom", "whose", "which"],
-    ans: 3,
-    exp: "Use 'which' for non-defining relative clauses referring to things or places."
-  },
-  {
-    q: "This is the student _______ the principal selected to represent the school at the UAE debate.",
-    opts: ["who", "whom", "whose", "which"],
-    ans: 1,
-    exp: "Use 'whom' as it refers to the object of the verb 'selected'."
-  },
-  {
-    q: "The engineers _______ worked on the wind farm achieved great success.",
-    opts: ["who", "whom", "whose", "which"],
-    ans: 0,
-    exp: "Use 'who' as the relative pronoun for the subject of the clause referring to people."
-  }
-];
-
-const WRITING_TOPICS = [
-  {
-    topic: "Technology in Education",
-    essayType: "Opinion Essay",
-    prompt: "Some believe that artificial intelligence will replace teachers. Do you agree or disagree?",
-    modelAnswer: "In the modern era, technology has integrated into classrooms, transforming pedagogical methods. While AI offers tailored assessments and interactive quizzes, it cannot replace human empathy, mentorship, and moral leadership. Teachers guide character building, whereas AI acts as a tool. Therefore, I disagree that AI will replace teachers; instead, it will act as a powerful co-pilot in the classroom.",
-    vocab: ["Pedagogical", "Co-pilot", "Tailored", "Empathy"],
-    expressions: ["It is widely argued that...", "In conclusion, I firmly believe..."]
-  },
-  {
-    topic: "Environmental Sustainability",
-    essayType: "Discussion Essay",
-    prompt: "Discuss the advantages and disadvantages of transitioning immediately to renewable energy.",
-    modelAnswer: "Pledging to go Net Zero is essential to combat global warming. The advantages of transitioning immediately to clean energy include reducing greenhouse gas concentrations and preserving resources. However, the economic cost of replacing infrastructure is immense. In conclusion, a balanced and phased transition is the most sustainable approach for nations.",
-    vocab: ["Net Zero", "Preserving", "Infrastructure", "Phased"],
-    expressions: ["On one hand...", "On the other hand...", "To weigh both sides..."]
+    id: "maze_4",
+    level: "Exam Level",
+    textBefore: "We _______ live in a house with oil lamps before electricity ",
+    choices: ["would", "used to", "are used to", "use to"],
+    textAfter: " was introduced to our village.",
+    correctIndex: 1,
+    explanation: "نستخدم (used to) للتعبير عن حالة سكن قديمة في الماضي لم تعد موجودة الآن. لا يمكن استخدام would لأن live فعل حالة."
   }
 ];
 
 export default function EnglishGrade11AdvancedPage() {
   const [activeTab, setActiveTab] = useState<
-    "vocab" | "grammar" | "reading" | "maze" | "emsat" | "listening_speaking" | "games" | "writing" | "dashboard"
+    "dashboard" | "vocab" | "grammar" | "reading" | "maze" | "emsat" | "listening_speaking" | "games" | "writing"
   >("dashboard");
 
-  // General App States
-  const [searchQuery, setSearchQuery] = useState("");
-  const [streak, setStreak] = useState(3);
-  const [points, setPoints] = useState(120);
+  // Global State
+  const [points, setPoints] = useState(150);
+  const [streak, setStreak] = useState(4);
   const [unlockedBadges, setUnlockedBadges] = useState<string[]>(["Beginner"]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Audio / TTS States
+  // Audio System (Web Speech API)
   const [speaking, setSpeaking] = useState(false);
-  const [ttsSpeed, setTtsSpeed] = useState<number>(1.0);
-  const ttsSynth = useRef<SpeechSynthesis | null>(null);
-  const currentUtterance = useRef<SpeechSynthesisUtterance | null>(null);
+  const [ttsSpeed, setTtsSpeed] = useState(1.0);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      ttsSynth.current = window.speechSynthesis;
+      synthRef.current = window.speechSynthesis;
     }
   }, []);
 
@@ -571,10 +569,9 @@ export default function EnglishGrade11AdvancedPage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  // Text To Speech Core
-  const speakText = (text: string) => {
-    if (!ttsSynth.current) return;
-    ttsSynth.current.cancel();
+  const speak = (text: string) => {
+    if (!synthRef.current) return;
+    synthRef.current.cancel();
 
     if (speaking) {
       setSpeaking(false);
@@ -587,187 +584,148 @@ export default function EnglishGrade11AdvancedPage() {
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = () => setSpeaking(false);
 
-    currentUtterance.current = utterance;
+    utteranceRef.current = utterance;
     setSpeaking(true);
-    ttsSynth.current.speak(utterance);
+    synthRef.current.speak(utterance);
   };
 
-  const pauseTTS = () => {
-    if (ttsSynth.current) {
-      if (ttsSynth.current.paused) {
-        ttsSynth.current.resume();
+  const pauseSpeech = () => {
+    if (synthRef.current) {
+      if (synthRef.current.paused) {
+        synthRef.current.resume();
+        triggerToast("TTS Resumed");
       } else {
-        ttsSynth.current.pause();
+        synthRef.current.pause();
+        triggerToast("TTS Paused");
       }
     }
   };
 
-  const changeSpeed = (factor: number) => {
-    setTtsSpeed(factor);
-    triggerToast(`TTS Speed set to ${factor}x`);
-    if (speaking && currentUtterance.current && ttsSynth.current) {
-      const txt = currentUtterance.current.text;
-      ttsSynth.current.cancel();
-      const utterance = new SpeechSynthesisUtterance(txt);
-      utterance.lang = "en-US";
-      utterance.rate = factor;
-      utterance.onend = () => setSpeaking(false);
-      utterance.onerror = () => setSpeaking(false);
-      currentUtterance.current = utterance;
-      ttsSynth.current.speak(utterance);
-    }
+  const adjustSpeed = (speed: number) => {
+    setTtsSpeed(speed);
+    triggerToast(`TTS Speed: ${speed}x`);
   };
 
-  // ----------------------
-  // Sub-Module State & Logic
-  // ----------------------
-
-  // 1. Vocabulary Hub States
-  const [selectedVocabIdx, setSelectedVocabIdx] = useState(0);
+  // 1. Vocab States
+  const [activeVocabIdx, setActiveVocabIdx] = useState(0);
   const [vocabAnswers, setVocabAnswers] = useState<Record<number, number>>({});
-  const [vocabQuizResults, setVocabQuizResults] = useState<Record<number, boolean>>({});
 
   const handleVocabAnswer = (vocabIdx: number, selectedOptIdx: number) => {
-    const correct = VOCABULARY_LIST[vocabIdx].correctIndex === selectedOptIdx;
+    const isCorrect = VOCABULARY_DATABASE[vocabIdx].correctIndex === selectedOptIdx;
     setVocabAnswers({ ...vocabAnswers, [vocabIdx]: selectedOptIdx });
-    setVocabQuizResults({ ...vocabQuizResults, [vocabIdx]: correct });
-    if (correct) {
+    if (isCorrect) {
       setPoints((prev) => prev + 10);
       triggerToast("Correct Answer! +10 Points ⭐");
       if (!unlockedBadges.includes("Vocab Hero")) {
         setUnlockedBadges([...unlockedBadges, "Vocab Hero"]);
       }
     } else {
-      triggerToast("Oops! Incorrect, try again.");
+      triggerToast("Incorrect, try again!");
     }
   };
 
-  // 2. Grammar Center States
-  const [selectedGrammarKey, setSelectedGrammarKey] = useState("thirdConditional");
-  const [grammarQuizAns, setGrammarQuizAns] = useState<Record<string, number>>({});
-  const [grammarQuizCorrect, setGrammarQuizCorrect] = useState<Record<string, boolean>>({});
+  // 2. Grammar States
+  const [activeGrammarKey, setActiveGrammarKey] = useState("thirdConditional");
+  const [grammarAnswers, setGrammarAnswers] = useState<Record<string, number>>({});
 
   const handleGrammarQuiz = (key: string, selectedIdx: number) => {
-    const correct = GRAMMAR_RULES[key].examQuestions[0].ans === selectedIdx;
-    setGrammarQuizAns({ ...grammarQuizAns, [key]: selectedIdx });
-    setGrammarQuizCorrect({ ...grammarQuizCorrect, [key]: correct });
-    if (correct) {
+    const isCorrect = GRAMMAR_CENTER_DATABASE[key].examQuestions[0].ans === selectedIdx;
+    setGrammarAnswers({ ...grammarAnswers, [key]: selectedIdx });
+    if (isCorrect) {
       setPoints((prev) => prev + 15);
-      triggerToast("Excellent! +15 Points ⭐");
+      triggerToast("Excellent! Correct Grammar Answer! +15 Points ⭐");
       if (!unlockedBadges.includes("Grammar Expert")) {
         setUnlockedBadges([...unlockedBadges, "Grammar Expert"]);
       }
     }
   };
 
-  // 3. Reading Center States
-  const [selectedPassageIdx, setSelectedPassageIdx] = useState(0);
-  const [readingQuizAnswers, setReadingQuizAnswers] = useState<Record<string, number>>({});
-  const [readingQuizSubmitted, setReadingQuizSubmitted] = useState<Record<string, boolean>>({});
-  const [readingProgress, setReadingProgress] = useState<Record<string, number>>({});
-
-  const handleReadingQuizAnswer = (passageId: string, qIdx: number, optIdx: number) => {
-    setReadingQuizAnswers({ ...readingQuizAnswers, [`${passageId}_${qIdx}`]: optIdx });
-  };
+  // 3. Reading States
+  const [activeReadingIdx, setActiveReadingIdx] = useState(0);
+  const [readingAnswers, setReadingAnswers] = useState<Record<string, number>>({});
+  const [readingSubmitted, setReadingSubmitted] = useState<Record<string, boolean>>({});
 
   const submitReadingQuiz = (passageId: string, passage: ReadingPassage) => {
     let score = 0;
     passage.questions.forEach((q, i) => {
-      if (readingQuizAnswers[`${passageId}_${i}`] === q.ans) {
+      if (readingAnswers[`${passageId}_${i}`] === q.ans) {
         score++;
       }
     });
-    setReadingQuizSubmitted({ ...readingQuizSubmitted, [passageId]: true });
-    setReadingProgress({ ...readingProgress, [passageId]: score * 10 });
+    setReadingSubmitted({ ...readingSubmitted, [passageId]: true });
     setPoints((prev) => prev + score * 5);
-    triggerToast(`Quiz completed! You scored ${score}/10. +${score * 5} Points.`);
+    triggerToast(`Quiz Completed! Score: ${score}/10. +${score * 5} Points ⭐`);
     if (score === 10 && !unlockedBadges.includes("Reader Champion")) {
       setUnlockedBadges([...unlockedBadges, "Reader Champion"]);
     }
   };
 
-  // 4. MAZE Center States
-  const [mazeScores, setMazeScores] = useState<Record<string, boolean>>({});
+  // 4. MAZE States
   const [mazeSelections, setMazeSelections] = useState<Record<string, number>>({});
 
   const handleMazeSubmit = (maze: MazeQuestion, selIdx: number) => {
-    const correct = maze.correctIndex === selIdx;
+    const isCorrect = maze.correctIndex === selIdx;
     setMazeSelections({ ...mazeSelections, [maze.id]: selIdx });
-    setMazeScores({ ...mazeScores, [maze.id]: correct });
-    if (correct) {
+    if (isCorrect) {
       setPoints((prev) => prev + 20);
       triggerToast("MAZE Solved! +20 Points ⭐");
       if (!unlockedBadges.includes("MAZE Slayer")) {
         setUnlockedBadges([...unlockedBadges, "MAZE Slayer"]);
       }
     } else {
-      triggerToast("Incorrect! Try again.");
+      triggerToast("Incorrect option. Try again!");
     }
   };
 
-  // 5. Listening & Speaking (Simulated Speaking Feedback)
-  const [recordingState, setRecordingState] = useState<"idle" | "recording" | "analyzing" | "done">("idle");
-  const [speakingScore, setSpeakingScore] = useState<number | null>(null);
+  // 5. EmSAT Simulator States
+  const [emsatAnswers, setEmsatAnswers] = useState<Record<number, number>>({});
+  const [emsatSubmitted, setEmsatSubmitted] = useState(false);
+  const [emsatTimer, setEmsatTimer] = useState(60);
 
-  const startRecordingSimulation = () => {
-    setRecordingState("recording");
-    triggerToast("Recording user audio via microphone...");
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (activeTab === "emsat" && emsatTimer > 0 && !emsatSubmitted) {
+      timer = setTimeout(() => setEmsatTimer((prev) => prev - 1), 1000);
+    } else if (emsatTimer === 0 && !emsatSubmitted) {
+      submitEmSAT();
+    }
+    return () => clearTimeout(timer);
+  }, [emsatTimer, activeTab, emsatSubmitted]);
+
+  const submitEmSAT = () => {
+    let correct = 0;
+    EMSAT_GRAMMAR_PRACTICE.forEach((q, i) => {
+      if (emsatAnswers[i] === q.ans) correct++;
+    });
+    setEmsatSubmitted(true);
+    setPoints((prev) => prev + correct * 10);
+    triggerToast(`EmSAT Finished! Score: ${correct}/${EMSAT_GRAMMAR_PRACTICE.length}`);
+  };
+
+  // 6. Speaking Simulation
+  const [speakingState, setSpeakingState] = useState<"idle" | "recording" | "analyzing" | "done">("idle");
+  const [mockScore, setMockScore] = useState<number | null>(null);
+
+  const startSpeakingChallenge = () => {
+    setSpeakingState("recording");
+    triggerToast("Microphone is recording user speech...");
     setTimeout(() => {
-      setRecordingState("analyzing");
+      setSpeakingState("analyzing");
       setTimeout(() => {
-        const score = Math.floor(Math.random() * 16) + 85; // 85 to 100
-        setSpeakingScore(score);
-        setRecordingState("done");
+        const score = Math.floor(Math.random() * 15) + 85; // 85% to 100%
+        setMockScore(score);
+        setSpeakingState("done");
         setPoints((prev) => prev + 25);
-        triggerToast(`AI Evaluation: Pronunciation Match ${score}%! +25 points`);
+        triggerToast(`Evaluation Complete: Match score: ${score}%! +25 Points`);
       }, 2000);
     }, 3000);
   };
 
-  // 6. EmSAT Section
-  const [emsatMode, setEmsatMode] = useState<"timed" | "practice">("practice");
-  const [emsatTime, setEmsatTime] = useState<number>(60);
-  const [emsatAnswers, setEmsatAnswers] = useState<Record<number, number>>({});
-  const [emsatSubmitted, setEmsatSubmitted] = useState<boolean>(false);
-  const [emsatScore, setEmsatScore] = useState<number>(0);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (emsatMode === "timed" && emsatTime > 0 && !emsatSubmitted) {
-      timer = setTimeout(() => setEmsatTime(emsatTime - 1), 1000);
-    } else if (emsatTime === 0 && !emsatSubmitted) {
-      submitEmsat();
-    }
-    return () => clearTimeout(timer);
-  }, [emsatTime, emsatMode, emsatSubmitted]);
-
-  const startEmsatSimulator = (mode: "timed" | "practice") => {
-    setEmsatMode(mode);
-    setEmsatTime(60);
-    setEmsatAnswers({});
-    setEmsatSubmitted(false);
-    setEmsatScore(0);
-    triggerToast(`EmSAT Simulator started in ${mode} mode.`);
-  };
-
-  const submitEmsat = () => {
-    let correct = 0;
-    EMSAT_GRAMMAR_PRACTICE.forEach((q, idx) => {
-      if (emsatAnswers[idx] === q.ans) {
-        correct++;
-      }
-    });
-    setEmsatScore(correct);
-    setEmsatSubmitted(true);
-    setPoints((prev) => prev + correct * 10);
-    triggerToast(`EmSAT Simulator Finished! Score: ${correct}/${EMSAT_GRAMMAR_PRACTICE.length}`);
-  };
-
-  // 7. Interactive Games (Word Match Game)
-  const [selectedMatchWord, setSelectedMatchWord] = useState<string | null>(null);
+  // 7. Word Match Game States
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<string[]>([]);
-  const matchWords = useMemo(() => ["catch on", "sustainability", "coherent", "depletion", "precipitation", "innovation"], []);
-  const matchMeanings = useMemo(() => [
+  const gameWords = useMemo(() => ["catch on", "sustainability", "coherent", "depletion", "precipitation", "innovation"], []);
+  const gameMeanings = useMemo(() => [
     "to understand or become popular",
     "meeting present needs without harming the future",
     "logical, clear and consistent",
@@ -776,67 +734,66 @@ export default function EnglishGrade11AdvancedPage() {
     "introducing new ideas or methods"
   ], []);
 
-  const handleMatchClick = (word: string, isMeaning: boolean) => {
-    if (!selectedMatchWord) {
-      setSelectedMatchWord(word);
+  const handleWordMatch = (val: string, isMeaning: boolean) => {
+    if (!selectedWord) {
+      setSelectedWord(val);
     } else {
-      // Check if it matches
-      const wordIdx = matchWords.indexOf(isMeaning ? word : selectedMatchWord);
-      const meaningIdx = matchMeanings.indexOf(isMeaning ? selectedMatchWord : word);
-      if (wordIdx !== -1 && meaningIdx !== -1 && wordIdx === meaningIdx) {
-        setMatchedPairs([...matchedPairs, matchWords[wordIdx]]);
-        triggerToast("Match Found! ⭐");
+      const idxWord = gameWords.indexOf(isMeaning ? val : selectedWord);
+      const idxMeaning = gameMeanings.indexOf(isMeaning ? selectedWord : val);
+      if (idxWord !== -1 && idxMeaning !== -1 && idxWord === idxMeaning) {
+        setMatchedPairs([...matchedPairs, gameWords[idxWord]]);
+        triggerToast("Correct Match! ⭐");
         setPoints((prev) => prev + 15);
       } else {
-        triggerToast("Try another pair!");
+        triggerToast("Not a match. Try again!");
       }
-      setSelectedMatchWord(null);
+      setSelectedWord(null);
     }
   };
 
-  // Search Results inside English Platform
-  const searchItems = useMemo(() => {
+  // Real-time Search Engine
+  const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const query = searchQuery.toLowerCase();
-    const results: { type: string; title: string; desc: string; action: () => void }[] = [];
+    const list: { type: string; title: string; desc: string; action: () => void }[] = [];
 
-    // Search Vocabulary
-    VOCABULARY_LIST.forEach((v) => {
-      if (v.word.toLowerCase().includes(query) || v.arabic.includes(query)) {
-        results.push({
-          type: "Vocabulary Word",
-          title: `${v.word} (${v.arabic})`,
-          desc: v.meaning,
+    // Search Vocabulary Database
+    VOCABULARY_DATABASE.forEach((vocab) => {
+      if (vocab.word.toLowerCase().includes(query) || vocab.arabic.includes(query)) {
+        list.push({
+          type: "Vocab Word",
+          title: `${vocab.word} (${vocab.arabic})`,
+          desc: vocab.meaning,
           action: () => { setActiveTab("vocab"); setSearchQuery(""); }
         });
       }
     });
 
-    // Search Grammar
-    Object.entries(GRAMMAR_RULES).forEach(([key, rule]) => {
+    // Search Grammar Rules
+    Object.entries(GRAMMAR_CENTER_DATABASE).forEach(([key, rule]) => {
       if (rule.title.toLowerCase().includes(query) || rule.explanation.toLowerCase().includes(query)) {
-        results.push({
+        list.push({
           type: "Grammar Rule",
           title: rule.title,
           desc: rule.explanation,
-          action: () => { setActiveTab("grammar"); setSelectedGrammarKey(key); setSearchQuery(""); }
+          action: () => { setActiveTab("grammar"); setActiveGrammarKey(key); setSearchQuery(""); }
         });
       }
     });
 
-    // Search Reading
-    READING_PASSAGES.forEach((passage) => {
+    // Search Reading passages
+    READING_CENTER_DATABASE.forEach((passage) => {
       if (passage.title.toLowerCase().includes(query) || passage.story.toLowerCase().includes(query)) {
-        results.push({
-          type: "Reading Passage",
+        list.push({
+          type: "Reading Story",
           title: passage.title,
           desc: passage.summary,
-          action: () => { setActiveTab("reading"); setSelectedPassageIdx(READING_PASSAGES.indexOf(passage)); setSearchQuery(""); }
+          action: () => { setActiveTab("reading"); setActiveReadingIdx(READING_CENTER_DATABASE.indexOf(passage)); setSearchQuery(""); }
         });
       }
     });
 
-    return results;
+    return list.slice(0, 5);
   }, [searchQuery]);
 
   return (
@@ -861,7 +818,7 @@ export default function EnglishGrade11AdvancedPage() {
           </div>
         </div>
 
-        {/* Search Input */}
+        {/* Search Engine */}
         <div className="relative w-full md:w-80">
           <div className="absolute inset-y-0 right-3 flex items-center text-slate-400 pointer-events-none">
             <Search size={14} />
@@ -877,11 +834,11 @@ export default function EnglishGrade11AdvancedPage() {
           {/* Search Dropdown */}
           {searchQuery.trim() && (
             <div className="absolute right-0 top-full mt-2 w-full bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
-              {searchItems.length === 0 ? (
+              {searchResults.length === 0 ? (
                 <div className="p-3 text-xs text-slate-500 text-center">No matching results found.</div>
               ) : (
                 <div className="flex flex-col divide-y divide-slate-800">
-                  {searchItems.map((item, idx) => (
+                  {searchResults.map((item, idx) => (
                     <button
                       key={idx}
                       onClick={item.action}
@@ -908,7 +865,7 @@ export default function EnglishGrade11AdvancedPage() {
             <span>TTS:</span>
           </span>
           <button
-            onClick={pauseTTS}
+            onClick={pauseSpeech}
             className="p-1 hover:bg-slate-850 rounded text-slate-400 hover:text-white"
             title="Play/Pause TTS"
           >
@@ -916,19 +873,19 @@ export default function EnglishGrade11AdvancedPage() {
           </button>
           <div className="h-3 w-[1px] bg-slate-850" />
           <button
-            onClick={() => changeSpeed(0.7)}
+            onClick={() => adjustSpeed(0.7)}
             className={`px-1.5 py-0.5 rounded text-[8px] font-bold ${ttsSpeed === 0.7 ? "bg-blue-600 text-white" : "text-slate-500 hover:text-white"}`}
           >
             Slow
           </button>
           <button
-            onClick={() => changeSpeed(1.0)}
+            onClick={() => adjustSpeed(1.0)}
             className={`px-1.5 py-0.5 rounded text-[8px] font-bold ${ttsSpeed === 1.0 ? "bg-blue-600 text-white" : "text-slate-500 hover:text-white"}`}
           >
             Normal
           </button>
           <button
-            onClick={() => changeSpeed(1.4)}
+            onClick={() => adjustSpeed(1.4)}
             className={`px-1.5 py-0.5 rounded text-[8px] font-bold ${ttsSpeed === 1.4 ? "bg-blue-600 text-white" : "text-slate-500 hover:text-white"}`}
           >
             Fast
@@ -1001,11 +958,10 @@ export default function EnglishGrade11AdvancedPage() {
         {/* Content Pane */}
         <section className="lg:col-span-3 flex flex-col gap-6">
           
-          {/* Dashboard and Streak Module */}
+          {/* Dashboard Module */}
           {activeTab === "dashboard" && (
             <div className="flex flex-col gap-6">
               
-              {/* Header Dashboard Banner */}
               <div className="bg-slate-900 border border-slate-850 rounded-3xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex flex-col gap-2 text-right">
                   <span className="px-3 py-1 bg-blue-600/10 text-blue-400 border border-blue-600/10 rounded-full text-[10px] font-bold w-fit ml-auto">
@@ -1061,23 +1017,6 @@ export default function EnglishGrade11AdvancedPage() {
                 </div>
               </div>
 
-              {/* Daily Challenge Card */}
-              <div className="bg-gradient-to-r from-blue-900/40 to-slate-900 border border-blue-800/30 rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl p-3 bg-blue-600/10 text-blue-500 rounded-2xl">⚡</span>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-black text-white">Daily English Challenge</span>
-                    <span className="text-[10px] text-slate-400">Match all 6 vocabulary concepts to win an extra +50 points!</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setActiveTab("games")}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl shadow-lg transition-colors"
-                >
-                  Start Challenge
-                </button>
-              </div>
-
             </div>
           )}
 
@@ -1093,16 +1032,16 @@ export default function EnglishGrade11AdvancedPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Word List sidebar */}
-                <div className="md:col-span-1 flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-2">
-                  {VOCABULARY_LIST.map((vocab, idx) => (
+                <div className="md:col-span-1 flex flex-col gap-2 max-h-[500px] overflow-y-auto pr-2">
+                  {VOCABULARY_DATABASE.map((vocab, idx) => (
                     <button
                       key={idx}
                       onClick={() => {
-                        setSelectedVocabIdx(idx);
-                        speakText(vocab.word);
+                        setActiveVocabIdx(idx);
+                        speak(vocab.word);
                       }}
                       className={`p-3 rounded-xl border text-right flex items-center justify-between transition-all cursor-pointer ${
-                        selectedVocabIdx === idx
+                        activeVocabIdx === idx
                           ? "bg-blue-600/10 border-blue-500 text-blue-400 font-bold"
                           : "bg-slate-950 border-slate-850 text-slate-400 hover:bg-slate-850"
                       }`}
@@ -1120,22 +1059,25 @@ export default function EnglishGrade11AdvancedPage() {
                   <div className="flex justify-between items-center border-b border-slate-900 pb-3">
                     <div className="flex items-center gap-3">
                       <button
-                        onClick={() => speakText(VOCABULARY_LIST[selectedVocabIdx].word)}
+                        onClick={() => speak(VOCABULARY_DATABASE[activeVocabIdx].word)}
                         className="p-2.5 bg-blue-600/10 hover:bg-blue-600 text-blue-500 hover:text-white rounded-xl transition-all"
                         title="Pronounce word"
                       >
                         <Volume2 size={16} />
                       </button>
-                      <h4 className="text-lg font-black text-white font-mono">{VOCABULARY_LIST[selectedVocabIdx].word}</h4>
+                      <h4 className="text-lg font-black text-white font-mono">{VOCABULARY_DATABASE[activeVocabIdx].word}</h4>
                     </div>
-                    <span className="text-xs font-bold text-slate-500">{VOCABULARY_LIST[selectedVocabIdx].arabic}</span>
+                    <div className="flex flex-col items-end">
+                      <span className="text-xs font-bold text-slate-500">{VOCABULARY_DATABASE[activeVocabIdx].arabic}</span>
+                      <span className="text-[9px] text-blue-400 font-mono mt-0.5">{VOCABULARY_DATABASE[activeVocabIdx].partOfSpeech}</span>
+                    </div>
                   </div>
 
                   {/* Body meanings */}
                   <div className="flex flex-col gap-2">
                     <span className="text-[10px] text-slate-500 font-bold uppercase">English Meaning:</span>
                     <p className="text-xs text-slate-350 leading-relaxed font-medium">
-                      {VOCABULARY_LIST[selectedVocabIdx].meaning}
+                      {VOCABULARY_DATABASE[activeVocabIdx].meaning}
                     </p>
                   </div>
 
@@ -1143,10 +1085,10 @@ export default function EnglishGrade11AdvancedPage() {
                     <span className="text-[10px] text-slate-500 font-bold uppercase">Example Sentence:</span>
                     <div className="p-3 bg-slate-900/60 border border-slate-850 rounded-xl flex items-center justify-between gap-3">
                       <p className="text-xs font-mono text-emerald-400 italic">
-                        "{VOCABULARY_LIST[selectedVocabIdx].example}"
+                        "{VOCABULARY_DATABASE[activeVocabIdx].example}"
                       </p>
                       <button
-                        onClick={() => speakText(VOCABULARY_LIST[selectedVocabIdx].example)}
+                        onClick={() => speak(VOCABULARY_DATABASE[activeVocabIdx].example)}
                         className="p-1.5 bg-slate-950 hover:bg-blue-600/10 text-slate-400 hover:text-blue-500 rounded-lg"
                         title="Listen sentence"
                       >
@@ -1154,16 +1096,16 @@ export default function EnglishGrade11AdvancedPage() {
                       </button>
                     </div>
                     <span className="text-[10px] text-slate-400 text-right pr-2">
-                      {VOCABULARY_LIST[selectedVocabIdx].translation}
+                      {VOCABULARY_DATABASE[activeVocabIdx].translation}
                     </span>
                   </div>
 
-                  {/* Synonyms & Related */}
+                  {/* Synonyms & Antonyms */}
                   <div className="grid grid-cols-2 gap-4 border-t border-slate-900 pt-3">
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] text-slate-500 font-bold">Synonyms:</span>
                       <div className="flex flex-wrap gap-1">
-                        {VOCABULARY_LIST[selectedVocabIdx].synonyms.map((syn, i) => (
+                        {VOCABULARY_DATABASE[activeVocabIdx].synonyms.map((syn, i) => (
                           <span key={i} className="text-[9px] bg-slate-900 border border-slate-850 px-2 py-0.5 rounded-lg text-slate-300">
                             {syn}
                           </span>
@@ -1171,11 +1113,11 @@ export default function EnglishGrade11AdvancedPage() {
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] text-slate-500 font-bold">Related Words:</span>
+                      <span className="text-[10px] text-slate-500 font-bold">Antonyms:</span>
                       <div className="flex flex-wrap gap-1">
-                        {VOCABULARY_LIST[selectedVocabIdx].related.map((rel, i) => (
+                        {VOCABULARY_DATABASE[activeVocabIdx].antonyms.map((ant, i) => (
                           <span key={i} className="text-[9px] bg-slate-900 border border-slate-850 px-2 py-0.5 rounded-lg text-slate-300">
-                            {rel}
+                            {ant}
                           </span>
                         ))}
                       </div>
@@ -1191,16 +1133,16 @@ export default function EnglishGrade11AdvancedPage() {
                     <p className="text-xs font-bold text-slate-300 mt-1 mb-2">Choose the correct meaning of this word:</p>
                     
                     <div className="flex flex-col gap-2">
-                      {VOCABULARY_LIST[selectedVocabIdx].options.map((opt, optIdx) => {
-                        const answered = vocabAnswers[selectedVocabIdx] !== undefined;
-                        const isSelected = vocabAnswers[selectedVocabIdx] === optIdx;
-                        const isCorrect = VOCABULARY_LIST[selectedVocabIdx].correctIndex === optIdx;
+                      {VOCABULARY_DATABASE[activeVocabIdx].options.map((opt, optIdx) => {
+                        const answered = vocabAnswers[activeVocabIdx] !== undefined;
+                        const isSelected = vocabAnswers[activeVocabIdx] === optIdx;
+                        const isCorrect = VOCABULARY_DATABASE[activeVocabIdx].correctIndex === optIdx;
                         
                         return (
                           <button
                             key={optIdx}
                             disabled={answered}
-                            onClick={() => handleVocabAnswer(selectedVocabIdx, optIdx)}
+                            onClick={() => handleVocabAnswer(activeVocabIdx, optIdx)}
                             className={`p-2.5 text-right text-xs rounded-xl border transition-all ${
                               answered
                                 ? isCorrect
@@ -1231,12 +1173,12 @@ export default function EnglishGrade11AdvancedPage() {
               
               {/* Tabs for grammar rules */}
               <div className="flex border-b border-slate-850 gap-2 overflow-x-auto pb-2">
-                {Object.entries(GRAMMAR_RULES).map(([key, rule]) => (
+                {Object.entries(GRAMMAR_CENTER_DATABASE).map(([key, rule]) => (
                   <button
                     key={key}
-                    onClick={() => setSelectedGrammarKey(key)}
+                    onClick={() => setActiveGrammarKey(key)}
                     className={`px-4 py-2 text-xs font-bold rounded-xl transition-all shrink-0 cursor-pointer ${
-                      selectedGrammarKey === key
+                      activeGrammarKey === key
                         ? "bg-blue-600 text-white"
                         : "bg-slate-950 text-slate-400 hover:bg-slate-850 hover:text-slate-200"
                     }`}
@@ -1247,33 +1189,36 @@ export default function EnglishGrade11AdvancedPage() {
               </div>
 
               {/* Grammar Details Card */}
-              {GRAMMAR_RULES[selectedGrammarKey] && (
+              {GRAMMAR_CENTER_DATABASE[activeGrammarKey] && (
                 <div className="flex flex-col gap-6">
                   
                   {/* Title & Description */}
                   <div className="flex flex-col gap-1.5">
-                    <h3 className="text-lg font-black text-white">{GRAMMAR_RULES[selectedGrammarKey].title}</h3>
+                    <h3 className="text-lg font-black text-white">{GRAMMAR_CENTER_DATABASE[activeGrammarKey].title}</h3>
                     <p className="text-xs text-slate-350 leading-relaxed font-medium">
-                      {GRAMMAR_RULES[selectedGrammarKey].explanation}
+                      {GRAMMAR_CENTER_DATABASE[activeGrammarKey].explanation}
+                    </p>
+                    <p className="text-xs text-slate-400 font-medium text-right pr-2">
+                      {GRAMMAR_CENTER_DATABASE[activeGrammarKey].arabicExplanation}
                     </p>
                   </div>
 
                   {/* Formula Box */}
-                  {GRAMMAR_RULES[selectedGrammarKey].formula && (
+                  {GRAMMAR_CENTER_DATABASE[activeGrammarKey].formula && (
                     <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-1">
                       <span className="text-[9px] text-slate-500 font-bold uppercase">Formula:</span>
                       <div className="bg-slate-900 px-3 py-2 border border-slate-850 text-xs font-bold font-mono text-emerald-400 rounded-xl text-center select-all">
-                        {GRAMMAR_RULES[selectedGrammarKey].formula}
+                        {GRAMMAR_CENTER_DATABASE[activeGrammarKey].formula}
                       </div>
                     </div>
                   )}
 
                   {/* Timeline Box */}
-                  {GRAMMAR_RULES[selectedGrammarKey].timeline && (
+                  {GRAMMAR_CENTER_DATABASE[activeGrammarKey].timeline && (
                     <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-1">
                       <span className="text-[9px] text-slate-500 font-bold uppercase">Tense Timeline:</span>
                       <div className="bg-slate-900 px-3 py-2 border border-slate-850 text-xs font-bold font-mono text-blue-400 rounded-xl text-center select-all">
-                        {GRAMMAR_RULES[selectedGrammarKey].timeline}
+                        {GRAMMAR_CENTER_DATABASE[activeGrammarKey].timeline}
                       </div>
                     </div>
                   )}
@@ -1282,12 +1227,12 @@ export default function EnglishGrade11AdvancedPage() {
                   <div className="flex flex-col gap-3">
                     <span className="text-[10px] text-slate-500 font-bold uppercase">Examples:</span>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {GRAMMAR_RULES[selectedGrammarKey].examples.map((ex, i) => (
+                      {GRAMMAR_CENTER_DATABASE[activeGrammarKey].examples.map((ex, i) => (
                         <div key={i} className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-2">
                           <div className="flex items-center justify-between gap-3">
                             <p className="text-xs font-mono font-bold text-white">{ex.original}</p>
                             <button
-                              onClick={() => speakText(ex.original)}
+                              onClick={() => speak(ex.original)}
                               className="p-1 bg-slate-900 hover:bg-blue-600/10 text-slate-400 hover:text-blue-500 rounded-lg shrink-0"
                               title="Listen sentence"
                             >
@@ -1304,7 +1249,7 @@ export default function EnglishGrade11AdvancedPage() {
                   <div className="flex flex-col gap-3">
                     <span className="text-[10px] text-red-400 font-black uppercase">Common Mistakes to Avoid:</span>
                     <div className="flex flex-col gap-2">
-                      {GRAMMAR_RULES[selectedGrammarKey].commonMistakes.map((m, i) => (
+                      {GRAMMAR_CENTER_DATABASE[activeGrammarKey].commonMistakes.map((m, i) => (
                         <div key={i} className="p-4 bg-red-950/10 border border-red-950/30 rounded-2xl flex flex-col gap-1.5 text-right">
                           <div className="flex justify-between items-center text-xs font-mono text-red-500">
                             <span>❌ {m.wrong}</span>
@@ -1325,20 +1270,20 @@ export default function EnglishGrade11AdvancedPage() {
                       <span>Interactive Practice Question:</span>
                     </span>
                     <p className="text-xs font-bold text-white mt-1 mb-3">
-                      {GRAMMAR_RULES[selectedGrammarKey].examQuestions[0].q}
+                      {GRAMMAR_CENTER_DATABASE[activeGrammarKey].examQuestions[0].q}
                     </p>
 
                     <div className="flex flex-col gap-2">
-                      {GRAMMAR_RULES[selectedGrammarKey].examQuestions[0].opts.map((opt, i) => {
-                        const answered = grammarQuizAns[selectedGrammarKey] !== undefined;
-                        const isSelected = grammarQuizAns[selectedGrammarKey] === i;
-                        const isCorrect = GRAMMAR_RULES[selectedGrammarKey].examQuestions[0].ans === i;
+                      {GRAMMAR_CENTER_DATABASE[activeGrammarKey].examQuestions[0].opts.map((opt, i) => {
+                        const answered = grammarAnswers[activeGrammarKey] !== undefined;
+                        const isSelected = grammarAnswers[activeGrammarKey] === i;
+                        const isCorrect = GRAMMAR_CENTER_DATABASE[activeGrammarKey].examQuestions[0].ans === i;
 
                         return (
                           <button
                             key={i}
                             disabled={answered}
-                            onClick={() => handleGrammarQuiz(selectedGrammarKey, i)}
+                            onClick={() => handleGrammarQuiz(activeGrammarKey, i)}
                             className={`p-3 text-right text-xs rounded-xl border transition-all ${
                               answered
                                 ? isCorrect
@@ -1368,16 +1313,14 @@ export default function EnglishGrade11AdvancedPage() {
               
               {/* Tabs for Reading Passages */}
               <div className="flex border-b border-slate-850 gap-2 overflow-x-auto pb-2">
-                {READING_PASSAGES.map((passage, idx) => (
+                {READING_CENTER_DATABASE.map((passage, idx) => (
                   <button
                     key={passage.id}
                     onClick={() => {
-                      setSelectedPassageIdx(idx);
-                      // Reset quiz status for this passage
-                      setReadingQuizSubmitted({ ...readingQuizSubmitted, [passage.id]: false });
+                      setActiveReadingIdx(idx);
                     }}
                     className={`px-4 py-2 text-xs font-bold rounded-xl transition-all shrink-0 cursor-pointer ${
-                      selectedPassageIdx === idx
+                      activeReadingIdx === idx
                         ? "bg-blue-600 text-white"
                         : "bg-slate-950 text-slate-400 hover:bg-slate-850 hover:text-slate-200"
                     }`}
@@ -1388,15 +1331,15 @@ export default function EnglishGrade11AdvancedPage() {
               </div>
 
               {/* Passage Details Display */}
-              {READING_PASSAGES[selectedPassageIdx] && (
+              {READING_CENTER_DATABASE[activeReadingIdx] && (
                 <div className="flex flex-col gap-6">
                   
                   {/* Story Header */}
                   <div className="flex justify-between items-center border-b border-slate-850 pb-3">
-                    <h3 className="text-base font-black text-white">{READING_PASSAGES[selectedPassageIdx].title}</h3>
+                    <h3 className="text-base font-black text-white">{READING_CENTER_DATABASE[activeReadingIdx].title}</h3>
                     
                     <button
-                      onClick={() => speakText(READING_PASSAGES[selectedPassageIdx].story)}
+                      onClick={() => speak(READING_CENTER_DATABASE[activeReadingIdx].story)}
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl flex items-center gap-1.5"
                     >
                       <Volume2 size={12} />
@@ -1404,11 +1347,23 @@ export default function EnglishGrade11AdvancedPage() {
                     </button>
                   </div>
 
-                  {/* Story Text Box with Highlight Simulation */}
-                  <div className="p-6 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-3">
-                    <p className="text-sm text-slate-300 leading-relaxed font-serif select-text">
-                      {READING_PASSAGES[selectedPassageIdx].story}
-                    </p>
+                  {/* Paragraph by Paragraph Translation Tooltip */}
+                  <div className="flex flex-col gap-4">
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">Bilingual Interactive Reading:</span>
+                    {READING_CENTER_DATABASE[activeReadingIdx].paragraphs.map((p, pIdx) => (
+                      <div key={pIdx} className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs text-slate-200 leading-relaxed font-serif">{p.en}</p>
+                          <button
+                            onClick={() => speak(p.en)}
+                            className="p-1 bg-slate-900 hover:bg-blue-600/10 text-slate-400 hover:text-blue-500 rounded-lg shrink-0"
+                          >
+                            <Volume2 size={10} />
+                          </button>
+                        </div>
+                        <p className="text-[10px] text-slate-400 text-right font-medium">{p.ar}</p>
+                      </div>
+                    ))}
                   </div>
 
                   {/* Summaries & Analyses */}
@@ -1416,31 +1371,31 @@ export default function EnglishGrade11AdvancedPage() {
                     <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-1.5">
                       <span className="text-[10px] text-blue-400 font-bold uppercase">Summary:</span>
                       <p className="text-[11px] text-slate-400 leading-relaxed">
-                        {READING_PASSAGES[selectedPassageIdx].summary}
+                        {READING_CENTER_DATABASE[activeReadingIdx].summary}
                       </p>
                     </div>
                     <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-1.5">
-                      <span className="text-[10px] text-blue-400 font-bold uppercase">Key Characters/Actors:</span>
+                      <span className="text-[10px] text-blue-400 font-bold uppercase">Key Characters:</span>
                       <p className="text-[11px] text-slate-400 leading-relaxed">
-                        {READING_PASSAGES[selectedPassageIdx].characters}
+                        {READING_CENTER_DATABASE[activeReadingIdx].characters}
                       </p>
                     </div>
                     <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-1.5">
                       <span className="text-[10px] text-blue-400 font-bold uppercase">Main Idea:</span>
                       <p className="text-[11px] text-slate-400 leading-relaxed">
-                        {READING_PASSAGES[selectedPassageIdx].mainIdea}
+                        {READING_CENTER_DATABASE[activeReadingIdx].mainIdea}
                       </p>
                     </div>
                   </div>
 
                   {/* Key Expressions Translation Popup simulation */}
                   <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-2">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">Important Expressions & Vocabularies:</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">Important Expressions:</span>
                     <div className="flex flex-wrap gap-2">
-                      {READING_PASSAGES[selectedPassageIdx].expressions.map((exp, i) => (
+                      {READING_CENTER_DATABASE[activeReadingIdx].expressions.map((exp, i) => (
                         <button
                           key={i}
-                          onClick={() => triggerToast(`Pronunciation & translation: "${exp}"`)}
+                          onClick={() => triggerToast(`Translation: "${exp}"`)}
                           className="px-3 py-1.5 bg-slate-900 border border-slate-850 hover:border-blue-500/40 rounded-xl text-xs font-mono text-slate-300 transition-colors"
                         >
                           {exp}
@@ -1454,10 +1409,10 @@ export default function EnglishGrade11AdvancedPage() {
                     <h4 className="text-sm font-black text-white mb-4">Reading Quiz (10 Questions)</h4>
                     
                     <div className="flex flex-col gap-6">
-                      {READING_PASSAGES[selectedPassageIdx].questions.map((q, qIdx) => {
-                        const ansKey = `${READING_PASSAGES[selectedPassageIdx].id}_${qIdx}`;
-                        const selectedOpt = readingQuizAnswers[ansKey];
-                        const submitted = readingQuizSubmitted[READING_PASSAGES[selectedPassageIdx].id];
+                      {READING_CENTER_DATABASE[activeReadingIdx].questions.map((q, qIdx) => {
+                        const ansKey = `${READING_CENTER_DATABASE[activeReadingIdx].id}_${qIdx}`;
+                        const selectedOpt = readingAnswers[ansKey];
+                        const submitted = readingSubmitted[READING_CENTER_DATABASE[activeReadingIdx].id];
 
                         return (
                           <div key={qIdx} className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-3">
@@ -1473,7 +1428,7 @@ export default function EnglishGrade11AdvancedPage() {
                                   <button
                                     key={optIdx}
                                     disabled={submitted}
-                                    onClick={() => handleReadingQuizAnswer(READING_PASSAGES[selectedPassageIdx].id, qIdx, optIdx)}
+                                    onClick={() => setReadingAnswers({ ...readingAnswers, [ansKey]: optIdx })}
                                     className={`p-2.5 text-right text-xs rounded-xl border transition-all ${
                                       submitted
                                         ? isCorrect
@@ -1502,9 +1457,9 @@ export default function EnglishGrade11AdvancedPage() {
                       })}
                     </div>
 
-                    {!readingQuizSubmitted[READING_PASSAGES[selectedPassageIdx].id] && (
+                    {!readingSubmitted[READING_CENTER_DATABASE[activeReadingIdx].id] && (
                       <button
-                        onClick={() => submitReadingQuiz(READING_PASSAGES[selectedPassageIdx].id, READING_PASSAGES[selectedPassageIdx])}
+                        onClick={() => submitReadingQuiz(READING_CENTER_DATABASE[activeReadingIdx].id, READING_CENTER_DATABASE[activeReadingIdx])}
                         className="mt-6 w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl shadow-lg transition-colors"
                       >
                         Submit Answers & Calculate Score
@@ -1523,24 +1478,22 @@ export default function EnglishGrade11AdvancedPage() {
           {activeTab === "maze" && (
             <div className="bg-slate-900 border border-slate-850 rounded-3xl p-6 flex flex-col gap-6">
               
-              <div className="border-b border-slate-850 pb-4 flex justify-between items-center">
-                <div className="flex flex-col">
-                  <h3 className="text-sm font-black text-white">MAZE Practice Center 🧭</h3>
-                  <p className="text-[10px] text-slate-400">Complete standard exam-level MAZE paragraphs.</p>
-                </div>
+              <div className="border-b border-slate-850 pb-4">
+                <h3 className="text-sm font-black text-white">MAZE Practice Center 🧭</h3>
+                <p className="text-[10px] text-slate-400">Complete standard exam-level MAZE paragraphs.</p>
               </div>
 
               <div className="flex flex-col gap-6">
-                {MAZE_QUESTIONS.map((maze, idx) => {
+                {MAZE_PRACTICE_DATABASE.map((maze, idx) => {
                   const selIdx = mazeSelections[maze.id];
                   const answered = selIdx !== undefined;
-                  const scoreCorrect = mazeScores[maze.id];
+                  const scoreCorrect = maze.correctIndex === selIdx;
 
                   return (
                     <div key={maze.id} className="p-5 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-4">
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] bg-blue-600/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/10 font-bold">
-                          Practice Task #{idx + 1}
+                          {maze.level} Level
                         </span>
                         <div className="flex items-center gap-1 text-[10px] text-slate-500">
                           <Clock size={12} />
@@ -1605,34 +1558,16 @@ export default function EnglishGrade11AdvancedPage() {
           {activeTab === "emsat" && (
             <div className="bg-slate-900 border border-slate-850 rounded-3xl p-6 flex flex-col gap-6">
               
-              <div className="border-b border-slate-850 pb-4 flex justify-between items-center">
-                <div className="flex flex-col">
-                  <h3 className="text-sm font-black text-white">EmSAT Grammar Simulator 📝</h3>
-                  <p className="text-[10px] text-slate-400">Specially focused on Relative Clauses and relative pronouns.</p>
-                </div>
-              </div>
-
-              {/* Mode Selection */}
-              <div className="flex gap-3 justify-end">
-                <button
-                  onClick={() => startEmsatSimulator("practice")}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold ${emsatMode === "practice" ? "bg-blue-600 text-white" : "bg-slate-950 text-slate-500"}`}
-                >
-                  Practice Mode
-                </button>
-                <button
-                  onClick={() => startEmsatSimulator("timed")}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold ${emsatMode === "timed" ? "bg-blue-600 text-white" : "bg-slate-950 text-slate-500"}`}
-                >
-                  Timed Mode (60s)
-                </button>
+              <div className="border-b border-slate-850 pb-4">
+                <h3 className="text-sm font-black text-white">EmSAT Grammar Simulator 📝</h3>
+                <p className="text-[10px] text-slate-400">Specially focused on Relative Clauses and relative pronouns.</p>
               </div>
 
               {/* Timed Mode Countdown */}
-              {emsatMode === "timed" && !emsatSubmitted && (
+              {!emsatSubmitted && (
                 <div className="p-3 bg-red-950/20 border border-red-900/30 text-red-400 text-xs font-mono font-bold rounded-xl text-center flex items-center justify-center gap-1">
                   <Clock size={14} />
-                  <span>Time Remaining: {emsatTime} seconds</span>
+                  <span>Time Remaining: {emsatTimer} seconds</span>
                 </div>
               )}
 
@@ -1640,7 +1575,6 @@ export default function EnglishGrade11AdvancedPage() {
               <div className="flex flex-col gap-6 mt-2">
                 {EMSAT_GRAMMAR_PRACTICE.map((q, idx) => {
                   const selAns = emsatAnswers[idx];
-                  const showExplanation = emsatSubmitted;
                   
                   return (
                     <div key={idx} className="p-4 bg-slate-950 border border-slate-850 rounded-2xl flex flex-col gap-3">
@@ -1675,7 +1609,7 @@ export default function EnglishGrade11AdvancedPage() {
                         })}
                       </div>
 
-                      {showExplanation && (
+                      {emsatSubmitted && (
                         <div className="p-3 bg-slate-900 rounded-xl border border-slate-850 text-[10px] text-slate-400 text-right">
                           💡 <span className="font-bold text-emerald-500">التوضيح:</span> {q.exp}
                         </div>
@@ -1687,7 +1621,7 @@ export default function EnglishGrade11AdvancedPage() {
 
               {!emsatSubmitted && (
                 <button
-                  onClick={submitEmsat}
+                  onClick={submitEmSAT}
                   className="mt-4 w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl shadow-lg transition-colors"
                 >
                   Submit Simulator Exam
@@ -1718,7 +1652,7 @@ export default function EnglishGrade11AdvancedPage() {
                     ].map((item, idx) => (
                       <div key={idx} className="p-3 bg-slate-900 rounded-xl border border-slate-850 flex items-center justify-between gap-3 text-right">
                         <button
-                          onClick={() => speakText(`${item.word}, ${item.exp}`)}
+                          onClick={() => speak(`${item.word}, ${item.exp}`)}
                           className="p-2 bg-slate-950 hover:bg-blue-600/10 text-slate-400 hover:text-blue-500 rounded-lg"
                         >
                           <Volume2 size={12} />
@@ -1741,7 +1675,7 @@ export default function EnglishGrade11AdvancedPage() {
                     ].map((item, idx) => (
                       <div key={idx} className="p-3 bg-slate-900 rounded-xl border border-slate-850 flex items-center justify-between gap-3 text-right">
                         <button
-                          onClick={() => speakText(`${item.word}, ${item.exp}`)}
+                          onClick={() => speak(`${item.word}, ${item.exp}`)}
                           className="p-2 bg-slate-950 hover:bg-blue-600/10 text-slate-400 hover:text-blue-500 rounded-lg"
                         >
                           <Volume2 size={12} />
@@ -1771,9 +1705,9 @@ export default function EnglishGrade11AdvancedPage() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {recordingState === "idle" && (
+                  {speakingState === "idle" && (
                     <button
-                      onClick={startRecordingSimulation}
+                      onClick={startSpeakingChallenge}
                       className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white text-xs font-black rounded-xl shadow-lg transition-colors flex items-center gap-2"
                     >
                       <Mic size={14} />
@@ -1781,27 +1715,27 @@ export default function EnglishGrade11AdvancedPage() {
                     </button>
                   )}
 
-                  {recordingState === "recording" && (
+                  {speakingState === "recording" && (
                     <div className="flex items-center gap-2 text-red-500 animate-pulse text-xs font-bold">
                       <span className="w-2.5 h-2.5 bg-red-500 rounded-full" />
                       <span>Recording... (Speak Now)</span>
                     </div>
                   )}
 
-                  {recordingState === "analyzing" && (
+                  {speakingState === "analyzing" && (
                     <div className="flex items-center gap-2 text-blue-400 animate-spin text-xs font-bold">
                       <RefreshCw size={14} />
                       <span>AI Evaluating Pronunciation...</span>
                     </div>
                   )}
 
-                  {recordingState === "done" && (
+                  {speakingState === "done" && (
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-xs font-bold text-emerald-400">
-                        Match Score: <span className="font-extrabold">{speakingScore}%</span>
+                        Match Score: <span className="font-extrabold">{mockScore}%</span>
                       </span>
                       <button
-                        onClick={() => setRecordingState("idle")}
+                        onClick={() => setSpeakingState("idle")}
                         className="px-4 py-2 bg-slate-900 border border-slate-850 hover:bg-slate-800 text-[10px] font-bold text-slate-300 rounded-lg"
                       >
                         Try Again
@@ -1833,14 +1767,14 @@ export default function EnglishGrade11AdvancedPage() {
                 <div className="grid grid-cols-2 gap-4 mt-2">
                   {/* Left Column Words */}
                   <div className="flex flex-col gap-2">
-                    {matchWords.map((word) => {
+                    {gameWords.map((word) => {
                       const matched = matchedPairs.includes(word);
-                      const isSelected = selectedMatchWord === word;
+                      const isSelected = selectedWord === word;
                       return (
                         <button
                           key={word}
                           disabled={matched}
-                          onClick={() => handleMatchClick(word, false)}
+                          onClick={() => handleWordMatch(word, false)}
                           className={`p-3 text-right text-xs font-mono rounded-xl border transition-all ${
                             matched
                               ? "bg-slate-900/10 border-slate-900 text-slate-600 line-through"
@@ -1857,22 +1791,21 @@ export default function EnglishGrade11AdvancedPage() {
 
                   {/* Right Column Meanings */}
                   <div className="flex flex-col gap-2">
-                    {matchMeanings.map((meaning) => {
-                      // Find word matching this meaning
-                      const matchingWord = matchWords[matchMeanings.indexOf(meaning)];
+                    {gameMeanings.map((meaning) => {
+                      const matchingWord = gameWords[gameMeanings.indexOf(meaning)];
                       const matched = matchedPairs.includes(matchingWord);
-                      const isSelected = selectedMatchWord === meaning;
+                      const isSelected = selectedWord === meaning;
                       return (
                         <button
                           key={meaning}
                           disabled={matched}
-                          onClick={() => handleMatchClick(meaning, true)}
+                          onClick={() => handleWordMatch(meaning, true)}
                           className={`p-3 text-right text-xs rounded-xl border transition-all ${
                             matched
                               ? "bg-slate-900/10 border-slate-900 text-slate-600 line-through"
                               : isSelected
                                 ? "bg-blue-600/10 border-blue-500 text-blue-400 font-bold"
-                                : "bg-slate-900 hover:bg-slate-850 border-slate-850 text-slate-350 cursor-pointer"
+                                : "bg-slate-900 hover:bg-slate-850 border-slate-850 text-slate-355 cursor-pointer"
                           }`}
                         >
                           {meaning}
@@ -1882,7 +1815,7 @@ export default function EnglishGrade11AdvancedPage() {
                   </div>
                 </div>
 
-                {matchedPairs.length === matchWords.length && (
+                {matchedPairs.length === gameWords.length && (
                   <div className="p-4 bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 text-xs font-bold rounded-xl text-center mt-4">
                     🎉 Excellent! You have successfully matched all words! +50 Extra Points awarded.
                   </div>
@@ -1965,3 +1898,55 @@ export default function EnglishGrade11AdvancedPage() {
     </div>
   );
 }
+
+const WRITING_TOPICS = [
+  {
+    essayType: "Opinion Essay",
+    topic: "The Role of Technology in Education",
+    prompt: "To what extent do you agree that technology has improved the quality of education? Provide examples and reasons.",
+    modelAnswer: "Technology has undeniably transformed the landscape of modern education. In the UAE, students now have access to interactive e-learning platforms, AI-powered tutoring systems, and digital libraries that were unimaginable a decade ago. These innovations have made education more accessible and personalized. For instance, adaptive learning software can identify a student's weaknesses and tailor content accordingly, ensuring no one falls behind. Furthermore, virtual classrooms have enabled students in remote areas to receive the same quality of instruction as their urban counterparts. However, it is essential to acknowledge that technology is a tool, not a replacement for effective teaching. The human element — mentorship, inspiration, and emotional support — remains irreplaceable. In conclusion, while technology has significantly enhanced educational outcomes, its true potential can only be realized when combined with skilled educators and thoughtful implementation.",
+    vocab: ["undeniably", "adaptive", "personalized", "implementation", "accessible", "innovation", "virtual", "counterparts"]
+  },
+  {
+    essayType: "Argumentative Essay",
+    topic: "Should Vocational Training Replace University Education?",
+    prompt: "Some people believe vocational training is more valuable than university degrees. Discuss both sides and give your opinion.",
+    modelAnswer: "The debate between vocational training and university education has gained significant traction in recent years. Proponents of vocational training argue that it provides practical, job-ready skills that directly address market demands. In the UAE, programs like ADNOC's technical training initiatives have produced highly skilled professionals who contribute meaningfully to the economy. On the other hand, university education offers a broader intellectual foundation, critical thinking skills, and research capabilities that are essential for innovation and leadership roles. A university degree also opens doors to careers in medicine, law, and academia that require advanced theoretical knowledge. I believe that neither should replace the other; instead, a hybrid approach that combines academic rigor with practical experience would best serve students. The UAE's vision for 2031 emphasizes both pathways, recognizing that a diverse workforce requires both skilled technicians and visionary thinkers.",
+    vocab: ["vocational", "traction", "proponents", "initiatives", "hybrid", "rigor", "diverse", "visionary"]
+  },
+  {
+    essayType: "Cause & Effect Essay",
+    topic: "The Impact of Climate Change on the UAE",
+    prompt: "Discuss the causes of climate change and its effects on the UAE environment and economy.",
+    modelAnswer: "Climate change poses a significant threat to the UAE, driven primarily by the burning of fossil fuels, industrial emissions, and rapid urbanization. These activities release greenhouse gases into the atmosphere, trapping heat and raising global temperatures. The effects on the UAE are particularly severe due to its arid climate. Rising temperatures have led to increased desertification, threatening agricultural productivity and water resources. Coastal cities like Abu Dhabi and Dubai face the risk of rising sea levels, which could damage infrastructure and displace communities. Additionally, extreme weather events, including unprecedented rainfall and sandstorms, have become more frequent. The UAE government has responded proactively with initiatives like the UAE Net Zero 2050 Strategic Initiative and investments in renewable energy, including the Barakah Nuclear Energy Plant and the Mohammed bin Rashid Al Maktoum Solar Park. These efforts demonstrate the nation's commitment to mitigating climate change while ensuring sustainable economic growth.",
+    vocab: ["desertification", "greenhouse gases", "urbanization", "infrastructure", "unprecedented", "mitigating", "sustainable", "proactively"]
+  }
+];
+
+const EMSAT_GRAMMAR_PRACTICE = [
+  {
+    q: "The lady _______ son won the national spelling bee contest was extremely proud.",
+    opts: ["who", "whom", "whose", "which"],
+    ans: 2,
+    exp: "Use 'whose' to show possession of the son by the lady."
+  },
+  {
+    q: "The new eco-friendly city, _______ is powered entirely by solar panels, was visited by global leaders.",
+    opts: ["who", "whom", "whose", "which"],
+    ans: 3,
+    exp: "Use 'which' for non-defining relative clauses referring to things or places."
+  },
+  {
+    q: "This is the student _______ the principal selected to represent the school at the UAE debate.",
+    opts: ["who", "whom", "whose", "which"],
+    ans: 1,
+    exp: "Use 'whom' as it refers to the object of the verb 'selected'."
+  },
+  {
+    q: "The engineers _______ worked on the wind farm achieved great success.",
+    opts: ["who", "whom", "whose", "which"],
+    ans: 0,
+    exp: "Use 'who' as the relative pronoun for the subject of the clause referring to people."
+  }
+];
+
